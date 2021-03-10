@@ -18,7 +18,7 @@ export default () => (
             {/* <Stack.Screen name="SellerLogin" component={SellerLogin} />
             <Stack.Screen name="SellerSignUp" component={SellerSignUp} />
             <Stack.Screen name="SellerDashboard" component={SellerDashboard} /> */}
-            <Stack.Screen name="UserDashboard" component={UserDashboard} />
+            {/* <Stack.Screen name="UserDashboard" component={UserDashboard} /> */}
         </Stack.Navigator>
     </NavigationContainer>
 );
