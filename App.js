@@ -3,6 +3,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 // import Students from "./components/Students";
 // import StudentDetail from "./components/StudentDetail";
+import SellerLogin from "./components/SellerLogin";
+import SellerSignUp from "./components/SellerSignUp";
 
 const Stack = createStackNavigator();
 
@@ -11,6 +13,8 @@ export default () => (
         <Stack.Navigator>
             {/* <Stack.Screen name="Students" component={Students} />
             <Stack.Screen name="StudentDetails" component={StudentDetail} /> */}
+            <Stack.Screen name="SellerLogin" component={SellerLogin} />
+            <Stack.Screen name="SellerSignUp" component={SellerSignUp} />
         </Stack.Navigator>
     </NavigationContainer>
 );
