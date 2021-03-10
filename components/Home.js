@@ -14,7 +14,10 @@ export default function Home({ navigation }) {
         <View>
             <Header
                 leftComponent={{ icon: "menu", color: "#fff" }}
-                centerComponent={{ text: "MY TITLE", style: { color: "#fff" } }}
+                centerComponent={{
+                    text: "MY TITLE2",
+                    style: { color: "#fff" },
+                }}
                 rightComponent={{ icon: "home", color: "#fff" }}
             />
         </View>
