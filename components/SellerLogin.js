@@ -10,11 +10,11 @@ import {
 } from "react-native";
 
 export default function SellerLogin({ navigation }) {
+    // console.log("SellerLogin:", navigator);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [emailBorder, setEmailBorder] = useState("#fff");
     const [passwordBorder, setPasswordBorder] = useState("#fff");
-
     const loginHandler = () => {
         // let noProb = true;
         // if (email == "") {

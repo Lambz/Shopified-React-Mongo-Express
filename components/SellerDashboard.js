@@ -9,12 +9,24 @@ import {
 } from "react-native";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, CommonActions } from "@react-navigation/native";
 import SellerSignUp from "./SellerSignUp";
 import SellerLogin from "./SellerLogin";
 
 const Tabs = createBottomTabNavigator();
 export default function SellerDashboard({ navigation }) {
+    // navigation.reset({
+    //     index: 0,
+    //     routes: [{ name: "Profile" }],
+    // });
+    console.log("SellerDashboard:", navigator);
+    navigation.dispatch(
+        CommonActions.reset({
+            index: 0,
+            routes: [],
+        })
+    );
+
     return (
         <NavigationContainer independent={true}>
             <Tabs.Navigator>
