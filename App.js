@@ -5,6 +5,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 // import StudentDetail from "./components/StudentDetail";
 import SellerLogin from "./components/SellerLogin";
 import SellerSignUp from "./components/SellerSignUp";
+import SellerDashboard from "./components/SellerDashboard";
 
 const Stack = createStackNavigator();
 
@@ -15,6 +16,7 @@ export default () => (
             <Stack.Screen name="StudentDetails" component={StudentDetail} /> */}
             <Stack.Screen name="SellerLogin" component={SellerLogin} />
             <Stack.Screen name="SellerSignUp" component={SellerSignUp} />
+            <Stack.Screen name="SellerDashboard" component={SellerDashboard}  />
         </Stack.Navigator>
     </NavigationContainer>
 );

@@ -7,7 +7,6 @@ import {
     TextInput,
     Button,
 } from "react-native";
-import { and } from "react-native-reanimated";
 
 export default function SellerSignUp({ navigation }) {
     const [name, setName] = useState("");

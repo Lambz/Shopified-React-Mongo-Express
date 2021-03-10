@@ -16,18 +16,19 @@ export default function SellerLogin({ navigation }) {
     const [passwordBorder, setPasswordBorder] = useState("#fff");
 
     const loginHandler = () => {
-        let noProb = true;
-        if (email == "") {
-            setEmailBorder("#f00");
-            noProb = false;
-        }
-        if (password == "" || password.length < 6) {
-            setPasswordBorder("#f00");
-            noProb = false;
-        }
-        if (noProb) {
-            //TODO: Login
-        }
+        // let noProb = true;
+        // if (email == "") {
+        //     setEmailBorder("#f00");
+        //     noProb = false;
+        // }
+        // if (password == "" || password.length < 6) {
+        //     setPasswordBorder("#f00");
+        //     noProb = false;
+        // }
+        // if (noProb) {
+        //     //TODO: Login
+        // }
+        navigation.navigate("SellerDashboard");
     };
     return (
         <View style={styles.container}>
