@@ -13,6 +13,7 @@ const Stack = createStackNavigator();
 export default () => (
     <NavigationContainer>
         <Stack.Navigator>
+            {/* added modification */}
             {/* <Stack.Screen name="Students" component={Students} />
             <Stack.Screen name="StudentDetails" component={StudentDetail} /> */}
             {/* <Stack.Screen name="SellerLogin" component={SellerLogin} />
