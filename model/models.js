@@ -301,6 +301,6 @@ class Order {
     }
 }
 
-export { User, Seller, Product, Category }
+export { User, Seller, Product, Category, OrderStatus }
 
 
