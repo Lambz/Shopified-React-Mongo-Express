@@ -1,17 +1,42 @@
 // Interface functions implemented for front-end scripts
 
-import { codes, signupWithEmail, signInWithEmail,
-    createUserObjectInDB, createSellerObjectInDB, getUserDetailsFromDB, getSellerDetailsFromDB, updateDBPassword, insertProductInDB, insertCategoryOrSubcategoryInDB, fetchCategoriesAndSubcategoriesFromDB,
-    fetchProductsForSubCategoryFromDB, insertOrderInDB, updateUserInDB, deleteProductFromDB, deleteUserFromDB, deleteSellerFromDB, deleteAllCategoriesFromDB,
-    fetchCategoriesAndSubcategoriesFromDB, fetchProductByIdInDB, fetchAllProductsInDB, fetchProductsForCategoryInDB,
-    fetchCategoryDataFromDB, fetchOrdersFromDB, fetchAllProductsForSellerInDB, fetchUserByNameFromDB, 
-    insertImageInDB } from './firebaseHandlers.js';
+import {
+    codes,
+    initializeDB,
+    signupWithEmail,
+    signInWithEmail,
+    createUserObjectInDB,
+    createSellerObjectInDB,
+    getUserDetailsFromDB,
+    getSellerDetailsFromDB,
+    updateDBPassword,
+    insertProductInDB,
+    insertCategoryOrSubcategoryInDB,
+    fetchCategoriesAndSubcategoriesFromDB,
+    fetchProductsForSubCategoryFromDB,
+    insertOrderInDB,
+    updateUserInDB,
+    deleteProductFromDB,
+    deleteUserFromDB,
+    deleteSellerFromDB,
+    deleteAllCategoriesFromDB,
+    fetchProductByIdInDB,
+    fetchAllProductsInDB,
+    fetchProductsForCategoryInDB,
+    fetchCategoryDataFromDB,
+    fetchOrdersFromDB,
+    fetchAllProductsForSellerInDB,
+    fetchUserByNameFromDB,
+    insertImageInDB,
+} from "./firebaseHandlers.js";
 
-import { Category } from './models.js';
+import { Category } from "./models.js";
 
-// 
+initializeDB();
+
+//
 // MARK: Authentication Methods
-// 
+//
 
 // Signup functions for User and Seller
 // Creates the user/ seller object in collection
@@ -25,14 +50,11 @@ import { Category } from './models.js';
 
 function signUp(user, isUser, uiCallback) {
     let functionToCall;
-    if (isUser)
-        functionToCall = createUserObjectInDB;
-    else 
-        functionToCall = createSellerObjectInDB;
+    if (isUser) functionToCall = createUserObjectInDB;
+    else functionToCall = createSellerObjectInDB;
     try {
         return signupWithEmail(user, functionToCall, uiCallback);
-    }
-    catch (error) {
+    } catch (error) {
         return codes.NULL_OBJECT;
     }
 }
@@ -48,11 +70,10 @@ function signUp(user, isUser, uiCallback) {
 // - No
 
 function signIn(email, password, isUser, uiCallback) {
-    signInWithEmail(email,password,() => {
-        getUserDetails(isUser,uiCallback);
+    signInWithEmail(email, password, () => {
+        getUserDetails(isUser, uiCallback);
     });
 }
-
 
 // Function to update user data
 // 1. args:
@@ -63,35 +84,26 @@ function signIn(email, password, isUser, uiCallback) {
 // 3. throws
 // - No
 
-function updateUser(isUser, user, uiCallback)
-{
-    if(isUser)
-    {
-        createUserObjectInDB(user,uiCallback);
-    }
-    else
-    {
-        createSellerObjectInDB(user,uiCallback);
+function updateUser(isUser, user, uiCallback) {
+    if (isUser) {
+        createUserObjectInDB(user, uiCallback);
+    } else {
+        createSellerObjectInDB(user, uiCallback);
     }
 }
 
-
 // Function to update user or seller passoword
 
-function updatePassword(isUser, user, newPassword, uiCallback)
-{
+function updatePassword(isUser, user, newPassword, uiCallback) {
     let functionToCall;
-    if(isUser)
-    {
+    if (isUser) {
         functionToCall = createUserObjectInDB;
-    }
-    else
-    {
+    } else {
         functionToCall = createSellerObjectInDB;
     }
-    updateDBPassword(newPassword,() => {
+    updateDBPassword(newPassword, () => {
         user.password = newPassword;
-        functionToCall(user,uiCallback);
+        functionToCall(user, uiCallback);
     });
 }
 
@@ -107,13 +119,11 @@ function signOut(uiCallback) {
     return signOutUserFromFirebase(uiCallback);
 }
 
-// 
+//
 // MARK: CRUD operations for products and categories
-// 
-
+//
 
 // Query Functions
-
 
 // Function to fetch all categories and subcategories from DB
 // 1. args:
@@ -121,12 +131,11 @@ function signOut(uiCallback) {
 // 2. throws:
 // No
 // Note: uiCallback is provided with an array if query is successfully executed
-// FETCH_FAILURE if error 
+// FETCH_FAILURE if error
 
 function fetchAllCategoriesAndSubcategories(uiCallback) {
     fetchCategoriesAndSubcategoriesFromDB(uiCallback);
 }
-
 
 // Function to fetch the product by product id
 // 1. args
@@ -144,9 +153,9 @@ function fetchAllProductsForCategory(categoryID, uiCallback) {
 }
 
 function fetchAllProducts(uiCallback) {
+    // console.log("fetchAllProducts:", uiCallback);
     fetchAllProductsInDB(uiCallback);
 }
-
 
 // Insertion Functions
 
@@ -156,11 +165,10 @@ function fetchAllProducts(uiCallback) {
 // - image: BLOB data for images
 // - uiCallback: for updating ui, could be non-ui updating too
 
-
 function insertImage(product, images, uiCallback) {
     //  insert images
     var downloadedUrls = [];
-    for (let i=0; i < images.length; i++) {
+    for (let i = 0; i < images.length; i++) {
         insertImageInDB(product, i, images[i], (url) => {
             downloadedUrls.push(url);
             console.log(url);
@@ -169,7 +177,6 @@ function insertImage(product, images, uiCallback) {
             }
         });
     }
-    
 }
 
 // Function to insert product
@@ -182,12 +189,14 @@ function insertImage(product, images, uiCallback) {
 
 function insertProduct(product, seller, updateCategory, uiCallback) {
     if (updateCategory) {
-        getCategoryObjectAndUpdateCategory(product.category, product.subcategory);
+        getCategoryObjectAndUpdateCategory(
+            product.category,
+            product.subcategory
+        );
     }
     try {
         return insertProductInDB(product, seller, uiCallback);
-    }
-    catch(error) {
+    } catch (error) {
         return codes.INSERTION_FAILIURE;
     }
 }
@@ -196,13 +205,12 @@ function insertProduct(product, seller, updateCategory, uiCallback) {
 // 1. args:
 // - isUser: boolean, specifies weather user or seller logged in
 // - uiCallback: for ui updation after fetching details
-// 
+//
 
 function getUserDetails(isUser, uiCallback) {
     if (isUser) {
         return getUserDetailsFromDB(uiCallback);
-    }
-    else {
+    } else {
         return getSellerDetailsFromDB(uiCallback);
     }
 }
@@ -212,40 +220,37 @@ function getUserDetails(isUser, uiCallback) {
 function getCategoryObjectAndUpdateCategory(categoryName, subcategoryName) {
     return fetchCategoryDataFromDB(categoryName, (categoryObject) => {
         try {
-            if(categoryObject) {
+            if (categoryObject) {
                 console.log(categoryObject);
                 categoryObject.subcategories.push(subcategoryName);
                 insertCategoryOrSubcategoryInDB(categoryObject);
-            }
-            else {
+            } else {
                 let category = new Category(categoryName, [subcategoryName]);
                 insertCategoryOrSubcategoryInDB(category);
             }
-        }
-        catch(error) {
+        } catch (error) {
             console.log(codes.FETCH_FAILURE);
         }
     });
 }
-
 
 // Deletion Functions
 
 // Function to delete a product
 
 function deleteProduct(productID, seller, uiCallback) {
-    deleteProductFromDB(productID,seller,uiCallback);
+    deleteProductFromDB(productID, seller, uiCallback);
 }
 
-// 
+//
 // Order Functions
-// 
+//
 function placeOrder(order, uiCallback) {
     insertOrderInDB(order, uiCallback);
 }
 // 1. args:
 // - order: order object
-// 
+//
 function updateOrderStatus(order, newStatus, uiCallback) {
     order.status = newStatus;
     console.log("updated order", order);
@@ -263,15 +268,15 @@ function fetchOrdersForSeller(sellerID, includeCancelled, uiCallback) {
         let orderArray = [];
         for (let i = 0; i < orders.length; i++) {
             let val = orders[i].products;
-            for(let j = 0; j < val.length; j++) {
-                if(val[j].seller_id == sellerID) {
+            for (let j = 0; j < val.length; j++) {
+                if (val[j].seller_id == sellerID) {
                     orderArray.push(orders[i]);
                     break;
                 }
             }
         }
         uiCallback(orderArray);
-    })
+    });
 }
 
 // Function to delete user
@@ -281,49 +286,52 @@ function fetchOrdersForSeller(sellerID, includeCancelled, uiCallback) {
 // 2. throws
 // - No
 function deleteUser(isUser, uiCallback) {
-    if(isUser) {
+    if (isUser) {
         deleteUserFromDB(uiCallback);
-    }
-    else {
+    } else {
         deleteSellerFromDB(uiCallback);
     }
 }
 
-
 // Function returns the products array in descending order of most sold products
 function fetchMostSoldProducts(uiCallback) {
     fetchOrdersFromDB(true, (orderArray) => {
+        // console.log("orderArray", orderArray);
         let products = [];
-        let productsArray = orderArray.map(o => o.products);
-        
-        for(let i = 0; i < productsArray.length; i++) {
+        let productsArray = orderArray.map((o) => o.products);
+
+        for (let i = 0; i < productsArray.length; i++) {
             let val = productsArray[i];
             val.forEach((product) => {
                 products.push(product);
-            })
+            });
         }
-        
+
         const result = Array.from(
-            products.reduce((map, item) => 
-                (map.get(item.id).count++, map) 
-            , new Map(products.map(o => 
-                [o.id, Object.assign({}, o, { count: 0 })]
-            ))), ([k, o]) => o
-        ).sort( (a, b) => b.count - a.count );
+            products.reduce(
+                (map, item) => (map.get(item.id).count++, map),
+                new Map(
+                    products.map((o) => [
+                        o.id,
+                        Object.assign({}, o, { count: 0 }),
+                    ])
+                )
+            ),
+            ([k, o]) => o
+        ).sort((a, b) => b.count - a.count);
 
         uiCallback(result);
-    })
+    });
 }
 
 function fetchAllProductsForSeller(sellerID, uiCallback) {
     fetchAllProductsForSellerInDB(sellerID, uiCallback);
 }
 
-
 function getRandomProductFromDB(uiCallback) {
     fetchAllProductsInDB((orders) => {
         uiCallback(orders[Math.floor(Math.random() * orders.length)]);
-    })
+    });
 }
 
 function fetchUserByName(orderID, orderStatus, userName, uiCallback) {
@@ -334,7 +342,7 @@ function fetchUserByName(orderID, orderStatus, userName, uiCallback) {
             }
         });
         updateUserInDB(user, uiCallback);
-    })
+    });
 }
 
 function updateCategories(categories, uiCallback) {
@@ -345,11 +353,32 @@ function updateCategories(categories, uiCallback) {
             promises.push(insertCategoryOrSubcategoryInDB(category));
         });
         Promise.all(promises).then(uiCallback);
-    })
+    });
 }
 
-export { signUp, signIn, updateUser, updatePassword, signOut, fetchAllCategoriesAndSubcategories, fetchProductById, 
-    fetchAllProductsForSubcategory, fetchAllProductsForCategory, fetchAllProducts, insertImage, insertProduct, 
-    getUserDetails, getCategoryObjectAndUpdateCategory, deleteProduct, placeOrder, updateOrderStatus, 
-    fetchOrdersForSeller, deleteUser, fetchMostSoldProducts, fetchAllProductsForSeller, getRandomProductFromDB, 
-    fetchUserByName, updateCategories }
+export {
+    signUp,
+    signIn,
+    updateUser,
+    updatePassword,
+    signOut,
+    fetchAllCategoriesAndSubcategories,
+    fetchProductById,
+    fetchAllProductsForSubcategory,
+    fetchAllProductsForCategory,
+    fetchAllProducts,
+    insertImage,
+    insertProduct,
+    getUserDetails,
+    getCategoryObjectAndUpdateCategory,
+    deleteProduct,
+    placeOrder,
+    updateOrderStatus,
+    fetchOrdersForSeller,
+    deleteUser,
+    fetchMostSoldProducts,
+    fetchAllProductsForSeller,
+    getRandomProductFromDB,
+    fetchUserByName,
+    updateCategories,
+};
