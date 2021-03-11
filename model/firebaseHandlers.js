@@ -416,7 +416,6 @@ function fetchAllProductsInDB(uiCallback) {
         return codes.FETCH_FAILURE;
     })
 }
-
 // fetches all products for a category
 function fetchProductsForCategoryInDB(category, uiCallback) {
     let reference = db.collection('products');
@@ -451,7 +450,6 @@ function fetchProductsForSubCategoryFromDB(subcategory, uiCallback) {
         return codes.FETCH_FAILURE;
     })
 }
-
 // fetches category object for category name
 function fetchCategoryDataFromDB(category, callback) {
     let reference = db.collection('categories').doc(category);
@@ -532,7 +530,10 @@ function fetchImageFromDB(productID, callback) {
     })
 }
 
-export { codes, firebaseConfig, initializeDB, signupWithEmail, signInWithEmail, sendPasswordReset,
-    createUserObjectInDB, createSellerObjectInDB, getUserDetails, getSellerDetails, updateDBPassword,
+export { codes, initializeDB, signupWithEmail, signInWithEmail, sendPasswordReset,
+    createUserObjectInDB, createSellerObjectInDB, getUserDetailsFromDB, getSellerDetailsFromDB, updateDBPassword,
     updateDBEmail, insertProductInDB, insertCategoryOrSubcategoryInDB, fetchCategoriesAndSubcategoriesFromDB,
-    fetchProductsForSubCategoryFromDB }
+    fetchProductsForSubCategoryFromDB, insertOrderInDB, updateUserInDB, deleteProductFromDB, deleteUserFromDB, deleteSellerFromDB, deleteAllCategoriesFromDB,
+    fetchCategoriesAndSubcategoriesFromDB, fetchProductByIdInDB, fetchAllProductsInDB, fetchProductsForCategoryInDB,
+    fetchCategoryDataFromDB, fetchOrdersFromDB, fetchAllProductsForSellerInDB, fetchUserByNameFromDB, 
+    insertImageInDB, fetchImageFromDB }

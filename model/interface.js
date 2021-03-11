@@ -1,9 +1,11 @@
 // Interface functions implemented for front-end scripts
 
-import { codes, signupWithEmail, signInWithEmail, 
-    createUserObjectInDB, createSellerObjectInDB, getUserDetails, updateDBPassword, 
-    insertProductInDB, insertCategoryOrSubcategoryInDB, fetchCategoriesAndSubcategoriesFromDB,
-    fetchProductsForSubCategoryFromDB } from './firebaseHandlers.js';
+import { codes, signupWithEmail, signInWithEmail,
+    createUserObjectInDB, createSellerObjectInDB, getUserDetailsFromDB, getSellerDetailsFromDB, updateDBPassword, insertProductInDB, insertCategoryOrSubcategoryInDB, fetchCategoriesAndSubcategoriesFromDB,
+    fetchProductsForSubCategoryFromDB, insertOrderInDB, updateUserInDB, deleteProductFromDB, deleteUserFromDB, deleteSellerFromDB, deleteAllCategoriesFromDB,
+    fetchCategoriesAndSubcategoriesFromDB, fetchProductByIdInDB, fetchAllProductsInDB, fetchProductsForCategoryInDB,
+    fetchCategoryDataFromDB, fetchOrdersFromDB, fetchAllProductsForSellerInDB, fetchUserByNameFromDB, 
+    insertImageInDB } from './firebaseHandlers.js';
 
 import { Category } from './models.js';
 
