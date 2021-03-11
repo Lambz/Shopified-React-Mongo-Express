@@ -100,7 +100,7 @@ export default function Home({ navigation }) {
             } else {
                 image = images.productPlaceholder;
             }
-            console.log("image:", image);
+            // console.log("image:", image);
             return (
                 <View>
                     <Text style={styles.heading}>Random Product</Text>
