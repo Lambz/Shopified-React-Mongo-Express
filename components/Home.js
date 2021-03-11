@@ -7,19 +7,42 @@ import {
     TextInput,
     Button,
 } from "react-native";
-import { Header } from "react-native-elements";
+import { Header, SearchBar } from "react-native-elements";
 
 export default function Home({ navigation }) {
+    const [searchText, setSearchText] = useState("");
     return (
         <View>
             <Header
-                leftComponent={{ icon: "menu", color: "#fff" }}
-                centerComponent={{
-                    text: "MY TITLE",
-                    style: { color: "#fff" },
+                leftComponent={{
+                    text: "Shopified",
+                    style: {
+                        color: "#fff",
+                        fontWeight: "bold",
+                        fontSize: 20,
+                        width: "150%",
+                    },
                 }}
-                rightComponent={{ icon: "home", color: "#fff" }}
+                // centerComponent={{
+                //     text: "MY TITLE",
+                //     style: { color: "#fff" },
+                // }}
+                rightComponent={{ icon: "logout", color: "#fff" }}
             />
+            <View style={styles.searchView}>
+                <SearchBar
+                    placeholder="Search text"
+                    value={searchText}
+                    onChangeText={(text) => setSearchText(text)}
+                    lightTheme
+                    round
+                    editable={true}
+                    showCancel
+                    style={{ backgroundColor: "white" }}
+                    color="#fff"
+                />
+                <Button title="Search" />
+            </View>
         </View>
     );
 }
@@ -30,6 +53,10 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         paddingRight: 10,
         alignItems: "center",
+        backgroundColor: "white",
+    },
+    searchView: {
+        flexDirection: "row",
         backgroundColor: "white",
     },
 });
