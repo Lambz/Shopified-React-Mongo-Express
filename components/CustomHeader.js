@@ -9,13 +9,10 @@ import {
 } from "react-native";
 import { Header } from "react-native-elements";
 import SearchBar from "react-native-dynamic-search-bar";
-import { fetchMostSoldProducts } from "../model/interface";
+import SideMenu from "react-native-side-menu";
 
 export default function Home({ navigation }) {
     const [searchText, setSearchText] = useState("");
-    fetchMostSoldProducts((reply) => {
-        console.log(reply);
-    });
     return (
         <View>
             <Header
