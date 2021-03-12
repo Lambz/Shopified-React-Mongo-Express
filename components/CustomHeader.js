@@ -8,11 +8,13 @@ import {
     Button,
 } from "react-native";
 import { Header } from "react-native-elements";
-import SearchBar from "react-native-dynamic-search-bar";
-import SideMenu from "react-native-side-menu";
+import Search from "react-native-search-box";
 
-export default function Home({ navigation }) {
+export default function CustomHeader({ navigation }) {
     const [searchText, setSearchText] = useState("");
+    const rightComponentClicked = () => {
+        console.log("clicked");
+    };
     return (
         <View>
             <Header
@@ -27,19 +29,33 @@ export default function Home({ navigation }) {
                         marginLeft: 10,
                     },
                 }}
-                rightComponent={{ icon: "logout", color: "#fff" }}
+                rightComponent={{
+                    icon: "logout",
+                    color: "#fff",
+                    onPress: rightComponentClicked,
+                }}
             />
-            <SearchBar
-                fontColor="#c6c6c6"
-                iconColor="#c6c6c6"
-                shadowColor="#282828"
-                cancelIconColor="#c6c6c6"
-                placeholder="Search here"
-                onChangeText={(text) => setSearchText(text)}
-                onSearchPress={() => console.log("Search Icon is pressed")}
-                onClearPress={() => setSearchText("")}
-                style={{ marginTop: 10 }}
-            />
+            <View
+                style={{
+                    padding: 10,
+                    borderRadius: 8,
+                    shadowColor: "#282828",
+                    shadowRadius: 14,
+                    shadowOpacity: 0.1,
+                }}
+            >
+                <Search
+                    placeholder="Search here"
+                    value={searchText}
+                    onChangeText={(text) => setSearchText(text)}
+                    onSearch={(text) =>
+                        console.log("Search Icon is pressed", text)
+                    }
+                    onClearPress={() => setSearchText("")}
+                    backgroundColor="white"
+                    titleCancelColor="#c6c6c6"
+                />
+            </View>
         </View>
     );
 }
@@ -47,13 +63,5 @@ export default function Home({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingLeft: 10,
-        paddingRight: 10,
-        alignItems: "center",
-        backgroundColor: "white",
-    },
-    searchView: {
-        flexDirection: "row",
-        backgroundColor: "white",
     },
 });

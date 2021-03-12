@@ -42,6 +42,7 @@ var firebaseConfig = {
 
 var app = null;
 var db = null;
+let mCurrentUser = null;
 
 // Global initialization for firebase
 function initializeDB() {
@@ -68,7 +69,7 @@ function signupWithEmail(user, callback, uiCallback) {
         .then((userCredential) => {
             // Signed in
             let loggedUser = userCredential.user.uid;
-            sessionStorage.setItem("uid", loggedUser);
+            // sessionStorage.setItem("uid", loggedUser);
             return callback(user, uiCallback);
         })
         .catch((error) => {
@@ -94,22 +95,22 @@ function signInWithEmail(email, password, callback) {
         .then((userCredential) => {
             // Signed in
             let loggedUser = userCredential.user.uid;
-            sessionStorage.setItem("uid", loggedUser);
+            // sessionStorage.setItem("uid", loggedUser);
             // return callback(uiCallback);
             callback();
-        })
-        .catch((error) => {
-            throw new Error(
-                `Firebase Signin Error! Error code: ${error.code}\nError Message: ${error.message}`
-            );
         });
+    // .catch((error) => {
+    //     throw new Error(
+    //         `Firebase Signin Error! Error code: ${error.code}\nError Message: ${error.message}`
+    //     );
+    // });
     // [END auth_signin_password]
 }
 
 // Sign out function
 
 function signOutUserFromFirebase(uiCallback) {
-    sessionStorage.setItem("uid", null);
+    // sessionStorage.setItem("uid", null);
     firebase
         .auth()
         .signOut()
@@ -196,34 +197,48 @@ function createSellerObjectInDB(user, uiCallback) {
 // User Query functions
 
 function getUserDetailsFromDB(uiCallback) {
-    if (!sessionStorage.getItem("uid")) {
-        // throw new Error(`User Credentials Null! Error code: ${codes.NULL_VALUE}`);
-        uiCallback(codes.NOT_FOUND);
-        return;
-    }
+    // if (!sessionStorage.getItem("uid")) {
+    //     // throw new Error(`User Credentials Null! Error code: ${codes.NULL_VALUE}`);
+    //     uiCallback(codes.NOT_FOUND);
+    //     return;
+    // }
+    // console.log(firebase.auth().currentUser);
+    // console.log("mCurrentUser: ", mCurrentUser);
+    if (mCurrentUser == null) {
+        if (!firebase.auth().currentUser) {
+            uiCallback(codes.NOT_FOUND);
+            return;
+        }
 
-    let userDocument = db
-        .collection("users")
-        .doc(sessionStorage.getItem("uid"));
-    userDocument
-        .get()
-        .then((doc) => {
-            if (doc.exists) {
-                // uiCallback
-                console.log(doc.data());
-                uiCallback(User.convertToUser(doc.data()));
-                return doc.data();
-            } else {
-                uiCallback(codes.NOT_FOUND);
-                return codes.NOT_FOUND;
-            }
-        })
-        .catch((error) => {
-            console.log(
-                `Details fetching error! Error code: ${error.errorCode}\nError Messsage: ${error.errorMessage}`
-            );
-            return codes.FETCH_FAILURE;
-        });
+        let userDocument = db
+            .collection("users")
+            .doc(firebase.auth().currentUser.uid);
+        userDocument
+            .get()
+            .then((doc) => {
+                if (doc.exists) {
+                    // uiCallback
+                    // console.log(doc.data());
+                    mCurrentUser = User.convertToUser(doc.data());
+                    // console.log("updated user: ", mCurrentUser);
+                    // console.log("uiCallback: ", uiCallback);
+                    uiCallback(mCurrentUser);
+                    // return doc.data();
+                } else {
+                    uiCallback(codes.NOT_FOUND);
+                    // return codes.NOT_FOUND;
+                }
+            })
+            .catch((error) => {
+                console.log(
+                    `Details fetching error! Error code: ${error.errorCode}\nError Messsage: ${error.errorMessage}`
+                );
+                // return codes.FETCH_FAILURE;
+            });
+    } else {
+        // console.log("uiCallback: ", uiCallback);
+        uiCallback(mCurrentUser);
+    }
 }
 
 function getSellerDetailsFromDB(uiCallback) {

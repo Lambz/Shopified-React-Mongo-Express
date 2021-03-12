@@ -10,20 +10,20 @@ import {
     ScrollView,
     Image,
 } from "react-native";
-import { Header } from "react-native-elements";
-import SearchBar from "react-native-dynamic-search-bar";
 import {
     fetchMostSoldProducts,
     fetchAllProducts,
     getRandomProductFromDB,
+    signIn,
 } from "../model/interface";
 import Carousel, { ParallaxImage } from "react-native-snap-carousel";
 import { images } from "../Utils";
+import CustomHeader from "./CustomHeader";
+import * as Crypto from "expo-crypto";
 
 const { width: screenWidth } = Dimensions.get("window");
 
 export default function Home({ navigation }) {
-    const [searchText, setSearchText] = useState("");
     const [entries, setEntries] = useState([]);
     const [newArrivals, setNewArrivals] = useState([]);
     const [isLoading, setLoading] = useState(true);
@@ -34,26 +34,26 @@ export default function Home({ navigation }) {
     };
     if (isLoading) {
         fetchMostSoldProducts((products) => {
-            // console.log("reply:", reply);
             setEntries(products);
         });
-        // console.log(newestProducts);
         fetchAllProducts(newestProducts);
         getRandomProductFromDB((product) => {
-            // console.log("randomProduct: ", product);
             setRandomProduct(product);
         });
+        (async () => {
+            const digest = await Crypto.digestStringAsync(
+                Crypto.CryptoDigestAlgorithm.SHA512,
+                "test123"
+            );
+            //TODO: remove signIn
+            signIn("chaitanya.sanoriya@gmail.com", digest, true, (reply) => {
+                // console.log("login: ", reply);
+            });
+        })();
         setLoading(false);
     }
 
     const renderItem = ({ item, index }, parallaxProps) => {
-        // console.log(typeof item.illustration);
-        // let image;
-        // if (typeof item.illustration == "number") {
-        //     image = item.illustration;
-        // } else {
-        //     image = { uri: item.illustration };
-        // }
         let image = "";
         if (item.images.length > 0) {
             image = { uri: item.images[0] };
@@ -83,9 +83,6 @@ export default function Home({ navigation }) {
                 </View>
             </TouchableOpacity>
         );
-    };
-    const rightComponentClicked = () => {
-        console.log("clicked");
     };
 
     const itemClicked = (product) => {
@@ -142,36 +139,7 @@ export default function Home({ navigation }) {
     };
     return (
         <View style={styles.container}>
-            <Header
-                leftComponent={{ icon: "menu", color: "#fff" }}
-                centerComponent={{
-                    text: "Shopified",
-                    style: {
-                        color: "#fff",
-                        fontWeight: "bold",
-                        fontSize: 20,
-                        width: "150%",
-                        marginLeft: 10,
-                    },
-                }}
-                rightComponent={{
-                    icon: "logout",
-                    color: "#fff",
-                    onPress: rightComponentClicked,
-                }}
-            />
-            <SearchBar
-                fontColor="#c6c6c6"
-                iconColor="#c6c6c6"
-                shadowColor="#282828"
-                cancelIconColor="#c6c6c6"
-                placeholder="Search here"
-                value={searchText}
-                onChangeText={(text) => setSearchText(text)}
-                onSearchPress={() => console.log("Search Icon is pressed")}
-                onClearPress={() => setSearchText("")}
-                style={{ marginTop: 10 }}
-            />
+            <CustomHeader />
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View>
                     <Text style={styles.heading}>New Arrivals</Text>
