@@ -4,17 +4,13 @@ import {
     Text,
     View,
     TouchableOpacity,
-    Button,
     TextInput,
     Keyboard,
 } from "react-native";
 import { getUserDetails, updateUser } from "../model/interface";
 import CustomHeader from "./CustomHeader";
-import { FlatList } from "react-native-gesture-handler";
-import CartItem from "./CartItem";
 
 export default function UserTab({ navigation, route }) {
-    console.log(route);
     const [isLoading, setLoading] = useState(true);
     const [user, setUser] = useState(null);
     const [name, setName] = useState("");
@@ -43,11 +39,17 @@ export default function UserTab({ navigation, route }) {
         });
     };
     const changePasswordHandler = () => {};
+    const ordersHandler = () => {
+        route.params.stackMoveCallback("OldOrders");
+    };
     return (
         <View style={styles.container}>
             <CustomHeader />
             <View style={{ padding: 10 }}>
-                <TouchableOpacity style={styles.blueBtn}>
+                <TouchableOpacity
+                    style={styles.blueBtn}
+                    onPress={ordersHandler}
+                >
                     <Text style={styles.text}>View Your Orders</Text>
                 </TouchableOpacity>
                 <TextInput
