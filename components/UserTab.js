@@ -18,7 +18,6 @@ export default function UserTab({ navigation, route }) {
     const [address, setAddress] = useState("");
     if (isLoading) {
         getUserDetails(true, (user) => {
-            // console.log("return");
             setUser(user);
             setName(user.name);
             setPhoneNo(Number(user.phoneNo));
@@ -38,7 +37,9 @@ export default function UserTab({ navigation, route }) {
             return u;
         });
     };
-    const changePasswordHandler = () => {};
+    const changePasswordHandler = () => {
+        route.params.stackMoveCallback("ChangePassword");
+    };
     const ordersHandler = () => {
         route.params.stackMoveCallback("OldOrders");
     };
