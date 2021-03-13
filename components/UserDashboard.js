@@ -6,9 +6,13 @@ import SellerLogin from "./SellerLogin";
 import Home from "./Home";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Cart from "./Cart";
+import UserTab from "./UserTab";
 
 const Tabs = createBottomTabNavigator();
 export default function UserDashboard({ navigation }) {
+    const stackMoveCallback = (name, object) => {
+        navigation.navigate(name, object);
+    };
     return (
         <NavigationContainer independent={true}>
             <Tabs.Navigator>
@@ -36,6 +40,21 @@ export default function UserDashboard({ navigation }) {
                         tabBarIcon: ({ color, size }) => (
                             <MaterialCommunityIcons
                                 name="cart-outline"
+                                color={color}
+                                size={size}
+                            />
+                        ),
+                    }}
+                />
+                <Tabs.Screen
+                    name="UserTab"
+                    component={UserTab}
+                    initialParams={{ stackMoveCallback: stackMoveCallback }}
+                    options={{
+                        tabBarLabel: "User",
+                        tabBarIcon: ({ color, size }) => (
+                            <MaterialCommunityIcons
+                                name="account-circle-outline"
                                 color={color}
                                 size={size}
                             />

@@ -1,16 +1,9 @@
 import React, { useState } from "react";
-import {
-    StyleSheet,
-    Text,
-    View,
-    TouchableOpacity,
-    TextInput,
-    Button,
-} from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Header } from "react-native-elements";
 import Search from "react-native-search-box";
 
-export default function CustomHeader({ navigation }) {
+export default function CustomHeader() {
     const [searchText, setSearchText] = useState("");
     const rightComponentClicked = () => {
         console.log("clicked");
