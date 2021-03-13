@@ -84,7 +84,7 @@ class User {
         cartJSON.forEach((product) => {
             cart.push(Object.assign({}, product));
         });
-        console.log(cart);
+        // console.log(cart);
         return new User(
             json.name,
             json.address,
@@ -367,4 +367,5 @@ export {
     OrderStatus,
     Order,
     productConverter,
+    userConverter,
 };

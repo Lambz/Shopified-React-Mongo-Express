@@ -6,7 +6,13 @@ import "firebase/auth";
 import "firebase/firestore";
 
 // // imports
-import { User, Seller, Order, productConverter } from "./models.js";
+import {
+    User,
+    Seller,
+    Order,
+    productConverter,
+    userConverter,
+} from "./models.js";
 // import Order from "./models";
 
 // global variables
@@ -43,11 +49,21 @@ var firebaseConfig = {
 var app = null;
 var db = null;
 let mCurrentUser = null;
+let mUserUid = null;
 
 // Global initialization for firebase
 function initializeDB() {
-    app = firebase.initializeApp(firebaseConfig);
-    db = firebase.firestore(app);
+    // if (app == null || db == null) {
+    //     app = firebase.initializeApp(firebaseConfig);
+    //     db = firebase.firestore(app);
+    // }
+    if (!firebase.apps.length) {
+        app = firebase.initializeApp(firebaseConfig);
+        db = firebase.firestore(app);
+    } else {
+        app = firebase.app();
+        db = firebase.firestore(app);
+    }
     console.log("DB initialized!");
 }
 
@@ -68,7 +84,7 @@ function signupWithEmail(user, callback, uiCallback) {
         .createUserWithEmailAndPassword(user.email, user.password)
         .then((userCredential) => {
             // Signed in
-            let loggedUser = userCredential.user.uid;
+            mUserUid = userCredential.user.uid;
             // sessionStorage.setItem("uid", loggedUser);
             return callback(user, uiCallback);
         })
@@ -94,7 +110,7 @@ function signInWithEmail(email, password, callback) {
         .signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
             // Signed in
-            let loggedUser = userCredential.user.uid;
+            mUserUid = userCredential.user.uid;
             // sessionStorage.setItem("uid", loggedUser);
             // return callback(uiCallback);
             callback();
@@ -151,21 +167,20 @@ function createUserObjectInDB(user, uiCallback) {
         );
     }
     db.collection("users")
-        .doc(sessionStorage.getItem("uid"))
+        .doc(mUserUid)
         .withConverter(userConverter)
         .set(user)
         .then(() => {
             console.log("User Added!");
             uiCallback(codes.INSERTION_SUCCESS);
-            return codes.INSERTION_SUCCESS;
-        })
-        .catch((error) => {
-            console.log(
-                `User insertion error! Error code: ${error.errorCode}\nError Messsage: ${error.errorMessage}`
-            );
-            uiCallback(ccodes.INSERTION_FAILIURE);
-            return codes.INSERTION_FAILIURE;
         });
+    // .catch((error) => {
+    //     console.log(
+    //         `User insertion error! Error code: ${error.errorCode}\nError Messsage: ${error.errorMessage}`
+    //     );
+    //     uiCallback(ccodes.INSERTION_FAILIURE);
+    //     // return codes.INSERTION_FAILIURE;
+    // });
 }
 
 function createSellerObjectInDB(user, uiCallback) {
@@ -268,7 +283,7 @@ function getSellerDetailsFromDB(uiCallback) {
 
 function updateDBPassword(password, callback) {
     let user = firebase.auth().currentUser;
-    console.log(user);
+    // console.log(user);
     user.updatePassword(password).then(function () {
         callback();
         return codes.UPDATE_SUCCESS;

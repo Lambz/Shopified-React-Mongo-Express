@@ -86,7 +86,7 @@ export default function Home({ navigation }) {
     };
 
     const itemClicked = (product) => {
-        console.log(product.name);
+        // console.log(product.name);
     };
 
     const renderRandomProduct = () => {

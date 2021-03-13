@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { Alert } from "react-native";
 import {
     StyleSheet,
     Text,
@@ -12,14 +13,26 @@ import {
 } from "react-native";
 import { images } from "../Utils";
 
-export default function CartItem({ item }) {
+export default function CartItem({ item, updateQuantiy, removeProduct }) {
+    const [quantity, setQuanity] = useState(String(item.quantity));
     let image = "";
     if (item.images.length > 0) {
         image = { uri: item.images[0] };
     } else {
         image = images.productPlaceholder;
     }
-    console.log(item.name, item.quantity);
+    const updateQuantityHandler = () => {
+        if (quantity == "") {
+            Alert.alert("Invalid Quantity!", "Quantity can not be empty.", [
+                { text: "Okay", onPress: () => console.log("OK Pressed") },
+            ]);
+        } else {
+            updateQuantiy(item.id, quantity);
+        }
+    };
+    const deleteQuantityHandler = () => {
+        removeProduct(item.id);
+    };
     return (
         <View style={styles.container}>
             <View style={[styles.rows]}>
@@ -43,13 +56,14 @@ export default function CartItem({ item }) {
                             borderRadius: 4,
                             textAlign: "center",
                         }}
-                        value={String(item.quantity)}
+                        value={quantity}
+                        onChangeText={(text) => setQuanity(text)}
                     />
                 </View>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={updateQuantityHandler}>
                     <Text>Update Quantity</Text>
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={deleteQuantityHandler}>
                     <Text>Delete</Text>
                 </TouchableOpacity>
             </View>
