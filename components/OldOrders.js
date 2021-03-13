@@ -19,7 +19,7 @@ export default function OldOrders({ navigation, route }) {
     };
     return (
         <View style={styles.container}>
-            <CustomHeader />
+            {/* <CustomHeader /> */}
             <FlatList
                 style={styles.flatlist}
                 data={orders}

@@ -52,12 +52,14 @@ export default function UserTab({ navigation, route }) {
                 >
                     <Text style={styles.text}>View Your Orders</Text>
                 </TouchableOpacity>
+                <Text style={styles.head}>Name</Text>
                 <TextInput
                     value={name}
                     onChangeText={(text) => setName(text)}
                     style={styles.input}
                     placeholder="Name"
                 />
+                <Text style={styles.head}>Phone Number</Text>
                 <TextInput
                     value={String(phoneNo)}
                     onChangeText={(text) => setPhoneNo(Number(text))}
@@ -65,6 +67,7 @@ export default function UserTab({ navigation, route }) {
                     keyboardType="numeric"
                     placeholder="Phone Number"
                 />
+                <Text style={styles.head}>Address</Text>
                 <TextInput
                     value={address}
                     onChangeText={(text) => setAddress(text)}
@@ -136,6 +139,9 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: "#eeeeee",
         borderRadius: 4,
-        marginTop: 10,
+        marginTop: 5,
+    },
+    head: {
+        marginTop: 20,
     },
 });

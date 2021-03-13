@@ -47,7 +47,10 @@ export default function OrderDetails({ navigation, route }) {
     };
     return (
         <SafeAreaView style={styles.container}>
-            <CustomHeader />
+            {/* <CustomHeader /> */}
+            <Text style={{ fontSize: 28, marginLeft: 10, marginTop: 10 }}>
+                Products
+            </Text>
             <FlatList
                 style={styles.flatlist}
                 data={products}
