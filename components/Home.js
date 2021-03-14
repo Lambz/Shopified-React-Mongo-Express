@@ -15,6 +15,7 @@ import {
     fetchAllProducts,
     getRandomProductFromDB,
     signIn,
+    getUserDetails,
 } from "../model/interface";
 import Carousel, { ParallaxImage } from "react-native-snap-carousel";
 import { images } from "../Utils";
@@ -40,16 +41,17 @@ export default function Home({ navigation }) {
         getRandomProductFromDB((product) => {
             setRandomProduct(product);
         });
-        (async () => {
-            const digest = await Crypto.digestStringAsync(
-                Crypto.CryptoDigestAlgorithm.SHA512,
-                "test123"
-            );
-            //TODO: remove signIn
-            signIn("chaitanya.sanoriya@gmail.com", digest, true, (reply) => {
-                // console.log("login: ", reply);
-            });
-        })();
+        // (async () => {
+        //     const digest = await Crypto.digestStringAsync(
+        //         Crypto.CryptoDigestAlgorithm.SHA512,
+        //         "test123"
+        //     );
+        //     //TODO: remove signIn
+        //     // signIn("chaitanya.sanoriya@gmail.com", digest, true, (reply) => {
+        //     //     // console.log("login: ", reply);
+        //     // });
+        // })();
+        getUserDetails(true, () => {});
         setLoading(false);
     }
 

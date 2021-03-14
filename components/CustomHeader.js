@@ -1,17 +1,80 @@
+import { useFocusEffect } from "@react-navigation/native";
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Header } from "react-native-elements";
 import Search from "react-native-search-box";
+import { mCurrentUser, setCurrentUser, obs } from "../model/firebaseHandlers";
 
-export default function CustomHeader() {
+export default function CustomHeader({ login = false }) {
     const [searchText, setSearchText] = useState("");
+    const [icon, setIcon] = useState("login");
+    const [isLogin, setLogin] = useState(true);
+    const [isLoading, setLoading] = useState(true);
+    if (isLoading) {
+        obs.onChange((value) => {
+            if (value) {
+                setIcon("logout");
+                setLogin(false);
+            } else {
+                setIcon("login");
+                setLogin(true);
+            }
+        });
+        // console.log(obs);
+        // setCurrentUser(true);
+        // obs.setValue(true);
+        setLoading(false);
+    }
+    // console.log(mCurrentUser);
+    // if (isLoading) {
+    //     setInterval()
+    //     setLoading(false);
+    // }
+    // const check
+    // if (login) {
+    //     setIcon("logout");
+    //     setLogin(false);
+    // } else {
+    //     setIcon("login");
+    //     setLogin(true);
+    // }
+    // const [user, setUser] = useState(mCurrentUser);
+    // useFocusEffect(
+    //     React.useCallback(() => {
+    //         // // console.log("loading customer header");
+    //         // console.log("user: ", mCurrentUser);
+    //         if (mCurrentUser != null) {
+    //             setIcon("logout");
+    //             setLogin(false);
+    //         } else {
+    //             setIcon("login");
+    //             setLogin(true);
+    //         }
+    //         return () => {
+    //             // route.params.deRegisterFocus();
+    //         };
+    //     }, [])
+    // );
+    // setUser(mCurrentUser);
+    // console.log(user != null);
+    // if (user != null) {
+    //     setIcon("logout");
+    //     setLogin(false);
+    // } else {
+    //     setIcon("login");
+    //     setLogin(true);
+    // }
     const rightComponentClicked = () => {
-        console.log("clicked");
+        if (isLogin) {
+            console.log("login");
+        } else {
+            console.log("logout");
+        }
     };
     return (
         <View>
             <Header
-                leftComponent={{ icon: "menu", color: "#fff" }}
+                // leftComponent={{ icon: "menu", color: "#fff" }}
                 centerComponent={{
                     text: "Shopified",
                     style: {
@@ -19,11 +82,10 @@ export default function CustomHeader() {
                         fontWeight: "bold",
                         fontSize: 20,
                         width: "150%",
-                        marginLeft: 10,
                     },
                 }}
                 rightComponent={{
-                    icon: "logout",
+                    icon: icon,
                     color: "#fff",
                     onPress: rightComponentClicked,
                 }}

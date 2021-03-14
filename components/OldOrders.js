@@ -1,8 +1,7 @@
 import React, { useState, useRef } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, FlatList } from "react-native";
 import { getUserDetails } from "../model/interface";
 import CustomHeader from "./CustomHeader";
-import { FlatList } from "react-native-gesture-handler";
 import OrderItem from "./OrderItem";
 import { useFocusEffect } from "@react-navigation/native";
 

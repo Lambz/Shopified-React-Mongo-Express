@@ -6,48 +6,37 @@ import CustomHeader from "./CustomHeader";
 import { FlatList } from "react-native-gesture-handler";
 import CartItem from "./CartItem";
 import { RefreshControl } from "react-native";
+import { codes } from "../model/firebaseHandlers";
 
 export default function Cart({ navigation, route }) {
-    // console.log(route);
     const [user, setUser] = useState(null);
-    // const [isLoading, setLoading] = useState(true);
     const [cartItems, setCartItems] = useState([]);
     const [subTotal, setSubTotal] = useState(0);
     const userDetailsCallback = (user) => {
-        setUser(user);
-        setCartItems(user.cart);
-        calculateSubTotal(user.cart);
+        // console.log("user", user);
+        if (user != codes.NOT_FOUND) {
+            setUser(user);
+            setCartItems(user.cart);
+            calculateSubTotal(user.cart);
+        }
     };
     const calculateSubTotal = (products) => {
-        // console.log(products);
         let total = 0;
         products.forEach((item) => {
-            // console.log("quantity: ", item.quantity);
             total += item.price * item.quantity;
         });
         setSubTotal(total);
     };
     const changeUpdate = () => {
-        // setLoading(true);
         loadData();
     };
-    // if (isLoading) {
-    //     console.log("loading data");
-    //     route.params.setFocusFunction(changeUpdate);
-    //     getUserDetails(true, userDetailsCallback);
-    //     setLoading(false);
-    // }
 
     const loadData = () => {
-        // console.log("loading data");
         route.params.setFocusFunction(changeUpdate);
         getUserDetails(true, userDetailsCallback);
-        // setLoading(false);
     };
     useFocusEffect(
         React.useCallback(() => {
-            // console.log("setLoading");
-            // setLoading(true);
             loadData();
             return () => {
                 route.params.deRegisterFocus();
@@ -72,7 +61,6 @@ export default function Cart({ navigation, route }) {
     };
 
     const removeProduct = (id) => {
-        // console.log("productID:", id);
         setUser((ogUser) => {
             ogUser.cart = ogUser.cart.filter((item) => item.id != id);
             updateUser(true, ogUser, (reply) => {});
@@ -88,63 +76,83 @@ export default function Cart({ navigation, route }) {
         route.params.stackMoveCallback("ContactForBuy", cartItems);
     };
 
-    return (
-        <View style={styles.container}>
-            <CustomHeader />
-            <FlatList
-                style={styles.flatlist}
-                data={cartItems}
-                renderItem={({ item }) => (
-                    <CartItem
-                        item={item}
-                        updateQuantiy={updateQuantiy}
-                        removeProduct={removeProduct}
+    if (user) {
+        if (user.cart.length > 0) {
+            return (
+                <View style={styles.container}>
+                    <CustomHeader />
+                    <FlatList
+                        style={styles.flatlist}
+                        data={cartItems}
+                        renderItem={({ item }) => (
+                            <CartItem
+                                item={item}
+                                updateQuantiy={updateQuantiy}
+                                removeProduct={removeProduct}
+                            />
+                        )}
+                        keyExtractor={(item) => item.id}
+                        extraData={cartItems.length}
+                        refreshControl={
+                            <RefreshControl
+                                //  refreshing={this.state.refreshing}
+                                onRefresh={() => {
+                                    // setLoading(true);
+                                    loadData();
+                                }}
+                            />
+                        }
                     />
-                )}
-                keyExtractor={(item) => item.id}
-                extraData={cartItems.length}
-                refreshControl={
-                    <RefreshControl
-                        //  refreshing={this.state.refreshing}
-                        onRefresh={() => {
-                            // setLoading(true);
-                            loadData();
+                    <View
+                        style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            paddingLeft: 10,
+                            paddingRight: 10,
+                            alignContent: "center",
+                            borderTopColor: "#eeeeee",
+                            borderTopWidth: 1,
+                            paddingTop: 10,
                         }}
-                    />
-                }
-            />
-            <View
-                style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    paddingLeft: 10,
-                    paddingRight: 10,
-                    alignContent: "center",
-                    borderTopColor: "#eeeeee",
-                    borderTopWidth: 1,
-                    paddingTop: 10,
-                }}
-            >
-                <TouchableOpacity
-                    style={{
-                        backgroundColor: "#4089d6",
-                        justifyContent: "center",
-                        paddingLeft: 15,
-                        paddingRight: 15,
-                        borderRadius: 8,
-                    }}
-                    onPress={placeOrderHandler}
-                >
-                    <Text style={{ color: "white" }}>Place Order</Text>
-                </TouchableOpacity>
-                <View>
-                    <Text>Sub-total: {subTotal}</Text>
-                    <Text>HST: {(subTotal * 0.13).toFixed(2)}</Text>
-                    <Text>Total: {(subTotal * 1.13).toFixed(2)}</Text>
+                    >
+                        <TouchableOpacity
+                            style={{
+                                backgroundColor: "#4089d6",
+                                justifyContent: "center",
+                                paddingLeft: 15,
+                                paddingRight: 15,
+                                borderRadius: 8,
+                            }}
+                            onPress={placeOrderHandler}
+                        >
+                            <Text style={{ color: "white" }}>Place Order</Text>
+                        </TouchableOpacity>
+                        <View>
+                            <Text>Sub-total: {subTotal}</Text>
+                            <Text>HST: {(subTotal * 0.13).toFixed(2)}</Text>
+                            <Text>Total: {(subTotal * 1.13).toFixed(2)}</Text>
+                        </View>
+                    </View>
                 </View>
+            );
+        } else {
+            return (
+                <View style={styles.container}>
+                    <CustomHeader />
+                    <Text style={styles.text}>The Cart is empty!</Text>
+                </View>
+            );
+        }
+    } else {
+        return (
+            <View style={styles.container}>
+                <CustomHeader />
+                <Text style={styles.text}>
+                    You need to login to maintain cart!
+                </Text>
             </View>
-        </View>
-    );
+        );
+    }
 }
 
 const styles = StyleSheet.create({
@@ -152,5 +160,9 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "white",
         paddingBottom: 20,
+    },
+    text: {
+        fontSize: 24,
+        marginLeft: 10,
     },
 });
