@@ -171,7 +171,7 @@ function createUserObjectInDB(user, uiCallback) {
         .withConverter(userConverter)
         .set(user)
         .then(() => {
-            console.log("User Added!");
+            // console.log("User Added!");
             mCurrentUser = user;
             uiCallback(codes.INSERTION_SUCCESS);
         });
@@ -191,7 +191,7 @@ function createSellerObjectInDB(user, uiCallback) {
             `Seller Insertion Error! Error code: ${codes.NULL_OBJECT}`
         );
     }
-    console.log("here at function");
+    // console.log("here at function");
     db.collection("sellers")
         .doc(sessionStorage.getItem("uid"))
         .withConverter(sellerConverter)

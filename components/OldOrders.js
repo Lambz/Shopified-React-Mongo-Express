@@ -1,25 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { StyleSheet, View } from "react-native";
 import { getUserDetails } from "../model/interface";
 import CustomHeader from "./CustomHeader";
 import { FlatList } from "react-native-gesture-handler";
 import OrderItem from "./OrderItem";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function OldOrders({ navigation, route }) {
-    const [isLoading, setLoading] = useState(true);
     const [orders, setOrders] = useState([]);
-    if (isLoading) {
-        getUserDetails(true, (user) => {
-            setOrders(user.orders);
-        });
-        setLoading(false);
-    }
     const orderClicked = (order) => {
         navigation.navigate("OrderDetails", order);
     };
+
+    const loadData = () => {
+        getUserDetails(true, (user) => {
+            setOrders(user.orders);
+        });
+    };
+
+    useFocusEffect(
+        React.useCallback(() => {
+            loadData();
+            return () => {};
+        }, [])
+    );
     return (
         <View style={styles.container}>
-            {/* <CustomHeader /> */}
             <FlatList
                 style={styles.flatlist}
                 data={orders}
@@ -27,7 +33,7 @@ export default function OldOrders({ navigation, route }) {
                     <OrderItem item={item} orderClicked={orderClicked} />
                 )}
                 keyExtractor={(item) => item.id}
-                extraData={orders.length}
+                extraData={orders}
             />
         </View>
     );
