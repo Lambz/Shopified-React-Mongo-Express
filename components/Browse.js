@@ -7,18 +7,13 @@ export default function Browse() {
     const [categories, setCategories] = useState([{name: "Electronics", subcategories: ["TV", "Laptop", "Headphone"] },
     {name: "Clothes", subcategories: ["Men", "Women", "Children"] }]);
     const [isLoading, setIsLoading] = useState(true);
-    function getCategoriesObjects() {
+    if(isLoading) {
         fetchAllCategoriesAndSubcategories((data) => {
             setCategories(data);
             setIsLoading(false);
         })
     }
-    if(isLoading) {
-        getCategoriesObjects();
-    }
-    useEffect(() => {
-        
-    }, [])
+    
     return(
         <View style={styles.container}>
             <Text style={styles.headerText}>Browse</Text>

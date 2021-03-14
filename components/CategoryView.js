@@ -53,11 +53,7 @@ export default function CategoryView({item}) {
   function imageClicked(subcategoryIndex) {
     console.log("Click", subcategoryIndex);
   }
-  useEffect(() => {
-    
-    
-  });
-
+  
   const renderItem = ({item, index}, parallaxProps) => {
     return (
         <TouchableOpacity style={styles.item} onPress={() => imageClicked({index})}>
