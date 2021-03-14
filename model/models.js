@@ -1,6 +1,7 @@
 // Model classes for objects
 
 // global vars
+import { generateID } from "../Utils";
 
 const OrderStatus = Object.freeze({
     PENDING: 0,

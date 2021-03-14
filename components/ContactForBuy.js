@@ -3,16 +3,21 @@ import {
     StyleSheet,
     Text,
     View,
-    TouchableOpacity,
+    Image,
     TextInput,
-    Keyboard,
+    TouchableOpacity,
+    Alert,
 } from "react-native";
-import { getUserDetails, updateUser } from "../model/interface";
+import { codes } from "../model/firebaseHandlers";
+import { getUserDetails, placeOrder, updateUser } from "../model/interface";
+import { Order, Product } from "../model/models";
+import { images } from "../Utils";
 import CustomHeader from "./CustomHeader";
 
-export default function UserTab({ navigation, route }) {
-    const [isLoading, setLoading] = useState(true);
+export default function ContactForBuy({ navigation, route }) {
+    // console.log(route);
     const [user, setUser] = useState(null);
+    const [isLoading, setLoading] = useState(true);
     const [name, setName] = useState("");
     const [phoneNo, setPhoneNo] = useState("");
     const [address, setAddress] = useState("");
@@ -54,34 +59,42 @@ export default function UserTab({ navigation, route }) {
             ]);
         }
         if (noProb) {
-            setUser((u) => {
-                u.name = name;
-                u.phoneNo = phoneNo;
-                u.address = address;
-                updateUser(true, u, (reply) => {
-                    // console.log("reply: ", reply);
-                });
-                Keyboard.dismiss();
-                return u;
+            // console.log(noProb);
+            let order = new Order([], name, phoneNo, address);
+            route.params.forEach((product) => {
+                order.addProduct(product);
             });
+            let u = user;
+            u.cart = [];
+            u.addOrder(order);
+            updateUser(true, u, (reply) => {
+                if (reply == codes.INSERTION_SUCCESS) {
+                    placeOrder(order, () => {
+                        Alert.alert(
+                            "Order Placed!",
+                            "Your Order was successfully placed.",
+                            [
+                                {
+                                    text: "Okay",
+                                    onPress: () => {
+                                        setUser(u);
+                                        navigation.pop();
+                                    },
+                                },
+                            ]
+                        );
+                    });
+                }
+            });
+            // placeOrder(order, () => {
+            //     window.location.replace("orders.html");
+            // });
         }
-    };
-    const changePasswordHandler = () => {
-        route.params.stackMoveCallback("ChangePassword");
-    };
-    const ordersHandler = () => {
-        route.params.stackMoveCallback("OldOrders");
     };
     return (
         <View style={styles.container}>
-            <CustomHeader />
+            {/* <CustomHeader /> */}
             <View style={{ padding: 10 }}>
-                <TouchableOpacity
-                    style={styles.blueBtn}
-                    onPress={ordersHandler}
-                >
-                    <Text style={styles.text}>View Your Orders</Text>
-                </TouchableOpacity>
                 <Text style={styles.head}>Name</Text>
                 <TextInput
                     value={name}
@@ -108,39 +121,8 @@ export default function UserTab({ navigation, route }) {
                     onPress={saveHandler}
                     style={[styles.blueBtn, { marginTop: 20 }]}
                 >
-                    <Text style={styles.text}>Save</Text>
+                    <Text style={styles.text}>Place Order</Text>
                 </TouchableOpacity>
-                <View
-                    style={{
-                        flexDirection: "row",
-                        marginTop: 10,
-                        justifyContent: "space-between",
-                    }}
-                >
-                    <TouchableOpacity
-                        onPress={changePasswordHandler}
-                        style={[
-                            styles.blueBtn,
-                            {
-                                width: "48%",
-                            },
-                        ]}
-                    >
-                        <Text style={styles.text}>Change Password</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={[
-                            {
-                                backgroundColor: "#dd1111",
-                                borderRadius: 8,
-                                padding: 5,
-                                width: "48%",
-                            },
-                        ]}
-                    >
-                        <Text style={styles.text}>Delete Account</Text>
-                    </TouchableOpacity>
-                </View>
             </View>
         </View>
     );

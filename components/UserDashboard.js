@@ -1,6 +1,6 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, useFocusEffect } from "@react-navigation/native";
 import SellerSignUp from "./SellerSignUp";
 import SellerLogin from "./SellerLogin";
 import Home from "./Home";
@@ -12,6 +12,38 @@ const Tabs = createBottomTabNavigator();
 export default function UserDashboard({ navigation }) {
     const stackMoveCallback = (name, object) => {
         navigation.navigate(name, object);
+    };
+    // useFocusEffect(
+    //     React.useCallback(() => {
+    //         alert("Screen focused");
+    //         // Do something when the screen is focused
+    //         return () => {
+    //             alert("Screen was unfocused");
+    //             // Do something when the screen is unfocused
+    //             // Useful for cleanup functions
+    //             console.log("unfocus");
+    //         };
+    //     }, [])
+    // );
+    let focusFunction = null;
+    useFocusEffect(
+        React.useCallback(() => {
+            // console.log("change", focusFunction);
+            if (focusFunction != null) {
+                focusFunction();
+            }
+            return () => null;
+        }, [])
+    );
+
+    const setFocusFunction = (func) => {
+        // console.log("setting", func);
+        focusFunction = func;
+    };
+
+    const deRegisterFocus = () => {
+        // console.log("de-register");
+        focusFunction = null;
     };
     return (
         <NavigationContainer independent={true}>
@@ -35,6 +67,11 @@ export default function UserDashboard({ navigation }) {
                 <Tabs.Screen
                     name="Cart"
                     component={Cart}
+                    initialParams={{
+                        stackMoveCallback: stackMoveCallback,
+                        setFocusFunction: setFocusFunction,
+                        deRegisterFocus: deRegisterFocus,
+                    }}
                     options={{
                         tabBarLabel: "Cart",
                         tabBarIcon: ({ color, size }) => (

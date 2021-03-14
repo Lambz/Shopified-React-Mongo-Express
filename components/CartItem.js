@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { Alert } from "react-native";
 import {
     StyleSheet,
@@ -6,9 +6,6 @@ import {
     View,
     TouchableOpacity,
     TextInput,
-    Button,
-    Dimensions,
-    ScrollView,
     Image,
 } from "react-native";
 import { images } from "../Utils";
