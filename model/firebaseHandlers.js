@@ -53,17 +53,12 @@ let mUserUid = null;
 
 // Global initialization for firebase
 function initializeDB() {
-    // if (app == null || db == null) {
-    //     app = firebase.initializeApp(firebaseConfig);
-    //     db = firebase.firestore(app);
-    // }
     if (!firebase.apps.length) {
         app = firebase.initializeApp(firebaseConfig);
-        db = firebase.firestore(app);
     } else {
         app = firebase.app();
-        db = firebase.firestore(app);
     }
+    db = firebase.firestore(app);
     console.log("DB initialized!");
 }
 
@@ -635,7 +630,7 @@ function fetchUserByNameFromDB(name, callback) {
 
 function insertImageInDB(productID, index, fileData, callback) {
     // console.log("insertImageInDB");
-    var storageRef = firebase
+    let storageRef = firebase
         .storage()
         .ref()
         .child(`${generateID(30)}.jpg`);
@@ -647,10 +642,35 @@ function insertImageInDB(productID, index, fileData, callback) {
 }
 
 function fetchImageFromDB(productID, callback) {
-    var storageRef = firebase.storage().ref().child(`${productID}.jpg`);
+    let storageRef = firebase.storage().ref().child(`${productID}.jpg`);
     storageRef.getDownloadURL().then((url) => {
         callback(url);
     });
+}
+
+function fetchSubcategoryImagesFromDB(subcategories) {
+    let requests = [];
+    let images = [];
+    let ref = db.collection("products");
+    subcategories.forEach(subcategory => {
+        requests.push(ref.where("subcategory","==",subcategory).limit(1)
+        .withConverter(productConverter)
+        .get());
+    })
+    Promise.all(requests)
+    .then(responses => {
+        console.log(responses);
+        responses.forEach(response => {
+            // console.log(response.data);
+            images.push(response[0].data().images[0]);
+        })
+    })
+    .catch(error => {
+        console.log("error while fetching images");
+    })
+   
+    
+    
 }
 
 export {
@@ -684,4 +704,5 @@ export {
     fetchUserByNameFromDB,
     insertImageInDB,
     fetchImageFromDB,
+    fetchSubcategoryImagesFromDB
 };

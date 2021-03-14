@@ -356,6 +356,10 @@ function updateCategories(categories, uiCallback) {
     });
 }
 
+function fetchSubcategoriesImageForCategory(category) {
+    
+}
+
 export {
     signUp,
     signIn,
