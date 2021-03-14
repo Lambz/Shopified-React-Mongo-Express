@@ -28,30 +28,39 @@ function getImagesForCarousel(subcategoryArray, callback) {
         carouselArray.push({title: subcategory, illustration: defaultIllustrationUrl});
       }
     })
-    callback(carouselArray);
+    callback();
   });
 }
 
-function imageClicked(subcategoryIndex) {
-  console.log(subcategoryIndex);
-}
+
 
 
 export default function CategoryView({item}) {
   const [entries, setEntries] = useState([]);
   const carouselRef = useRef(null);
-
+  const [isLoading, setIsLoading] = useState(true);
   const goForward = () => {
     carouselRef.current.snapToNext();
   };
-  
+  if(isLoading) {
+    getImagesForCarousel(item.item.subcategories, isFetched);
+  }
+  function isFetched() {
+    setEntries(carouselArray);
+    setIsLoading(false);
+  }
+
+  function imageClicked(subcategoryIndex) {
+    console.log("Click", subcategoryIndex);
+  }
   useEffect(() => {
-    getImagesForCarousel(item.item.subcategories, setEntries);
-  }, []);
+    
+    
+  });
 
   const renderItem = ({item, index}, parallaxProps) => {
     return (
-        <TouchableOpacity style={styles.item} onPress={imageClicked({index})}>
+        <TouchableOpacity style={styles.item} onPress={() => imageClicked({index})}>
           <ParallaxImage
             source={{uri: item.illustration}}
             containerStyle={styles.imageContainer}

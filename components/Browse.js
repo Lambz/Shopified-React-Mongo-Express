@@ -6,15 +6,18 @@ import {fetchAllCategoriesAndSubcategories} from '../model/interface';
 export default function Browse() {
     const [categories, setCategories] = useState([{name: "Electronics", subcategories: ["TV", "Laptop", "Headphone"] },
     {name: "Clothes", subcategories: ["Men", "Women", "Children"] }]);
-
+    const [isLoading, setIsLoading] = useState(true);
     function getCategoriesObjects() {
         fetchAllCategoriesAndSubcategories((data) => {
             setCategories(data);
+            setIsLoading(false);
         })
     }
-   
-    useEffect(() => {
+    if(isLoading) {
         getCategoriesObjects();
+    }
+    useEffect(() => {
+        
     }, [])
     return(
         <View style={styles.container}>
