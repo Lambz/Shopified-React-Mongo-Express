@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { getUserDetails, updateUser } from "../model/interface";
+import { useFocusEffect } from "@react-navigation/native";
 import CustomHeader from "./CustomHeader";
 import { FlatList } from "react-native-gesture-handler";
 import CartItem from "./CartItem";
+import { RefreshControl } from "react-native";
 
-export default function Cart({ navigation }) {
+export default function Cart({ navigation, route }) {
+    // console.log(route);
     const [user, setUser] = useState(null);
-    const [isLoading, setLoading] = useState(true);
+    // const [isLoading, setLoading] = useState(true);
     const [cartItems, setCartItems] = useState([]);
     const [subTotal, setSubTotal] = useState(0);
     const userDetailsCallback = (user) => {
@@ -17,14 +20,41 @@ export default function Cart({ navigation }) {
     };
     const calculateSubTotal = (products) => {
         // console.log(products);
+        let total = 0;
         products.forEach((item) => {
-            setSubTotal(subTotal + item.price * item.quantity);
+            // console.log("quantity: ", item.quantity);
+            total += item.price * item.quantity;
         });
+        setSubTotal(total);
     };
-    if (isLoading) {
+    const changeUpdate = () => {
+        // setLoading(true);
+        loadData();
+    };
+    // if (isLoading) {
+    //     console.log("loading data");
+    //     route.params.setFocusFunction(changeUpdate);
+    //     getUserDetails(true, userDetailsCallback);
+    //     setLoading(false);
+    // }
+
+    const loadData = () => {
+        // console.log("loading data");
+        route.params.setFocusFunction(changeUpdate);
         getUserDetails(true, userDetailsCallback);
-        setLoading(false);
-    }
+        // setLoading(false);
+    };
+    useFocusEffect(
+        React.useCallback(() => {
+            // console.log("setLoading");
+            // setLoading(true);
+            loadData();
+            return () => {
+                route.params.deRegisterFocus();
+            };
+        }, [])
+    );
+
     const updateQuantiy = (id, quantity) => {
         setUser((ogUser) => {
             ogUser.cart.forEach((product) => {
@@ -53,6 +83,11 @@ export default function Cart({ navigation }) {
             return ogUser;
         });
     };
+
+    const placeOrderHandler = () => {
+        route.params.stackMoveCallback("ContactForBuy", cartItems);
+    };
+
     return (
         <View style={styles.container}>
             <CustomHeader />
@@ -68,6 +103,15 @@ export default function Cart({ navigation }) {
                 )}
                 keyExtractor={(item) => item.id}
                 extraData={cartItems.length}
+                refreshControl={
+                    <RefreshControl
+                        //  refreshing={this.state.refreshing}
+                        onRefresh={() => {
+                            // setLoading(true);
+                            loadData();
+                        }}
+                    />
+                }
             />
             <View
                 style={{
@@ -89,6 +133,7 @@ export default function Cart({ navigation }) {
                         paddingRight: 15,
                         borderRadius: 8,
                     }}
+                    onPress={placeOrderHandler}
                 >
                     <Text style={{ color: "white" }}>Place Order</Text>
                 </TouchableOpacity>

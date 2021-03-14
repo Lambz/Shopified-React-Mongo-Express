@@ -172,6 +172,7 @@ function createUserObjectInDB(user, uiCallback) {
         .set(user)
         .then(() => {
             console.log("User Added!");
+            mCurrentUser = user;
             uiCallback(codes.INSERTION_SUCCESS);
         });
     // .catch((error) => {
