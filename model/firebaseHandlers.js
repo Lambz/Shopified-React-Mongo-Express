@@ -12,6 +12,7 @@ import {
     Order,
     productConverter,
     userConverter,
+    categoryConverter
 } from "./models.js";
 // import Order from "./models";
 
@@ -649,7 +650,7 @@ function fetchImageFromDB(productID, callback) {
     });
 }
 
-function fetchSubcategoryImagesFromDB(subcategories) {
+function fetchSubcategoryImagesFromDB(subcategories, uiCallback) {
     let requests = [];
     let images = [];
     let ref = db.collection("products");
@@ -660,18 +661,19 @@ function fetchSubcategoryImagesFromDB(subcategories) {
     })
     Promise.all(requests)
     .then(responses => {
-        console.log(responses);
         responses.forEach(response => {
-            // console.log(response.data);
-            images.push(response[0].data().images[0]);
+            response.forEach((doc) => {
+                
+                let productObj = doc.data();
+                // console.log("response", productObj.images[0]);
+                images.push(productObj.images[0]);
+            })
         })
+        uiCallback(images);
     })
     .catch(error => {
         console.log("error while fetching images");
     })
-   
-    
-    
 }
 
 export {

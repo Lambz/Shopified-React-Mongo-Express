@@ -28,6 +28,7 @@ import {
     fetchAllProductsForSellerInDB,
     fetchUserByNameFromDB,
     insertImageInDB,
+    fetchSubcategoryImagesFromDB
 } from "./firebaseHandlers.js";
 
 import { Category } from "./models.js";
@@ -357,8 +358,8 @@ function updateCategories(categories, uiCallback) {
     });
 }
 
-function fetchSubcategoriesImageForCategory(category) {
-    
+function fetchSubcategoriesImage(subcategoryArray, uiCallback) {
+    fetchSubcategoryImagesFromDB(subcategoryArray, uiCallback);
 }
 
 export {
@@ -386,4 +387,5 @@ export {
     getRandomProductFromDB,
     fetchUserByName,
     updateCategories,
+    fetchSubcategoriesImage
 };

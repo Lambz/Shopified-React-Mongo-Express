@@ -369,4 +369,5 @@ export {
     Order,
     productConverter,
     userConverter,
+    categoryConverter
 };
