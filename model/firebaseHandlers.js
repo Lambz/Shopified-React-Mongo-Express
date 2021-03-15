@@ -159,7 +159,7 @@ function signOutUserFromFirebase(uiCallback) {
             console.log("Logged out!");
             obs.setValue(null);
             mUserUid = null;
-            uiCallback();
+            uiCallback(codes.LOGOUT_SUCCESS);
             return codes.LOGOUT_SUCCESS;
         })
         .catch((error) => {
@@ -287,22 +287,28 @@ function getUserDetailsFromDB(uiCallback) {
 }
 
 function getSellerDetailsFromDB(uiCallback) {
-    if (!sessionStorage.getItem("uid")) {
-        throw new Error(`Seller Email Null! Error code: ${codes.NULL_VALUE}`);
+    if (mCurrentUser != null) {
+        if (!firebase.auth().currentUser) {
+            throw new Error(
+                `Seller Email Null! Error code: ${codes.NULL_VALUE}`
+            );
+        }
+
+        let userDocument = db.collection("sellers").doc(mUserUid);
+        userDocument.get().then((doc) => {
+            if (doc.exists) {
+                obs.setValue(Seller.convertToSeller(doc.data()));
+                uiCallback(mCurrentUser);
+                return doc.data();
+            } else {
+                uiCallback(codes.NOT_FOUND);
+                return codes.NOT_FOUND;
+            }
+        });
+    } else {
+        uiCallback(mCurrentUser);
     }
 
-    let userDocument = db
-        .collection("sellers")
-        .doc(sessionStorage.getItem("uid"));
-    userDocument.get().then((doc) => {
-        if (doc.exists) {
-            uiCallback(Seller.convertToSeller(doc.data()));
-            return doc.data();
-        } else {
-            uiCallback(codes.NOT_FOUND);
-            return codes.NOT_FOUND;
-        }
-    });
     // .catch ((error) => {
     //     console.log(`Details fetching error! Error code: ${error.errorCode}\nError Messsage: ${error.errorMessage}`);
     //     return codes.FETCH_FAILURE;

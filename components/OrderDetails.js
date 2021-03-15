@@ -92,6 +92,9 @@ export default function OrderDetails({ navigation, route }) {
             );
         }
     };
+    const productClicked = (product) => {
+        console.log(product.name, " clicked!");
+    };
     return (
         <SafeAreaView style={styles.container}>
             {/* <CustomHeader /> */}
@@ -101,7 +104,9 @@ export default function OrderDetails({ navigation, route }) {
             <FlatList
                 style={styles.flatlist}
                 data={products}
-                renderItem={({ item }) => <ProductItem item={item} />}
+                renderItem={({ item }) => (
+                    <ProductItem item={item} productClicked={productClicked} />
+                )}
                 keyExtractor={(item) => item.id}
                 extraData={products.length}
             />
