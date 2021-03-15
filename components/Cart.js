@@ -83,6 +83,10 @@ export default function Cart({ navigation, route }) {
         signOut();
     };
 
+    const searchFunc = (text) => {
+        console.log(text);
+    };
+
     if (user) {
         if (user.cart.length > 0) {
             return (
@@ -90,6 +94,7 @@ export default function Cart({ navigation, route }) {
                     <CustomHeader
                         loginFunc={loginFunc}
                         logoutFunc={logoutFunc}
+                        searchFunc={searchFunc}
                     />
                     <FlatList
                         style={styles.flatlist}
@@ -151,6 +156,7 @@ export default function Cart({ navigation, route }) {
                     <CustomHeader
                         loginFunc={loginFunc}
                         logoutFunc={logoutFunc}
+                        searchFunc={searchFunc}
                     />
                     <Text style={styles.text}>The Cart is empty!</Text>
                 </View>
@@ -159,7 +165,11 @@ export default function Cart({ navigation, route }) {
     } else {
         return (
             <View style={styles.container}>
-                <CustomHeader loginFunc={loginFunc} logoutFunc={logoutFunc} />
+                <CustomHeader
+                    loginFunc={loginFunc}
+                    logoutFunc={logoutFunc}
+                    searchFunc={searchFunc}
+                />
                 <Text style={styles.text}>
                     You need to login to maintain cart!
                 </Text>

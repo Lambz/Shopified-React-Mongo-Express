@@ -79,10 +79,17 @@ export default function UserTab({ navigation, route }) {
     const logoutFunc = () => {
         signOut();
     };
+    const searchFunc = (text) => {
+        console.log(text);
+    };
     if (user) {
         return (
             <View style={styles.container}>
-                <CustomHeader loginFunc={loginFunc} logoutFunc={logoutFunc} />
+                <CustomHeader
+                    loginFunc={loginFunc}
+                    logoutFunc={logoutFunc}
+                    searchFunc={searchFunc}
+                />
                 <View style={{ padding: 10 }}>
                     <Text style={styles.head}>Name</Text>
                     <TextInput
@@ -155,7 +162,11 @@ export default function UserTab({ navigation, route }) {
     } else {
         return (
             <View style={styles.container}>
-                <CustomHeader loginFunc={loginFunc} logoutFunc={logoutFunc} />
+                <CustomHeader
+                    loginFunc={loginFunc}
+                    logoutFunc={logoutFunc}
+                    searchFunc={searchFunc}
+                />
                 <Text style={{ fontSize: 24, marginLeft: 10 }}>
                     You need to login for this action!
                 </Text>

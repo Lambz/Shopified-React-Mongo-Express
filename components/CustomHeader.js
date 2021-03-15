@@ -5,7 +5,7 @@ import { Header } from "react-native-elements";
 import Search from "react-native-search-box";
 import { mCurrentUser, setCurrentUser, obs } from "../model/firebaseHandlers";
 
-export default function CustomHeader({ loginFunc, logoutFunc }) {
+export default function CustomHeader({ loginFunc, logoutFunc, searchFunc }) {
     const [searchText, setSearchText] = useState("");
     const [icon, setIcon] = useState("login");
     const [isLogin, setLogin] = useState(true);
@@ -67,9 +67,7 @@ export default function CustomHeader({ loginFunc, logoutFunc }) {
                     placeholder="Search here"
                     value={searchText}
                     onChangeText={(text) => setSearchText(text)}
-                    onSearch={(text) =>
-                        console.log("Search Icon is pressed", text)
-                    }
+                    onSearch={(text) => searchFunc(text)}
                     onClearPress={() => setSearchText("")}
                     backgroundColor="white"
                     titleCancelColor="#c6c6c6"

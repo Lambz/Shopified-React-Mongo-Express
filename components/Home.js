@@ -90,6 +90,10 @@ export default function Home({ navigation, route }) {
         signOut();
     };
 
+    const searchFunc = (text) => {
+        console.log(text);
+    };
+
     const renderRandomProduct = () => {
         if (randomProduct) {
             let image = "";
@@ -140,7 +144,11 @@ export default function Home({ navigation, route }) {
     };
     return (
         <View style={styles.container}>
-            <CustomHeader loginFunc={loginFunc} logoutFunc={logoutFunc} />
+            <CustomHeader
+                loginFunc={loginFunc}
+                logoutFunc={logoutFunc}
+                searchFunc={searchFunc}
+            />
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View>
                     <Text style={styles.heading}>New Arrivals</Text>
