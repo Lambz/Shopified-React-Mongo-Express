@@ -12,7 +12,7 @@ import {
     Order,
     productConverter,
     userConverter,
-    categoryConverter
+    categoryConverter,
 } from "./models.js";
 // import Order from "./models";
 
@@ -51,6 +51,35 @@ var app = null;
 var db = null;
 let mCurrentUser = null;
 let mUserUid = null;
+
+var obs = new observable(mCurrentUser);
+
+function observable(v) {
+    this.value = v;
+
+    this.valueChangedCallback = null;
+
+    this.setValue = function (v) {
+        if (this.value != v) {
+            this.value = v;
+            this.raiseChangedEvent(v);
+        }
+    };
+
+    this.getValue = function () {
+        return this.value;
+    };
+
+    this.onChange = function (callback) {
+        this.valueChangedCallback = callback;
+    };
+
+    this.raiseChangedEvent = function (v) {
+        if (this.valueChangedCallback) {
+            this.valueChangedCallback(v);
+        }
+    };
+}
 
 // Global initialization for firebase
 function initializeDB() {
@@ -128,6 +157,8 @@ function signOutUserFromFirebase(uiCallback) {
         .signOut()
         .then(() => {
             console.log("Logged out!");
+            obs.setValue(null);
+            mUserUid = null;
             uiCallback();
             return codes.LOGOUT_SUCCESS;
         })
@@ -168,7 +199,8 @@ function createUserObjectInDB(user, uiCallback) {
         .set(user)
         .then(() => {
             // console.log("User Added!");
-            mCurrentUser = user;
+            // mCurrentUser = user;
+            obs.setValue(user);
             uiCallback(codes.INSERTION_SUCCESS);
         });
     // .catch((error) => {
@@ -231,7 +263,8 @@ function getUserDetailsFromDB(uiCallback) {
                 if (doc.exists) {
                     // uiCallback
                     // console.log(doc.data());
-                    mCurrentUser = User.convertToUser(doc.data());
+                    // mCurrentUser = User.convertToUser(doc.data());
+                    obs.setValue(User.convertToUser(doc.data()));
                     // console.log("updated user: ", mCurrentUser);
                     // console.log("uiCallback: ", uiCallback);
                     uiCallback(mCurrentUser);
@@ -654,26 +687,29 @@ function fetchSubcategoryImagesFromDB(subcategories, uiCallback) {
     let requests = [];
     let images = [];
     let ref = db.collection("products");
-    subcategories.forEach(subcategory => {
-        requests.push(ref.where("subcategory","==",subcategory).limit(1)
-        .withConverter(productConverter)
-        .get());
-    })
+    subcategories.forEach((subcategory) => {
+        requests.push(
+            ref
+                .where("subcategory", "==", subcategory)
+                .limit(1)
+                .withConverter(productConverter)
+                .get()
+        );
+    });
     Promise.all(requests)
-    .then(responses => {
-        responses.forEach(response => {
-            response.forEach((doc) => {
-                
-                let productObj = doc.data();
-                // console.log("response", productObj.images[0]);
-                images.push(productObj.images[0]);
-            })
+        .then((responses) => {
+            responses.forEach((response) => {
+                response.forEach((doc) => {
+                    let productObj = doc.data();
+                    // console.log("response", productObj.images[0]);
+                    images.push(productObj.images[0]);
+                });
+            });
+            uiCallback(images);
         })
-        uiCallback(images);
-    })
-    .catch(error => {
-        console.log("error while fetching images");
-    })
+        .catch((error) => {
+            console.log("error while fetching images");
+        });
 }
 
 export {
@@ -707,5 +743,7 @@ export {
     fetchUserByNameFromDB,
     insertImageInDB,
     fetchImageFromDB,
-    fetchSubcategoryImagesFromDB
+    fetchSubcategoryImagesFromDB,
+    obs,
+    signOutUserFromFirebase,
 };

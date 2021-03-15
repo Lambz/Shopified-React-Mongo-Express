@@ -53,6 +53,11 @@ export default function UserDashboard({ navigation }) {
                 <Tabs.Screen
                     name="Home"
                     component={Home}
+                    initialParams={{
+                        stackMoveCallback: stackMoveCallback,
+                        setFocusFunction: setFocusFunction,
+                        deRegisterFocus: deRegisterFocus,
+                    }}
                     options={{
                         tabBarLabel: "Home",
                         tabBarIcon: ({ color, size }) => (

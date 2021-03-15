@@ -1,17 +1,44 @@
+import { useFocusEffect } from "@react-navigation/native";
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Header } from "react-native-elements";
 import Search from "react-native-search-box";
+import { mCurrentUser, setCurrentUser, obs } from "../model/firebaseHandlers";
 
-export default function CustomHeader() {
+export default function CustomHeader({ loginFunc, logoutFunc, searchFunc }) {
     const [searchText, setSearchText] = useState("");
+    const [icon, setIcon] = useState("login");
+    const [isLogin, setLogin] = useState(true);
+    const changed = (value) => {
+        if (value) {
+            setIcon("logout");
+            setLogin(false);
+        } else {
+            setIcon("login");
+            setLogin(true);
+        }
+    };
+    useFocusEffect(
+        React.useCallback(() => {
+            obs.onChange(changed);
+            return () => {
+                // route.params.deRegisterFocus();
+            };
+        }, [])
+    );
     const rightComponentClicked = () => {
-        console.log("clicked");
+        if (isLogin) {
+            console.log("login");
+            loginFunc();
+        } else {
+            console.log("logout");
+            logoutFunc();
+        }
     };
     return (
         <View>
             <Header
-                leftComponent={{ icon: "menu", color: "#fff" }}
+                // leftComponent={{ icon: "menu", color: "#fff" }}
                 centerComponent={{
                     text: "Shopified",
                     style: {
@@ -19,11 +46,10 @@ export default function CustomHeader() {
                         fontWeight: "bold",
                         fontSize: 20,
                         width: "150%",
-                        marginLeft: 10,
                     },
                 }}
                 rightComponent={{
-                    icon: "logout",
+                    icon: icon,
                     color: "#fff",
                     onPress: rightComponentClicked,
                 }}
@@ -41,9 +67,7 @@ export default function CustomHeader() {
                     placeholder="Search here"
                     value={searchText}
                     onChangeText={(text) => setSearchText(text)}
-                    onSearch={(text) =>
-                        console.log("Search Icon is pressed", text)
-                    }
+                    onSearch={(text) => searchFunc(text)}
                     onClearPress={() => setSearchText("")}
                     backgroundColor="white"
                     titleCancelColor="#c6c6c6"
