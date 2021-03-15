@@ -27,7 +27,9 @@ const SignUpScreen = ({ navigation }) => {
     });
 
     const textInputChange = (val) => {
-        if (val.length !== 0) {
+        const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        let cond = re.test(String(val).toLowerCase());
+        if (cond) {
             setData({
                 ...data,
                 username: val,
@@ -202,7 +204,7 @@ const SignUpScreen = ({ navigation }) => {
                                 // colors={["#08d4c4", "#01ab9d"]}
                                 style={[
                                     styles.signIn,
-                                    { backgroundColor: "#01ab9d" },
+                                    { backgroundColor: "#4089d6" },
                                 ]}
                             >
                                 <Text
@@ -223,7 +225,7 @@ const SignUpScreen = ({ navigation }) => {
                             style={[
                                 styles.signIn,
                                 {
-                                    borderColor: "#009387",
+                                    borderColor: "#4089d6",
                                     borderWidth: 1,
                                     marginTop: 15,
                                 },
@@ -233,7 +235,7 @@ const SignUpScreen = ({ navigation }) => {
                                 style={[
                                     styles.textSign,
                                     {
-                                        color: "#009387",
+                                        color: "#4089d6",
                                     },
                                 ]}
                             >
@@ -252,7 +254,7 @@ export default SignUpScreen;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#009387",
+        backgroundColor: "#4089d6",
     },
     header: {
         flex: 1,

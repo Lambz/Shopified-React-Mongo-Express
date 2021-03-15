@@ -118,7 +118,6 @@ const SignInScreen = ({ navigation }) => {
                 Crypto.CryptoDigestAlgorithm.SHA512,
                 password
             );
-            // TODO: remove signIn
             signIn(userName, digest, true, (user) => {
                 if (user != codes.NOT_FOUND) {
                     navigation.navigate("UserDashboard");
@@ -241,7 +240,7 @@ const SignInScreen = ({ navigation }) => {
                 )}
 
                 <TouchableOpacity>
-                    <Text style={{ color: "#009387", marginTop: 15 }}>
+                    <Text style={{ color: "#4089d6", marginTop: 15 }}>
                         Forgot password?
                     </Text>
                 </TouchableOpacity>
@@ -256,7 +255,7 @@ const SignInScreen = ({ navigation }) => {
                             // colors={["#08d4c4", "#01ab9d"]}
                             style={[
                                 styles.signIn,
-                                { backgroundColor: "#01ab9d" },
+                                { backgroundColor: "#4089d6" },
                             ]}
                         >
                             <Text
@@ -277,7 +276,7 @@ const SignInScreen = ({ navigation }) => {
                         style={[
                             styles.signIn,
                             {
-                                borderColor: "#009387",
+                                borderColor: "#4089d6",
                                 borderWidth: 1,
                                 marginTop: 15,
                             },
@@ -287,7 +286,7 @@ const SignInScreen = ({ navigation }) => {
                             style={[
                                 styles.textSign,
                                 {
-                                    color: "#009387",
+                                    color: "#4089d6",
                                 },
                             ]}
                         >
@@ -305,7 +304,7 @@ export default SignInScreen;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#009387",
+        backgroundColor: "#4089d6",
     },
     header: {
         flex: 1,
@@ -327,7 +326,7 @@ const styles = StyleSheet.create({
         fontSize: 30,
     },
     text_footer: {
-        color: "#05375a",
+        color: "#4089d6",
         fontSize: 18,
     },
     action: {
@@ -348,7 +347,7 @@ const styles = StyleSheet.create({
         flex: 1,
         marginTop: Platform.OS === "ios" ? 0 : -12,
         paddingLeft: 10,
-        color: "#05375a",
+        color: "#4089d6",
     },
     errorMsg: {
         color: "#FF0000",
