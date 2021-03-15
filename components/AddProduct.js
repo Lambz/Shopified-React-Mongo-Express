@@ -5,16 +5,21 @@ import {
     Text,
     TouchableOpacity,
     RefreshControl,
+    Dimensions,
 } from "react-native";
 import { Header } from "react-native-elements";
 import { FlatList } from "react-native-gesture-handler";
 import { codes } from "../model/firebaseHandlers";
 import { getUserDetails } from "../model/interface";
 import { Product } from "../model/models";
+import Carousel, { ParallaxImage } from "react-native-snap-carousel";
+import {ImageBrowser} from "expo"
+const { width: screenWidth } = Dimensions.get("window");
 
-export default function SellerProducts({ navigation, route }) {
+export default function AddProuct({ navigation, route }) {
     const [isLoading, setLoading] = useState(true);
     const [products, setProducts] = useState([]);
+    const [images, setImages] = useState([]);
     if (isLoading) {
         getUserDetails(false, (seller) => {
             console.log("Seller: ", seller);
@@ -31,16 +36,37 @@ export default function SellerProducts({ navigation, route }) {
             }
         });
     };
-    const productClicked = (product) => {
-        console.log(product.name, " clicked!");
+
+    const addImageHandler = () => {};
+    const itemClicked = (index) => {};
+
+    const renderItem = ({ item, index }, parallaxProps) => {
+        let image = "";
+        if (item.images.length > 0) {
+            image = { uri: item.images[0] };
+        } else {
+            image = images.productPlaceholder;
+        }
+        return (
+            <TouchableOpacity
+                onPress={() => itemClicked(index)}
+                activeOpacity={0.6}
+                style={styles.item}
+            >
+                <ParallaxImage
+                    source={image}
+                    containerStyle={styles.imageContainer}
+                    style={styles.image}
+                    parallaxFactor={0.4}
+                    {...parallaxProps}
+                />
+            </TouchableOpacity>
+        );
     };
 
-    const addProductHandler = () => {
-        route.params.stackMoveCallback("AddProuct");
-    };
     return (
         <View style={styles.container}>
-            <Header
+            {/* <Header
                 centerComponent={{
                     text: "Shopified Seller",
                     style: {
@@ -55,33 +81,26 @@ export default function SellerProducts({ navigation, route }) {
                     color: "#fff",
                     onPress: signOutClicked,
                 }}
-            />
+            /> */}
             <View style={styles.head}>
-                <Text style={styles.headText}>Products</Text>
+                <Text style={styles.headText}>Product</Text>
                 <TouchableOpacity
-                    onPress={addProductHandler}
+                    onPress={addImageHandler}
                     style={styles.bluebtn}
                 >
                     <Text style={[styles.headText, { color: "white" }]}>
-                        Add Product
+                        Add Images
                     </Text>
                 </TouchableOpacity>
             </View>
-            <FlatList
-                style={styles.flatlist}
-                data={products}
-                renderItem={({ item }) => (
-                    <ProductItem item={item} productClicked={productClicked} />
-                )}
-                keyExtractor={(item) => item.id}
-                extraData={products.length}
-                refreshControl={
-                    <RefreshControl
-                        onRefresh={() => {
-                            loadData();
-                        }}
-                    />
-                }
+            <Carousel
+                style={styles.imageCarousel}
+                sliderWidth={screenWidth}
+                sliderHeight={screenWidth}
+                itemWidth={screenWidth - 60}
+                data={images}
+                renderItem={renderItem}
+                hasParallaxImages={true}
             />
         </View>
     );
@@ -112,5 +131,19 @@ const styles = StyleSheet.create({
         paddingBottom: 5,
         backgroundColor: "#4089d6",
         borderRadius: 4,
+    },
+    imageCarousel: {
+        flex: 1,
+    },
+    imageContainer: {
+        flex: 1,
+        marginBottom: Platform.select({ ios: 0, android: 1 }), // Prevent a random Android rendering issue
+        backgroundColor: "white",
+        borderTopLeftRadius: 8,
+        borderTopRightRadius: 8,
+    },
+    image: {
+        ...StyleSheet.absoluteFillObject,
+        resizeMode: "cover",
     },
 });
