@@ -157,6 +157,8 @@ function signOutUserFromFirebase(uiCallback) {
         .signOut()
         .then(() => {
             console.log("Logged out!");
+            obs.setValue(null);
+            mUserUid = null;
             uiCallback();
             return codes.LOGOUT_SUCCESS;
         })
@@ -742,4 +744,6 @@ export {
     insertImageInDB,
     fetchImageFromDB,
     fetchSubcategoryImagesFromDB,
+    obs,
+    signOutUserFromFirebase,
 };

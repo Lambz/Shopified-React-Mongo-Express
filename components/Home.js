@@ -16,6 +16,7 @@ import {
     getRandomProductFromDB,
     signIn,
     getUserDetails,
+    signOut,
 } from "../model/interface";
 import Carousel, { ParallaxImage } from "react-native-snap-carousel";
 import { images } from "../Utils";
@@ -24,7 +25,7 @@ import * as Crypto from "expo-crypto";
 
 const { width: screenWidth } = Dimensions.get("window");
 
-export default function Home({ navigation }) {
+export default function Home({ navigation, route }) {
     const [entries, setEntries] = useState([]);
     const [newArrivals, setNewArrivals] = useState([]);
     const [isLoading, setLoading] = useState(true);
@@ -41,16 +42,6 @@ export default function Home({ navigation }) {
         getRandomProductFromDB((product) => {
             setRandomProduct(product);
         });
-        // (async () => {
-        //     const digest = await Crypto.digestStringAsync(
-        //         Crypto.CryptoDigestAlgorithm.SHA512,
-        //         "test123"
-        //     );
-        //     //TODO: remove signIn
-        //     // signIn("chaitanya.sanoriya@gmail.com", digest, true, (reply) => {
-        //     //     // console.log("login: ", reply);
-        //     // });
-        // })();
         getUserDetails(true, () => {});
         setLoading(false);
     }
@@ -89,6 +80,14 @@ export default function Home({ navigation }) {
 
     const itemClicked = (product) => {
         // console.log(product.name);
+    };
+
+    const loginFunc = () => {
+        route.params.stackMoveCallback("SignInScreen");
+    };
+
+    const logoutFunc = () => {
+        signOut();
     };
 
     const renderRandomProduct = () => {
@@ -141,7 +140,7 @@ export default function Home({ navigation }) {
     };
     return (
         <View style={styles.container}>
-            <CustomHeader />
+            <CustomHeader loginFunc={loginFunc} logoutFunc={logoutFunc} />
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View>
                     <Text style={styles.heading}>New Arrivals</Text>

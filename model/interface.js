@@ -28,7 +28,8 @@ import {
     fetchAllProductsForSellerInDB,
     fetchUserByNameFromDB,
     insertImageInDB,
-    fetchSubcategoryImagesFromDB
+    fetchSubcategoryImagesFromDB,
+    signOutUserFromFirebase,
 } from "./firebaseHandlers.js";
 
 import { Category } from "./models.js";
@@ -387,5 +388,5 @@ export {
     getRandomProductFromDB,
     fetchUserByName,
     updateCategories,
-    fetchSubcategoriesImage
+    fetchSubcategoriesImage,
 };

@@ -72,78 +72,96 @@ export default function UserTab({ navigation, route }) {
     const ordersHandler = () => {
         route.params.stackMoveCallback("OldOrders");
     };
-    return (
-        <View style={styles.container}>
-            <CustomHeader />
-            <View style={{ padding: 10 }}>
-                <TouchableOpacity
-                    style={styles.blueBtn}
-                    onPress={ordersHandler}
-                >
-                    <Text style={styles.text}>View Your Orders</Text>
-                </TouchableOpacity>
-                <Text style={styles.head}>Name</Text>
-                <TextInput
-                    value={name}
-                    onChangeText={(text) => setName(text)}
-                    style={[styles.input, { borderColor: nameColor }]}
-                    placeholder="Name"
-                />
-                <Text style={styles.head}>Phone Number</Text>
-                <TextInput
-                    value={String(phoneNo)}
-                    onChangeText={(text) => setPhoneNo(Number(text))}
-                    style={[styles.input, { borderColor: phoneColor }]}
-                    keyboardType="numeric"
-                    placeholder="Phone Number"
-                />
-                <Text style={styles.head}>Address</Text>
-                <TextInput
-                    value={address}
-                    onChangeText={(text) => setAddress(text)}
-                    style={[styles.input, { borderColor: addressColor }]}
-                    placeholder="Address"
-                />
-                <TouchableOpacity
-                    onPress={saveHandler}
-                    style={[styles.blueBtn, { marginTop: 20 }]}
-                >
-                    <Text style={styles.text}>Save</Text>
-                </TouchableOpacity>
-                <View
-                    style={{
-                        flexDirection: "row",
-                        marginTop: 10,
-                        justifyContent: "space-between",
-                    }}
-                >
+    const loginFunc = () => {
+        route.params.stackMoveCallback("SignInScreen");
+    };
+
+    const logoutFunc = () => {
+        signOut();
+    };
+    if (user) {
+        return (
+            <View style={styles.container}>
+                <CustomHeader loginFunc={loginFunc} logoutFunc={logoutFunc} />
+                <View style={{ padding: 10 }}>
+                    <Text style={styles.head}>Name</Text>
+                    <TextInput
+                        value={name}
+                        onChangeText={(text) => setName(text)}
+                        style={[styles.input, { borderColor: nameColor }]}
+                        placeholder="Name"
+                    />
+                    <Text style={styles.head}>Phone Number</Text>
+                    <TextInput
+                        value={String(phoneNo)}
+                        onChangeText={(text) => setPhoneNo(Number(text))}
+                        style={[styles.input, { borderColor: phoneColor }]}
+                        keyboardType="numeric"
+                        placeholder="Phone Number"
+                    />
+                    <Text style={styles.head}>Address</Text>
+                    <TextInput
+                        value={address}
+                        onChangeText={(text) => setAddress(text)}
+                        style={[styles.input, { borderColor: addressColor }]}
+                        placeholder="Address"
+                    />
                     <TouchableOpacity
-                        onPress={changePasswordHandler}
-                        style={[
-                            styles.blueBtn,
-                            {
-                                width: "48%",
-                            },
-                        ]}
+                        onPress={saveHandler}
+                        style={[styles.blueBtn, { marginTop: 20 }]}
                     >
-                        <Text style={styles.text}>Change Password</Text>
+                        <Text style={styles.text}>Save</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity
-                        style={[
-                            {
-                                backgroundColor: "#dd1111",
-                                borderRadius: 8,
-                                padding: 5,
-                                width: "48%",
-                            },
-                        ]}
+                    <View
+                        style={{
+                            flexDirection: "row",
+                            marginTop: 10,
+                            justifyContent: "space-between",
+                        }}
                     >
-                        <Text style={styles.text}>Delete Account</Text>
+                        <TouchableOpacity
+                            onPress={changePasswordHandler}
+                            style={[
+                                styles.blueBtn,
+                                {
+                                    width: "48%",
+                                },
+                            ]}
+                        >
+                            <Text style={styles.text}>Change Password</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={[
+                                {
+                                    backgroundColor: "#dd1111",
+                                    borderRadius: 8,
+                                    padding: 5,
+                                    width: "48%",
+                                },
+                            ]}
+                        >
+                            <Text style={styles.text}>Delete Account</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <TouchableOpacity
+                        style={[styles.blueBtn, { marginTop: 10 }]}
+                        onPress={ordersHandler}
+                    >
+                        <Text style={styles.text}>View Your Orders</Text>
                     </TouchableOpacity>
                 </View>
             </View>
-        </View>
-    );
+        );
+    } else {
+        return (
+            <View style={styles.container}>
+                <CustomHeader loginFunc={loginFunc} logoutFunc={logoutFunc} />
+                <Text style={{ fontSize: 24, marginLeft: 10 }}>
+                    You need to login for this action!
+                </Text>
+            </View>
+        );
+    }
 }
 
 const styles = StyleSheet.create({

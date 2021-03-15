@@ -13,7 +13,6 @@ export default function Cart({ navigation, route }) {
     const [cartItems, setCartItems] = useState([]);
     const [subTotal, setSubTotal] = useState(0);
     const userDetailsCallback = (user) => {
-        // console.log("user", user);
         if (user != codes.NOT_FOUND) {
             setUser(user);
             setCartItems(user.cart);
@@ -76,11 +75,22 @@ export default function Cart({ navigation, route }) {
         route.params.stackMoveCallback("ContactForBuy", cartItems);
     };
 
+    const loginFunc = () => {
+        route.params.stackMoveCallback("SignInScreen");
+    };
+
+    const logoutFunc = () => {
+        signOut();
+    };
+
     if (user) {
         if (user.cart.length > 0) {
             return (
                 <View style={styles.container}>
-                    <CustomHeader />
+                    <CustomHeader
+                        loginFunc={loginFunc}
+                        logoutFunc={logoutFunc}
+                    />
                     <FlatList
                         style={styles.flatlist}
                         data={cartItems}
@@ -138,7 +148,10 @@ export default function Cart({ navigation, route }) {
         } else {
             return (
                 <View style={styles.container}>
-                    <CustomHeader />
+                    <CustomHeader
+                        loginFunc={loginFunc}
+                        logoutFunc={logoutFunc}
+                    />
                     <Text style={styles.text}>The Cart is empty!</Text>
                 </View>
             );
@@ -146,7 +159,7 @@ export default function Cart({ navigation, route }) {
     } else {
         return (
             <View style={styles.container}>
-                <CustomHeader />
+                <CustomHeader loginFunc={loginFunc} logoutFunc={logoutFunc} />
                 <Text style={styles.text}>
                     You need to login to maintain cart!
                 </Text>
