@@ -35,7 +35,7 @@ function getImagesForCarousel(subcategoryArray, callback) {
 
 
 
-export default function CategoryView({item}) {
+export default function CategoryView({item, clickCallback}) {
   const [entries, setEntries] = useState([]);
   const carouselRef = useRef(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -50,8 +50,9 @@ export default function CategoryView({item}) {
     setIsLoading(false);
   }
 
-  function imageClicked(subcategoryIndex) {
+  const imageClicked = (subcategoryIndex) => {
     console.log("Click", subcategoryIndex);
+    clickCallback();
   }
   
   const renderItem = ({item, index}, parallaxProps) => {

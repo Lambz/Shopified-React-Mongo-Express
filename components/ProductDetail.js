@@ -14,17 +14,8 @@ import DropDownPicker from 'react-native-dropdown-picker';
 
 const {width: screenWidth} = Dimensions.get('window');
 
-export default function ProductDetail() {
-    
-    let product = {name: "Fujifilm Instax Mini 11 Instant Camera - Blush Pink", description: `About this item
-    New Auto Exposure – No need to adjust exposure manually, ensuring the best photo no matter the lighting conditions
-    One Touch Selfie Mode – Pull to extend the lens and shoot instant photos as close as 35cm to 50cm, with no need for a separate lens attachment
-    Selfie Mirror – Built in mirror next to the lens to frame your face for perfect selfies
-    Custom Shutter Buttons– Add fun shutter accessories to personalize your camera beyond just colour
-    Take Instant Photos – Uses Fujifilm INSTAX Mini Instant color film – sold separately (5.3cm x 8.4cm)`,
-    category: "Camera, Photo & Video", subcategory: "Digital Cameras", seller: "Seller", estimatedTime: 3, quantity:100,
-    images: ['https://images-na.ssl-images-amazon.com/images/I/71E9fomEc6L._AC_SL1500_.jpg', 'https://images-na.ssl-images-amazon.com/images/I/61TssgG0oaL._AC_SL1500_.jpg'], price: "89.00"}
-    
+export default function ProductDetail({item}) {
+    const [product, setProduct] = useState(item.item);
     const [quantity, setQuantity] = useState('1');
 
 
