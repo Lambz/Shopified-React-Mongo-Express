@@ -15,6 +15,7 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
 
 import { useTheme } from "react-native-paper";
+import { codes } from "./model/firebaseHandlers";
 
 // import { AuthContext } from '../components/context';
 
@@ -35,7 +36,9 @@ const SignInScreen = ({ navigation }) => {
     // const { signIn } = React.useContext(AuthContext);
 
     const textInputChange = (val) => {
-        if (val.trim().length >= 4) {
+        const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        let cond = re.test(String(val).toLowerCase());
+        if (cond) {
             setData({
                 ...data,
                 username: val,
@@ -53,7 +56,7 @@ const SignInScreen = ({ navigation }) => {
     };
 
     const handlePasswordChange = (val) => {
-        if (val.trim().length >= 8) {
+        if (val.trim().length >= 6) {
             setData({
                 ...data,
                 password: val,
@@ -76,7 +79,9 @@ const SignInScreen = ({ navigation }) => {
     };
 
     const handleValidUser = (val) => {
-        if (val.trim().length >= 4) {
+        const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        let cond = re.test(String(val).toLowerCase());
+        if (cond) {
             setData({
                 ...data,
                 isValidUser: true,
@@ -108,6 +113,29 @@ const SignInScreen = ({ navigation }) => {
         //     return;
         // }
         // signIn(foundUser);
+        (async () => {
+            const digest = await Crypto.digestStringAsync(
+                Crypto.CryptoDigestAlgorithm.SHA512,
+                password
+            );
+            // TODO: remove signIn
+            signIn(userName, digest, true, (user) => {
+                if (user != codes.NOT_FOUND) {
+                    navigation.navigate("UserDashboard");
+                } else {
+                    Alert.alert(
+                        "Invalid Login!",
+                        "Email or password does not exist.",
+                        [
+                            {
+                                text: "Okay",
+                                onPress: () => console.log("OK Pressed"),
+                            },
+                        ]
+                    );
+                }
+            });
+        })();
     };
 
     return (
@@ -133,12 +161,12 @@ const SignInScreen = ({ navigation }) => {
                         },
                     ]}
                 >
-                    Username
+                    Email
                 </Text>
                 <View style={styles.action}>
                     <FontAwesome name="user-o" color={colors.text} size={20} />
                     <TextInput
-                        placeholder="Your Username"
+                        placeholder="Your Email"
                         placeholderTextColor="#666666"
                         style={[
                             styles.textInput,
@@ -165,7 +193,7 @@ const SignInScreen = ({ navigation }) => {
                 {data.isValidUser ? null : (
                     <Animatable.View animation="fadeInLeft" duration={500}>
                         <Text style={styles.errorMsg}>
-                            Username must be 4 characters long.
+                            Email should be in the format of abc@test.com
                         </Text>
                     </Animatable.View>
                 )}
@@ -207,7 +235,7 @@ const SignInScreen = ({ navigation }) => {
                 {data.isValidPassword ? null : (
                     <Animatable.View animation="fadeInLeft" duration={500}>
                         <Text style={styles.errorMsg}>
-                            Password must be 8 characters long.
+                            Password must be 6 characters long.
                         </Text>
                     </Animatable.View>
                 )}
