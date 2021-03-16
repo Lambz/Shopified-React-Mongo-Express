@@ -17,6 +17,8 @@ import Feather from "react-native-vector-icons/Feather";
 import { useTheme } from "react-native-paper";
 import { codes } from "./model/firebaseHandlers";
 
+import * as Crypto from "expo-crypto";
+
 // import { AuthContext } from '../components/context';
 
 // import { Users } from "./model/models";

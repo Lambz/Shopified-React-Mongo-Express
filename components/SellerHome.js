@@ -1,9 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Header } from "react-native-elements";
 import { codes } from "../model/firebaseHandlers";
+import * as Crypto from "expo-crypto";
+import { signIn } from "../model/interface";
 
 export default function SellerHome({ navigation, route }) {
+    const [isLoading, setLoading] = useState(true);
+    if (isLoading) {
+        // (async () => {
+        //     const digest = await Crypto.digestStringAsync(
+        //         Crypto.CryptoDigestAlgorithm.SHA512,
+        //         "test123"
+        //     );
+        //     signIn("c@gmail.com", digest, false, (user) => {
+        //         if (user != codes.NOT_FOUND) {
+        //             console.log("login success");
+        //         } else {
+        //             Alert.alert(
+        //                 "Invalid Login!",
+        //                 "Email or password does not exist.",
+        //                 [
+        //                     {
+        //                         text: "Okay",
+        //                         onPress: () => console.log("OK Pressed"),
+        //                     },
+        //                 ]
+        //             );
+        //         }
+        //     });
+        // })();
+        setLoading(false);
+    }
     const signOutClicked = () => {
         signOut((code) => {
             if (code == codes.LOGOUT_SUCCESS) {

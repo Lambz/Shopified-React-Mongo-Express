@@ -369,5 +369,6 @@ export {
     Order,
     productConverter,
     userConverter,
-    categoryConverter
+    categoryConverter,
+    sellerConverter,
 };
