@@ -11,14 +11,17 @@ import { FlatList } from "react-native-gesture-handler";
 import { codes } from "../model/firebaseHandlers";
 import { getUserDetails } from "../model/interface";
 import { Product } from "../model/models";
+import ProductItem from "./PoductItem";
 
 export default function SellerProducts({ navigation, route }) {
     const [isLoading, setLoading] = useState(true);
     const [products, setProducts] = useState([]);
+    const [seller, setSeller] = useState(null);
     if (isLoading) {
         getUserDetails(false, (seller) => {
-            console.log("Seller: ", seller);
+            // console.log("Seller: ", seller);
             if (seller != null && seller != codes.NOT_FOUND) {
+                setSeller(seller);
                 setProducts(seller.products);
             }
         });
@@ -32,11 +35,15 @@ export default function SellerProducts({ navigation, route }) {
         });
     };
     const productClicked = (product) => {
-        console.log(product.name, " clicked!");
+        // console.log(product.name, " clicked!");
+        route.params.stackMoveCallback("AddProuct", {
+            product: product,
+            seller: seller,
+        });
     };
 
     const addProductHandler = () => {
-        route.params.stackMoveCallback("AddProuct");
+        route.params.stackMoveCallback("AddProuct", { seller: seller });
     };
     return (
         <View style={styles.container}>
@@ -78,7 +85,7 @@ export default function SellerProducts({ navigation, route }) {
                 refreshControl={
                     <RefreshControl
                         onRefresh={() => {
-                            loadData();
+                            setLoading(true);
                         }}
                     />
                 }

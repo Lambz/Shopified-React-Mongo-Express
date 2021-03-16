@@ -197,7 +197,7 @@ function createUserObjectInDB(user, uiCallback) {
         );
     }
     db.collection("users")
-        .doc(mUserUid)
+        .doc(firebase.auth().currentUser.uid)
         .withConverter(userConverter)
         .set(user)
         .then(() => {
@@ -223,7 +223,7 @@ function createSellerObjectInDB(user, uiCallback) {
     }
     // console.log("here at function");
     db.collection("sellers")
-        .doc(mUserUid)
+        .doc(firebase.auth().currentUser.uid)
         .withConverter(sellerConverter)
         .set(user)
         .then(() => {
@@ -296,11 +296,12 @@ function getSellerDetailsFromDB(uiCallback) {
             );
         }
 
-        let userDocument = db.collection("sellers").doc(mUserUid);
+        let userDocument = db
+            .collection("sellers")
+            .doc(firebase.auth().currentUser.uid);
         userDocument.get().then((doc) => {
             if (doc.exists) {
                 obs.setValue(Seller.convertToSeller(doc.data()));
-                mUserUid = firebase.auth().currentUser.uid;
                 uiCallback(obs.getValue());
                 return doc.data();
             } else {

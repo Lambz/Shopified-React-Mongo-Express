@@ -29,6 +29,7 @@ import * as Crypto from "expo-crypto";
 const { width: screenWidth } = Dimensions.get("window");
 
 export default function AddProuct({ navigation, route }) {
+    // console.log(route.params);
     const [name, setName] = useState("");
     const [price, setPrice] = useState("");
     const [quantity, setQuantity] = useState("");
@@ -54,6 +55,8 @@ export default function AddProuct({ navigation, route }) {
     const [newProduct, setNewProduct] = useState(true);
     const [categoryData, setCategoryData] = useState(null);
     const [seller, setSeller] = useState(null);
+    const [defaultCategory, setDefaultCategory] = useState();
+    const [defaultSubCategory, setDefaultSubCategory] = useState();
 
     useEffect(() => {
         (async () => {
@@ -77,9 +80,7 @@ export default function AddProuct({ navigation, route }) {
                 "test123"
             );
             signIn("c@gmail.com", digest, false, (user) => {
-                // console.log(user);
                 if (user != codes.NOT_FOUND) {
-                    console.log("login success");
                     setSeller(user);
                 } else {
                     Alert.alert(
@@ -105,16 +106,37 @@ export default function AddProuct({ navigation, route }) {
         //         setProducts(seller.products);
         //     }
         // });
-        s();
+        // s();
+        setSeller(route.params.seller);
         fetchAllCategoriesAndSubcategories((categories) => {
-            // console.log(reply);
             setCategoryData(categories);
             let cate = [];
             categories.forEach((category) => {
                 cate.push({ label: category.name, value: category.name });
             });
             setCategories(cate);
+            let sc = categories[0].subcategories;
+            let data = [];
+            sc.forEach((s) => {
+                data.push({ label: s, value: s });
+            });
+            setSubCategories(data);
         });
+        if (route.params.product != null && route.params.product != undefined) {
+            let product = route.params.product;
+            setName(product.name);
+            setPrice(Number(product.price));
+            setQuantity(Number(product.quantity));
+            setDescription(product.description);
+            setEst(Number(product.estimatedTime));
+            setImages(product.images);
+            setTimeout(() => {
+                setDefaultCategory(product.category);
+                setSelectedCategory(product.category);
+                setDefaultSubCategory(product.subcategory);
+                setSelectedSubCategory(product.subcategory);
+            }, 1500);
+        }
         setLoading(false);
     }
 
@@ -125,9 +147,8 @@ export default function AddProuct({ navigation, route }) {
             aspect: [4, 3],
             quality: 1,
         });
-        // console.log(result);
         setImages((allImages) => {
-            return [result, ...allImages];
+            return [result.uri, ...allImages];
         });
     };
 
@@ -141,7 +162,6 @@ export default function AddProuct({ navigation, route }) {
             {
                 text: "Delete",
                 onPress: () => {
-                    // console.log(index, images);
                     setImages((allImages) => {
                         allImages.splice(index, 1);
                         return allImages;
@@ -153,13 +173,13 @@ export default function AddProuct({ navigation, route }) {
     };
 
     const renderItem = ({ item, index }, parallaxProps) => {
-        // console.log(item);
         let image = "";
         if (item != null) {
-            image = { uri: item.uri };
+            image = { uri: item };
         } else {
             image = images.productPlaceholder;
         }
+        // console.log(image);
         return (
             <TouchableOpacity
                 onPress={() => itemClicked(index)}
@@ -176,6 +196,21 @@ export default function AddProuct({ navigation, route }) {
                 />
             </TouchableOpacity>
         );
+    };
+
+    const productResult = (reply) => {
+        if (reply == codes.INSERTION_SUCCESS) {
+            Alert.alert(
+                "Product Added!",
+                "Your Product has been successfully added.",
+                [
+                    {
+                        text: "Okay",
+                        onPress: () => navigation.pop(),
+                    },
+                ]
+            );
+        }
     };
 
     const addHandler = () => {
@@ -230,7 +265,6 @@ export default function AddProuct({ navigation, route }) {
             setEstBorder("#f00");
         }
         if (noProb) {
-            console.log("mUserUid: ", mUserUid);
             let uid = mUserUid;
             let p;
             if (newProduct) {
@@ -248,7 +282,6 @@ export default function AddProuct({ navigation, route }) {
                     description
                 );
             } else {
-                console.log("else");
                 p = product;
                 p.name = name;
                 p.category = selectedCatgeory;
@@ -261,7 +294,6 @@ export default function AddProuct({ navigation, route }) {
                 p.quantity = quantity;
                 p.description = description;
             }
-            console.log(p);
             if (images.length > 0) {
                 let newImages = [];
                 let oldImages = [];
@@ -290,30 +322,14 @@ export default function AddProuct({ navigation, route }) {
                         blobs.push(response);
                         if (count == num) {
                             insertImage(p.id, blobs, (urls) => {
-                                console.log("imagereply: ", urls);
                                 p.images = oldImages.concat(urls);
-                                // console.log(p);
-                                insertProduct(p, seller, false, (reply) => {
-                                    if (reply == codes.INSERTION_SUCCESS) {
-                                        Alert.alert(
-                                            "Product Added!",
-                                            "Your Product has been successfully added.",
-                                            [
-                                                {
-                                                    text: "Okay",
-                                                    onPress: () =>
-                                                        navigation.pop(),
-                                                },
-                                            ]
-                                        );
-                                    }
-                                });
+                                insertProduct(p, seller, false, productResult);
                             });
                         }
                         num++;
                     };
                     for (let i = 0; i < num; i++) {
-                        uriToBlob(newImages[i].uri)
+                        uriToBlob(newImages[i])
                             .then(handleRequest)
                             .catch((reply) => {
                                 console.log(reply);
@@ -321,10 +337,10 @@ export default function AddProuct({ navigation, route }) {
                     }
                 } else {
                     p.images = oldImages;
-                    insertProduct(p, seller, newCategories, productResult);
+                    insertProduct(p, seller, false, productResult);
                 }
             } else {
-                insertProduct(p, seller, newCategories, productResult);
+                insertProduct(p, seller, false, productResult);
             }
         } else {
             Alert.alert("Inavlid Input!", "One or more inputs are invalid", [
@@ -337,10 +353,8 @@ export default function AddProuct({ navigation, route }) {
     };
 
     const updateSelectedCategory = (category) => {
-        // console.log(category);
         let sc = [];
         categoryData.forEach((c) => {
-            // console.log();
             if (c.name == category.value) {
                 sc = c.subcategories;
             }
@@ -350,7 +364,6 @@ export default function AddProuct({ navigation, route }) {
         sc.forEach((s) => {
             data.push({ label: s, value: s });
         });
-        // console.log(data);
         setSubCategories(data);
     };
 
@@ -406,6 +419,7 @@ export default function AddProuct({ navigation, route }) {
                     }}
                     onChangeItem={(item) => updateSelectedCategory(item)}
                     zIndex={10000}
+                    defaultValue={defaultCategory}
                 />
                 <Text style={{ marginTop: 20 }}>Sub-Category</Text>
                 <DropDownPicker
@@ -423,6 +437,7 @@ export default function AddProuct({ navigation, route }) {
                     }}
                     dropDownStyle={{ backgroundColor: "#fafafa", zIndex: 1 }}
                     onChangeItem={(item) => setSelectedSubCategory(item.value)}
+                    defaultValue={defaultSubCategory}
                 />
                 <Text style={{ marginTop: 20 }}>Price</Text>
                 <TextInput
