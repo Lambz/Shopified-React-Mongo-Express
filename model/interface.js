@@ -169,8 +169,10 @@ function fetchAllProducts(uiCallback) {
 
 function insertImage(product, images, uiCallback) {
     //  insert images
+    // console.log(images);
     var downloadedUrls = [];
     for (let i = 0; i < images.length; i++) {
+        console.log(i);
         insertImageInDB(product, i, images[i], (url) => {
             downloadedUrls.push(url);
             console.log(url);

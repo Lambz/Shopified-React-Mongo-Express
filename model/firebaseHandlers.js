@@ -4,6 +4,8 @@ import firebase from "firebase/app";
 // //Firebase services
 import "firebase/auth";
 import "firebase/firestore";
+import "firebase/storage";
+import { generateID } from "../Utils.js";
 
 // // imports
 import {
@@ -13,6 +15,7 @@ import {
     productConverter,
     userConverter,
     categoryConverter,
+    sellerConverter,
 } from "./models.js";
 // import Order from "./models";
 
@@ -214,14 +217,13 @@ function createUserObjectInDB(user, uiCallback) {
 
 function createSellerObjectInDB(user, uiCallback) {
     if (!user) {
-        console.log("user");
         throw new Error(
             `Seller Insertion Error! Error code: ${codes.NULL_OBJECT}`
         );
     }
     // console.log("here at function");
     db.collection("sellers")
-        .doc(sessionStorage.getItem("uid"))
+        .doc(mUserUid)
         .withConverter(sellerConverter)
         .set(user)
         .then(() => {
@@ -287,7 +289,7 @@ function getUserDetailsFromDB(uiCallback) {
 }
 
 function getSellerDetailsFromDB(uiCallback) {
-    if (mCurrentUser != null) {
+    if (mCurrentUser == null) {
         if (!firebase.auth().currentUser) {
             throw new Error(
                 `Seller Email Null! Error code: ${codes.NULL_VALUE}`
@@ -298,7 +300,8 @@ function getSellerDetailsFromDB(uiCallback) {
         userDocument.get().then((doc) => {
             if (doc.exists) {
                 obs.setValue(Seller.convertToSeller(doc.data()));
-                uiCallback(mCurrentUser);
+                mUserUid = firebase.auth().currentUser.uid;
+                uiCallback(obs.getValue());
                 return doc.data();
             } else {
                 uiCallback(codes.NOT_FOUND);
@@ -357,6 +360,7 @@ function insertProductInDB(product, seller, uiCallback) {
             `Product insertion error! Error code: ${codes.NULL_OBJECT}`
         );
     }
+    // console.log(product);
     db.collection(`products`)
         .doc(product.id)
         .withConverter(productConverter)
@@ -680,6 +684,12 @@ function insertImageInDB(productID, index, fileData, callback) {
         snapshot.ref.getDownloadURL().then((url) => callback(url));
         // callback(snapshot.errorCode.);
     });
+    // let storageRef = firebase.storage().ref().child(`asd.jpg`);
+    // storageRef.put(fileData).then((snapshot) => {
+    //     // console.log(snapshot);
+    //     snapshot.ref.getDownloadURL().then((url) => callback(url));
+    //     // callback(snapshot.errorCode.);
+    // });
 }
 
 function fetchImageFromDB(productID, callback) {
@@ -752,4 +762,5 @@ export {
     fetchSubcategoryImagesFromDB,
     obs,
     signOutUserFromFirebase,
+    mUserUid,
 };
