@@ -46,13 +46,16 @@ export default function CategoryView({item, clickCallback}) {
     getImagesForCarousel(item.item.subcategories, isFetched);
   }
   function isFetched() {
-    setEntries(carouselArray);
     setIsLoading(false);
   }
 
+  useEffect(() => {
+    setEntries(carouselArray);
+  }, []);
+
   const imageClicked = (subcategoryIndex) => {
     console.log("Click", subcategoryIndex);
-    clickCallback();
+    clickCallback(item.item.subcategories[subcategoryIndex]);
   }
   
   const renderItem = ({item, index}, parallaxProps) => {

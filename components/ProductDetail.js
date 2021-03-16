@@ -14,8 +14,8 @@ import DropDownPicker from 'react-native-dropdown-picker';
 
 const {width: screenWidth} = Dimensions.get('window');
 
-export default function ProductDetail({item}) {
-    const [product, setProduct] = useState(item.item);
+export default function ProductDetail({navigate, route}) {
+    const [product, setProduct] = useState(route.params);
     const [quantity, setQuantity] = useState('1');
 
 

@@ -10,7 +10,7 @@ export default function ProductView({item, clickCallback}) {
     const [product, setProduct] = useState(item.item);
     return(
         <View >
-            <TouchableOpacity style={styles.container} onPress={() => clickCallback({item})}>
+            <TouchableOpacity style={styles.container} onPress={() => clickCallback(product)}>
                 <View style={styles.imageView}>
                     <Image style={styles.image} source={{uri: product.images[0]}} />
                 </View>
