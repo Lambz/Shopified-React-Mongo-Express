@@ -2,7 +2,6 @@ import React, {useState, useEffect} from 'react';
 import { View, Text, FlatList, StyleSheet } from "react-native";
 import CategoryView from './CategoryView';
 import {fetchAllCategoriesAndSubcategories, fetchOrdersForSeller} from '../model/interface';
-import ProductsList from './ProductsList';
 
 export default function Browse({navigation}) {
     const [categories, setCategories] = useState([{name: "Electronics", subcategories: ["TV", "Laptop", "Headphone"] },
@@ -17,7 +16,7 @@ export default function Browse({navigation}) {
     
     const subcategoryClicked = (subcategory) => {
         console.log("subcategory fetched", subcategory);
-        // navigation.navigate("Products List", )
+        navigation.navigate("Products List", subcategory);
     }
 
     return(

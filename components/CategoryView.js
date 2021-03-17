@@ -1,5 +1,5 @@
 
-import React, {useRef, useState, useEffect} from 'react';
+import React, {useRef, useState} from 'react';
 import Carousel, {ParallaxImage} from 'react-native-snap-carousel';
 import {
   View,
@@ -15,17 +15,17 @@ import {fetchSubcategoriesImage} from '../model/interface';
 const defaultIllustrationUrl = 'https://i.imgur.com/UYiroysl.jpg';
 const {width: screenWidth} = Dimensions.get('window');
 
-let carouselArray = [];
+let carouselArray = {};
 
-function getImagesForCarousel(subcategoryArray, callback) {
-  carouselArray = [];
+function getImagesForCarousel(subcategoryArray, categoryName, callback) {
+  carouselArray[categoryName] = [];
   fetchSubcategoriesImage(subcategoryArray, (images) => {
     subcategoryArray.forEach((subcategory, index) => {
       if(images && images[index]) {
-        carouselArray.push({title: subcategory, illustration: images[index]});
+        carouselArray[categoryName].push({title: subcategory, illustration: images[index]});
       }
       else {
-        carouselArray.push({title: subcategory, illustration: defaultIllustrationUrl});
+        carouselArray[categoryName].push({title: subcategory, illustration: defaultIllustrationUrl});
       }
     })
     callback();
@@ -37,25 +37,24 @@ function getImagesForCarousel(subcategoryArray, callback) {
 
 export default function CategoryView({item, clickCallback}) {
   const [entries, setEntries] = useState([]);
-  const carouselRef = useRef(null);
+  const carouselRef = {};
+  let categoryName = item.item.name;
+  carouselRef[categoryName] = useRef(null);
   const [isLoading, setIsLoading] = useState(true);
   const goForward = () => {
-    carouselRef.current.snapToNext();
+    carouselRef[categoryName].current.snapToNext();
   };
   if(isLoading) {
-    getImagesForCarousel(item.item.subcategories, isFetched);
+    getImagesForCarousel(item.item.subcategories, item.item.name, isFetched);
   }
   function isFetched() {
     setIsLoading(false);
+    setEntries(carouselArray[categoryName]);
   }
-
-  useEffect(() => {
-    setEntries(carouselArray);
-  }, []);
 
   const imageClicked = (subcategoryIndex) => {
     console.log("Click", subcategoryIndex);
-    clickCallback(item.item.subcategories[subcategoryIndex]);
+    clickCallback(item.item.subcategories[subcategoryIndex.index]);
   }
   
   const renderItem = ({item, index}, parallaxProps) => {
@@ -79,10 +78,10 @@ export default function CategoryView({item, clickCallback}) {
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={goForward}>
-        <Text style={styles.categoryHeader}>{item.item.name}</Text>
+        <Text style={styles.categoryHeader}>{categoryName}</Text>
       </TouchableOpacity>
       <Carousel
-        ref={carouselRef}
+        ref={carouselRef[categoryName]}
         sliderWidth={screenWidth}
         sliderHeight={screenWidth}
         itemWidth={screenWidth - 60}
