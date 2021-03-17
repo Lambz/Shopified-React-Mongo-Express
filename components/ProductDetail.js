@@ -10,11 +10,11 @@ import {
   ScrollView
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
-
+import {getUserDetails, updateUser} from '../model/interface';
 
 const {width: screenWidth} = Dimensions.get('window');
 
-export default function ProductDetail({navigate, route}) {
+export default function ProductDetail({navigation, route}) {
     const [product, setProduct] = useState(route.params);
     const [quantity, setQuantity] = useState('1');
 
@@ -44,11 +44,18 @@ export default function ProductDetail({navigate, route}) {
     };
 
     const addToCartClicked = () => {
-        console.log(quantity);
+        let count = parseInt(quantity);
+        product.quantity = count;
+        getUserDetails(true, (user) => {
+            user.cart.push(product);
+            updateUser(true, user, () => {
+                navigation.goBack();
+            })
+        })
     };
 
     const xpressCheckoutClicked = () => {
-        console.log(quantity);
+        navigation.navigate("Contact For Buy", [product]);
     };
 
     return(
@@ -96,7 +103,11 @@ export default function ProductDetail({navigate, route}) {
             <TouchableOpacity style={styles.button} onPress={() => xpressCheckoutClicked()}>
                 <Text style={styles.buttonsText}>Xpress Checkout</Text>
             </TouchableOpacity>
-            <Text style={styles.seller}><Text style={styles.bold}>Sold By:</Text> {product.seller}</Text>
+            <View style={styles.details}>
+                <Text style={[styles.price, styles.bold]}>Product description</Text>
+                <Text style={styles.seller}>{product.description}</Text>
+                <Text style={styles.seller}><Text style={styles.bold}>Sold By:</Text> {product.seller}</Text>
+            </View>
             </ScrollView>
         </View>
     );
@@ -174,5 +185,8 @@ const styles = StyleSheet.create({
     dropdownView: {
         marginVertical: 10,
         zIndex: 10
+    },
+    details: {
+        marginVertical: 15
     }
 });

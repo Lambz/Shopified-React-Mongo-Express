@@ -1,12 +1,12 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState,} from 'react';
 import { View, Text, FlatList, StyleSheet } from "react-native";
 import CategoryView from './CategoryView';
-import {fetchAllCategoriesAndSubcategories, fetchOrdersForSeller} from '../model/interface';
+import {fetchAllCategoriesAndSubcategories} from '../model/interface';
 
 export default function Browse({navigation}) {
-    const [categories, setCategories] = useState([{name: "Electronics", subcategories: ["TV", "Laptop", "Headphone"] },
-    {name: "Clothes", subcategories: ["Men", "Women", "Children"] }]);
+    const [categories, setCategories] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    
     if(isLoading) {
         fetchAllCategoriesAndSubcategories((data) => {
             setCategories(data);
