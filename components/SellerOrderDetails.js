@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { SafeAreaView } from "react-native";
+import { Alert, SafeAreaView } from "react-native";
 import {
     StyleSheet,
     Text,
@@ -7,6 +7,8 @@ import {
     TouchableOpacity,
     FlatList,
 } from "react-native";
+import DropDownPicker from "react-native-dropdown-picker";
+import { codes } from "../model/firebaseHandlers";
 import {
     getUserDetails,
     updateOrderStatus,
@@ -17,7 +19,7 @@ import { formatDate, images, getOrderStatus } from "../Utils";
 import CustomHeader from "./CustomHeader";
 import ProductItem from "./PoductItem";
 
-export default function OrderDetails({ navigation, route }) {
+export default function SellerOrderDetails({ navigation, route }) {
     // console.log(route);
     const [order, setOrder] = useState(null);
     const [products, setProducts] = useState([]);
@@ -25,10 +27,19 @@ export default function OrderDetails({ navigation, route }) {
     const [isLoading, setLoading] = useState(true);
     const [deliveryDate, setDeliveryDate] = useState(null);
     const [user, setUser] = useState(null);
+    const [defaultStatus, setDefaultStatus] = useState();
+    const status = [
+        { label: "PENDING", value: 0 },
+        { label: "PROCESSING", value: 1 },
+        { label: "ON WAY", value: 2 },
+        { label: "DELIVERED", value: 3 },
+        { label: "CANCELLED", value: 4 },
+    ];
     if (isLoading) {
         let item = route.params;
         let max = 0;
         let total = 0;
+        setDefaultStatus(item.status);
         item.products.forEach((product) => {
             // setTotal(total + Number(product.price));
             total += Number(product.price) * Number(product.quantity);
@@ -46,25 +57,19 @@ export default function OrderDetails({ navigation, route }) {
         setLoading(false);
     }
 
-    const cancelHandler = () => {
-        if (
-            order.status == OrderStatus.PENDING ||
-            order.status == OrderStatus.PROCESSING
-        ) {
-            updateOrderStatus(order, OrderStatus.CANCELLED, () => {
-                // console.log("added");
-                let u = user;
-                u.orders.forEach((o) => {
-                    if (o.id == order.id) {
-                        o.status = OrderStatus.CANCELLED;
-                    }
-                });
-                updateUser(true, u, () => {
-                    setUser(u);
-                    setLoading(true);
-                });
-            });
-        }
+    const statusChangeHandler = () => {
+        updateOrderStatus(order, defaultStatus, (reply) => {
+            Alert.alert(
+                "Status updated",
+                "Status of the product has been successfully updated!",
+                [
+                    {
+                        text: "Okay",
+                        onPress: () => navigation.pop(),
+                    },
+                ]
+            );
+        });
     };
 
     const displayOrderDetails = () => {
@@ -77,16 +82,36 @@ export default function OrderDetails({ navigation, route }) {
                         borderTopColor: "#eeeeee",
                     }}
                 >
-                    <Text>Total: {(total * 1.13).toFixed(2)}</Text>
+                    <DropDownPicker
+                        items={status}
+                        containerStyle={{
+                            height: 40,
+                            marginTop: 5,
+                            zIndex: 1,
+                        }}
+                        style={{ backgroundColor: "#fafafa", zIndex: 9 }}
+                        itemStyle={{
+                            justifyContent: "flex-start",
+                            zIndex: 1,
+                        }}
+                        dropDownStyle={{
+                            backgroundColor: "#fafafa",
+                            zIndex: 1,
+                        }}
+                        onChangeItem={(item) => setDefaultStatus(item.value)}
+                        defaultValue={defaultStatus}
+                    />
+                    <Text style={{ marginTop: 10 }}>
+                        Total: {(total * 1.13).toFixed(2)}
+                    </Text>
                     <Text>Ordered Date: {formatDate(order.orderDate)}</Text>
                     <Text>Estimated Delivery: {formatDate(deliveryDate)}</Text>
                     <Text>Status: {getOrderStatus(order.status)}</Text>
-                    <Text>No. of Products: {order.products.length}</Text>
                     <TouchableOpacity
-                        onPress={cancelHandler}
+                        onPress={statusChangeHandler}
                         style={styles.blueBtn}
                     >
-                        <Text style={styles.text}>Cancel Order</Text>
+                        <Text style={styles.text}>Change Status</Text>
                     </TouchableOpacity>
                 </View>
             );
@@ -131,5 +156,6 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         padding: 5,
         margin: 10,
+        marginBottom: 20,
     },
 });

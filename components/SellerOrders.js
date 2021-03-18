@@ -12,26 +12,31 @@ import {
 import { FlatList } from "react-native-gesture-handler";
 import { Order } from "../model/models";
 import OrderItem from "./OrderItem";
+import { useFocusEffect } from "@react-navigation/core";
 
 export default function SellerOrders({ navigation, route }) {
-    const [isLoading, setLoading] = useState(true);
     const [orders, setOrders] = useState([]);
-    const [seller, setSeller] = useState(null);
-    if (isLoading) {
+
+    const loadData = () => {
         getUserDetails(false, (seller) => {
-            // console.log("Seller: ", seller);
             if (seller != null && seller != codes.NOT_FOUND) {
-                setSeller(seller);
-                // setOrders(seller.orders);
-                // console.log(seller.orders);
                 fetchOrdersForSeller(getUID(), true, (orders) => {
-                    console.log(orders.length);
                     setOrders(orders);
                 });
             }
         });
-        setLoading(false);
-    }
+        route.params.setFocusFunction(loadData);
+    };
+
+    useFocusEffect(
+        React.useCallback(() => {
+            loadData();
+            return () => {
+                route.params.deRegisterFocus();
+            };
+        }, [])
+    );
+
     const signOutClicked = () => {
         signOut((code) => {
             if (code == codes.LOGOUT_SUCCESS) {
@@ -40,7 +45,8 @@ export default function SellerOrders({ navigation, route }) {
         });
     };
     const orderClicked = (order) => {
-        navigation.navigate("OrderDetails", order);
+        // navigation.navigate("OrderDetails", order);
+        route.params.stackMoveCallback("SellerOrderDetails", order);
     };
     return (
         <View style={styles.container}>

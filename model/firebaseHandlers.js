@@ -284,6 +284,7 @@ function getUserDetailsFromDB(uiCallback) {
 
 function getSellerDetailsFromDB(uiCallback) {
     if (mCurrentUser == null) {
+        console.log(firebase.auth().currentUser);
         if (!firebase.auth().currentUser) {
             throw new Error(
                 `Seller Email Null! Error code: ${codes.NULL_VALUE}`

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer, useFocusEffect } from "@react-navigation/native";
 import SellerSignUp from "./SellerSignUp";
@@ -11,25 +11,10 @@ import UserTab from "./UserTab";
 import SellerHome from "./SellerHome";
 import SellerProducts from "./SellerProducts";
 import SellerOrders from "./SellerOrders";
-import { BackHandler } from "react-native";
 
 const Tabs = createBottomTabNavigator();
 export default function SellerDashboard({ navigation }) {
-    useFocusEffect(
-        React.useCallback(() => {
-            const onBackPress = () => {
-                return false;
-            };
-
-            BackHandler.addEventListener("hardwareBackPress", onBackPress);
-
-            return () =>
-                BackHandler.removeEventListener(
-                    "hardwareBackPress",
-                    onBackPress
-                );
-        }, [])
-    );
+    // const [focusFunction, setFocusFunction1] = useState(null);
     const stackMoveCallback = (name, object) => {
         navigation.navigate(name, object);
     };
@@ -41,6 +26,29 @@ export default function SellerDashboard({ navigation }) {
     const popToTop = () => {
         // console.log("called");
         navigation.popToTop();
+    };
+
+    let focusFunction = null;
+    useFocusEffect(
+        React.useCallback(() => {
+            // console.log("change", focusFunction);
+            if (focusFunction != null) {
+                focusFunction();
+            }
+            return () => null;
+        }, [])
+    );
+
+    const setFocusFunction = (func) => {
+        // console.log("setting", func);
+        // setFocusFunction1(func);
+        focusFunction = func;
+    };
+
+    const deRegisterFocus = () => {
+        // console.log("de-register");
+        // setFocusFunction1(null);
+        focusFunction = null;
     };
     // let focusFunction = null;
     // useFocusEffect(
@@ -105,6 +113,8 @@ export default function SellerDashboard({ navigation }) {
                     initialParams={{
                         stackMoveCallback: stackMoveCallback,
                         popToTop: popToTop,
+                        setFocusFunction: setFocusFunction,
+                        deRegisterFocus: deRegisterFocus,
                     }}
                     options={{
                         tabBarLabel: "Orders",

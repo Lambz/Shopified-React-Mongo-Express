@@ -12,7 +12,8 @@ import {
 import { codes } from "../model/firebaseHandlers";
 import { getUserDetails, signIn } from "../model/interface";
 import * as Crypto from "expo-crypto";
-import { StackActions } from "@react-navigation/routers";
+import { StackActions } from "@react-navigation/native";
+import { CommonActions } from "@react-navigation/native";
 
 export default function SellerLogin({ navigation }) {
     // console.log("SellerLogin:", navigator);
@@ -22,18 +23,18 @@ export default function SellerLogin({ navigation }) {
     const [passwordBorder, setPasswordBorder] = useState("#fff");
     const [isLoading, setLoading] = useState(true);
 
-    if (isLoading) {
-        getUserDetails(false, (seller) => {
-            if (seller != codes.NOT_FOUND) {
-                navigation.navigate("SellerDashboard");
-            }
-        });
-        setLoading(false);
-    }
+    // if (isLoading) {
+    //     getUserDetails(false, (seller) => {
+    //         if (seller != codes.NOT_FOUND) {
+    //             navigation.navigate("SellerDashboard");
+    //         }
+    //     });
+    //     setLoading(false);
+    // }
 
-    const resetAction = StackActions.reset({
+    const resetAction = CommonActions.reset({
         index: 0,
-        actions: [NavigationActions.navigate("SellerDashboard")],
+        routes: [{ name: "SellerDashboard" }],
     });
     const handleNavigation = () => {
         navigation.dispatch(resetAction);
@@ -57,16 +58,17 @@ export default function SellerLogin({ navigation }) {
                 );
                 signIn(email, digest, false, (seller) => {
                     if (seller != codes.NOT_FOUND) {
-                        Alert.alert(
-                            "Sign In Successful",
-                            "You have been successfully signed in",
-                            [
-                                {
-                                    text: "Okay",
-                                    onPress: () => handleNavigation(),
-                                },
-                            ]
-                        );
+                        // Alert.alert(
+                        //     "Sign In Successful",
+                        //     "You have been successfully signed in",
+                        //     [
+                        //         {
+                        //             text: "Okay",
+                        //             onPress: () => handleNavigation(),
+                        //         },
+                        //     ]
+                        // );
+                        handleNavigation();
                     } else {
                         Alert.alert(
                             "Invalid Login!",
