@@ -12,6 +12,7 @@ import {
 import { codes } from "../model/firebaseHandlers";
 import { getUserDetails, signIn } from "../model/interface";
 import * as Crypto from "expo-crypto";
+import { StackActions } from "@react-navigation/routers";
 
 export default function SellerLogin({ navigation }) {
     // console.log("SellerLogin:", navigator);
@@ -29,6 +30,15 @@ export default function SellerLogin({ navigation }) {
         });
         setLoading(false);
     }
+
+    const resetAction = StackActions.reset({
+        index: 0,
+        actions: [NavigationActions.navigate("SellerDashboard")],
+    });
+    const handleNavigation = () => {
+        navigation.dispatch(resetAction);
+    };
+
     const loginHandler = () => {
         let noProb = true;
         if (email == "") {
@@ -53,8 +63,7 @@ export default function SellerLogin({ navigation }) {
                             [
                                 {
                                     text: "Okay",
-                                    onPress: () =>
-                                        navigation.navigate("SellerDashboard"),
+                                    onPress: () => handleNavigation(),
                                 },
                             ]
                         );
