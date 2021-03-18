@@ -84,7 +84,7 @@ export default function Cart({ navigation, route }) {
     };
 
     const searchFunc = (text) => {
-        console.log(text);
+        route.params.stackMoveCallback("SignInScreen", { searchText: text });
     };
 
     if (user) {
