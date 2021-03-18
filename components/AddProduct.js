@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { codes, mUserUid } from "../model/firebaseHandlers";
 import {
+    deleteProduct,
     fetchAllCategoriesAndSubcategories,
     getUserDetails,
     insertImage,
@@ -57,7 +58,8 @@ export default function AddProuct({ navigation, route }) {
     const [seller, setSeller] = useState(null);
     const [defaultCategory, setDefaultCategory] = useState();
     const [defaultSubCategory, setDefaultSubCategory] = useState();
-
+    const [product, setProduct] = useState(null);
+    const [posButton, setPosButton] = useState("Add Product");
     useEffect(() => {
         (async () => {
             if (Platform.OS !== "web") {
@@ -108,8 +110,10 @@ export default function AddProuct({ navigation, route }) {
         // });
         // s();
         setSeller(route.params.seller);
+        let c;
         fetchAllCategoriesAndSubcategories((categories) => {
             setCategoryData(categories);
+            c = categories;
             let cate = [];
             categories.forEach((category) => {
                 cate.push({ label: category.name, value: category.name });
@@ -124,17 +128,37 @@ export default function AddProuct({ navigation, route }) {
         });
         if (route.params.product != null && route.params.product != undefined) {
             let product = route.params.product;
+            navigation.setOptions({ title: "Edit Product" });
+            setPosButton("Save");
+            setNewProduct(false);
             setName(product.name);
             setPrice(Number(product.price));
             setQuantity(Number(product.quantity));
             setDescription(product.description);
             setEst(Number(product.estimatedTime));
             setImages(product.images);
+            setProduct(product);
             setTimeout(() => {
                 setDefaultCategory(product.category);
                 setSelectedCategory(product.category);
+                // console.log(c);
+                for (let i = 0; i < c.length; i++) {
+                    // console.log(c[i].name, product.category);
+                    if (c[i].name == product.category) {
+                        let data = [];
+                        c[i].subcategories.forEach((s) => {
+                            data.push({ label: s, value: s });
+                        });
+                        setSubCategories(data);
+                        break;
+                    }
+                }
                 setDefaultSubCategory(product.subcategory);
                 setSelectedSubCategory(product.subcategory);
+                // setTimeout(() => {
+                //     setDefaultSubCategory(product.subcategory);
+                //     setSelectedSubCategory(product.subcategory);
+                // }, 1500);
             }, 1500);
         }
         setLoading(false);
@@ -214,27 +238,6 @@ export default function AddProuct({ navigation, route }) {
     };
 
     const addHandler = () => {
-        // let count = 1;
-        // const handleRequest = (response) => {
-        //     blobs.push(response);
-        //     console.log("got response");
-        //     if (count == num) {
-        //         insertImage(generateID(20), blobs, (reply) => {
-        //             console.log("imagereply: ", reply);
-        //         });
-        //     }
-        //     num++;
-        // };
-        // let blobs = [];
-        // let num = images.length;
-        // for (let i = 0; i < num; i++) {
-        //     let url =
-        //         Platform.OS === "android"
-        //             ? photo.images[i]
-        //             : photo.uri.replace("file://", "");
-        //     uriToBlob(images[i]).then(handleRequest);
-        // }
-
         let noProb = true;
         if (name == "") {
             noProb = false;
@@ -283,6 +286,7 @@ export default function AddProuct({ navigation, route }) {
                 );
             } else {
                 p = product;
+                console.log(product);
                 p.name = name;
                 p.category = selectedCatgeory;
                 p.subcategory = selectedSubCatgeory;
@@ -305,16 +309,6 @@ export default function AddProuct({ navigation, route }) {
                     }
                 });
                 if (newImages.length > 0) {
-                    // insertImage(p.id, newImages, function (urls) {
-                    //     p.images = oldImages.concat(urls);
-                    //     // console.log(p);
-                    //     insertProduct(
-                    //         p,
-                    //         seller,
-                    //         newCategories,
-                    //         productResult
-                    //     );
-                    // });
                     let blobs = [];
                     let num = newImages.length;
                     let count = 1;
@@ -365,6 +359,50 @@ export default function AddProuct({ navigation, route }) {
             data.push({ label: s, value: s });
         });
         setSubCategories(data);
+    };
+
+    const deleteHandler = () => {
+        Alert.alert(
+            "Delete Product",
+            "Are you sure you want to delete this product?",
+            [
+                {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel Pressed"),
+                },
+                {
+                    text: "Delete",
+                    onPress: () => {
+                        deleteProduct(product.id, seller, (reply) => {
+                            if (reply == codes.INSERTION_SUCCESS) {
+                                navigation.pop();
+                            }
+                        });
+                    },
+                    style: "destructive",
+                },
+            ]
+        );
+    };
+
+    const displayDeleteButton = () => {
+        if (!newProduct) {
+            return (
+                <TouchableOpacity
+                    onPress={deleteHandler}
+                    style={[styles.redbtn, { marginBottom: 40 }]}
+                >
+                    <Text
+                        style={[
+                            styles.text,
+                            { color: "white", textAlign: "center" },
+                        ]}
+                    >
+                        Delete Product
+                    </Text>
+                </TouchableOpacity>
+            );
+        }
     };
 
     return (
@@ -475,7 +513,7 @@ export default function AddProuct({ navigation, route }) {
                     onPress={addHandler}
                     style={[
                         styles.bluebtn,
-                        { marginTop: 20, marginBottom: 40 },
+                        { marginTop: 20, marginBottom: 20 },
                     ]}
                 >
                     <Text
@@ -484,9 +522,10 @@ export default function AddProuct({ navigation, route }) {
                             { color: "white", textAlign: "center" },
                         ]}
                     >
-                        Add Product
+                        {posButton}
                     </Text>
                 </TouchableOpacity>
+                {displayDeleteButton()}
             </View>
         </ScrollView>
     );
@@ -565,5 +604,13 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 4,
         marginTop: 5,
+    },
+    redbtn: {
+        paddingLeft: 10,
+        paddingRight: 10,
+        paddingTop: 5,
+        paddingBottom: 5,
+        backgroundColor: "#c70000",
+        borderRadius: 4,
     },
 });
