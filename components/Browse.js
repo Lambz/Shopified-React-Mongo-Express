@@ -4,7 +4,7 @@ import CategoryView from "./CategoryView";
 import { fetchAllCategoriesAndSubcategories } from "../model/interface";
 import CustomHeader from "./CustomHeader";
 
-export default function Browse({ navigation }) {
+export default function Browse({ navigation, route }) {
     const [categories, setCategories] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -17,7 +17,7 @@ export default function Browse({ navigation }) {
 
     const subcategoryClicked = (subcategory) => {
         console.log("subcategory fetched", subcategory);
-        route.params.stackMoveCallback("ProductsList", subcategory);
+        route.params.stackMoveCallback("Products List", subcategory);
         // navigation.navigate("Products List", subcategory);
     };
 
