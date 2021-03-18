@@ -30,6 +30,7 @@ import {
     insertImageInDB,
     fetchSubcategoryImagesFromDB,
     signOutUserFromFirebase,
+    getUIDFromFirebase,
 } from "./firebaseHandlers.js";
 
 import { Category } from "./models.js";
@@ -269,7 +270,7 @@ function updateOrderStatus(order, newStatus, uiCallback) {
 
 function fetchOrdersForSeller(sellerID, includeCancelled, uiCallback) {
     fetchOrdersFromDB(includeCancelled, (orders) => {
-        console.log(orders);
+        // console.log(orders);
         let orderArray = [];
         for (let i = 0; i < orders.length; i++) {
             let val = orders[i].products;
@@ -365,6 +366,10 @@ function fetchSubcategoriesImage(subcategoryArray, uiCallback) {
     fetchSubcategoryImagesFromDB(subcategoryArray, uiCallback);
 }
 
+function getUID() {
+    return getUIDFromFirebase();
+}
+
 export {
     signUp,
     signIn,
@@ -391,4 +396,5 @@ export {
     fetchUserByName,
     updateCategories,
     fetchSubcategoriesImage,
+    getUID,
 };

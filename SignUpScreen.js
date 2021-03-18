@@ -10,17 +10,26 @@ import {
     StyleSheet,
     ScrollView,
     StatusBar,
+    Alert,
 } from "react-native";
 import * as Animatable from "react-native-animatable";
 import LinearGradient from "react-native-linear-gradient";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
+import { FontAwesome5 } from "@expo/vector-icons";
+import * as Crypto from "expo-crypto";
+import { signUp } from "./model/interface";
+import { User } from "./model/models";
+import { codes } from "./model/firebaseHandlers";
 
 const SignUpScreen = ({ navigation }) => {
     const [data, setData] = React.useState({
+        name: "",
         username: "",
         password: "",
         confirm_password: "",
+        phoneNumber: "",
+        address: "",
         check_textInputChange: false,
         secureTextEntry: true,
         confirm_secureTextEntry: true,
@@ -58,6 +67,20 @@ const SignUpScreen = ({ navigation }) => {
         });
     };
 
+    const handlePhoneNumberChange = (val) => {
+        setData({
+            ...data,
+            phoneNumber: val,
+        });
+    };
+
+    const handleAddressChange = (val) => {
+        setData({
+            ...data,
+            address: val,
+        });
+    };
+
     const updateSecureTextEntry = () => {
         setData({
             ...data,
@@ -72,19 +95,101 @@ const SignUpScreen = ({ navigation }) => {
         });
     };
 
+    const handleNameChange = (val) => {
+        setData({
+            ...data,
+            name: val,
+        });
+    };
+
+    const signUpHandler = () => {
+        let noProb = true;
+        if (data.name == "") {
+            noProb = false;
+        }
+        if (data.username == "") {
+            noProb = false;
+        }
+        if (data.password == "") {
+            noProb = false;
+        }
+        if (data.confirm_password == "") {
+            noProb = false;
+        }
+        if (data.phoneNumber == "") {
+            noProb = false;
+        }
+        if (data.address == "") {
+            noProb = false;
+        }
+        if (data.password != data.confirm_password) {
+            Alert.alert(
+                "Password mismatch!",
+                "Password and confirm password do not match!",
+                [
+                    {
+                        text: "Okay",
+                        onPress: () => console.log("OK Pressed"),
+                    },
+                ]
+            );
+            noProb = false;
+        }
+        if (noProb) {
+            (async () => {
+                const digest = await Crypto.digestStringAsync(
+                    Crypto.CryptoDigestAlgorithm.SHA512,
+                    data.password
+                );
+                let user = new User(
+                    data.name,
+                    data.address,
+                    data.phoneNumber,
+                    data.username,
+                    digest
+                );
+                signUp(user, true, (reply) => {
+                    if (reply == codes.INSERTION_SUCCESS) {
+                        Alert.alert(
+                            "Registration Successful",
+                            "You have been successfully registered!",
+                            [
+                                {
+                                    text: "Okay",
+                                    onPress: () => navigation.popToTop(),
+                                },
+                            ]
+                        );
+                    }
+                });
+            })();
+        } else {
+            Alert.alert(
+                "Invalid Input!",
+                "One or more fields have invalid inputs",
+                [
+                    {
+                        text: "Okay",
+                        onPress: () => console.log("OK Pressed"),
+                    },
+                ]
+            );
+        }
+    };
+
     return (
         <View style={styles.container}>
-            <StatusBar backgroundColor="#009387" barStyle="light-content" />
+            {/* <StatusBar backgroundColor="#009387" barStyle="light-content" /> */}
             <View style={styles.header}>
                 <Text style={styles.text_header}>Register Now!</Text>
             </View>
             <Animatable.View animation="fadeInUpBig" style={styles.footer}>
                 <ScrollView>
-                    <Text style={styles.text_footer}>Username</Text>
+                    <Text style={styles.text_footer}>Email</Text>
                     <View style={styles.action}>
                         <FontAwesome name="user-o" color="#05375a" size={20} />
                         <TextInput
-                            placeholder="Your Username"
+                            placeholder="Your Email"
                             style={styles.textInput}
                             autoCapitalize="none"
                             onChangeText={(val) => textInputChange(val)}
@@ -99,12 +204,31 @@ const SignUpScreen = ({ navigation }) => {
                             </Animatable.View>
                         ) : null}
                     </View>
+                    <Text
+                        style={[
+                            styles.text_footer,
+                            {
+                                marginTop: 20,
+                            },
+                        ]}
+                    >
+                        Name
+                    </Text>
+                    <View style={styles.action}>
+                        <Feather name="user" color="#05375a" size={20} />
+                        <TextInput
+                            placeholder="Name"
+                            style={styles.textInput}
+                            autoCapitalize="none"
+                            onChangeText={(val) => handleNameChange(val)}
+                        />
+                    </View>
 
                     <Text
                         style={[
                             styles.text_footer,
                             {
-                                marginTop: 35,
+                                marginTop: 20,
                             },
                         ]}
                     >
@@ -138,7 +262,7 @@ const SignUpScreen = ({ navigation }) => {
                         style={[
                             styles.text_footer,
                             {
-                                marginTop: 35,
+                                marginTop: 20,
                             },
                         ]}
                     >
@@ -171,6 +295,50 @@ const SignUpScreen = ({ navigation }) => {
                             )}
                         </TouchableOpacity>
                     </View>
+                    <Text
+                        style={[
+                            styles.text_footer,
+                            {
+                                marginTop: 20,
+                            },
+                        ]}
+                    >
+                        Phone Number
+                    </Text>
+                    <View style={styles.action}>
+                        <Feather name="phone" color="#05375a" size={20} />
+                        <TextInput
+                            placeholder="Phone Number"
+                            style={styles.textInput}
+                            autoCapitalize="none"
+                            onChangeText={(val) => handlePhoneNumberChange(val)}
+                            keyboardType="phone-pad"
+                        />
+                    </View>
+                    <Text
+                        style={[
+                            styles.text_footer,
+                            {
+                                marginTop: 20,
+                            },
+                        ]}
+                    >
+                        Address
+                    </Text>
+                    <View style={styles.action}>
+                        <FontAwesome5
+                            name="address-card"
+                            size={20}
+                            color="#05375a"
+                        />
+                        <TextInput
+                            placeholder="Address"
+                            style={styles.textInput}
+                            autoCapitalize="none"
+                            onChangeText={(val) => handleAddressChange(val)}
+                            multiline={true}
+                        />
+                    </View>
                     <View style={styles.textPrivate}>
                         <Text style={styles.color_textPrivate}>
                             By signing up you agree to our
@@ -198,7 +366,7 @@ const SignUpScreen = ({ navigation }) => {
                     <View style={styles.button}>
                         <TouchableOpacity
                             style={styles.signIn}
-                            onPress={() => {}}
+                            onPress={signUpHandler}
                         >
                             <View
                                 // colors={["#08d4c4", "#01ab9d"]}
@@ -221,7 +389,7 @@ const SignUpScreen = ({ navigation }) => {
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                            onPress={() => navigation.goBack()}
+                            onPress={() => navigation.pop()}
                             style={[
                                 styles.signIn,
                                 {
@@ -257,10 +425,10 @@ const styles = StyleSheet.create({
         backgroundColor: "#4089d6",
     },
     header: {
-        flex: 1,
+        paddingTop: 50,
         justifyContent: "flex-end",
         paddingHorizontal: 20,
-        paddingBottom: 50,
+        paddingBottom: 40,
     },
     footer: {
         flex: Platform.OS === "ios" ? 3 : 5,
@@ -294,7 +462,7 @@ const styles = StyleSheet.create({
     },
     button: {
         alignItems: "center",
-        marginTop: 50,
+        marginTop: 20,
     },
     signIn: {
         width: "100%",

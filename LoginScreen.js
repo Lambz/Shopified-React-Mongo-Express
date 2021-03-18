@@ -122,7 +122,17 @@ const SignInScreen = ({ navigation }) => {
             );
             signIn(userName, digest, true, (user) => {
                 if (user != codes.NOT_FOUND) {
-                    navigation.navigate("UserDashboard");
+                    Alert.alert(
+                        "Sign In Successful",
+                        "You have been successfully signed in",
+                        [
+                            {
+                                text: "Okay",
+                                onPress: () => navigation.pop(),
+                            },
+                        ]
+                    );
+                    // navigation.pop();
                 } else {
                     Alert.alert(
                         "Invalid Login!",

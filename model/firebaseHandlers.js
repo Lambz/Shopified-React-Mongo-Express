@@ -729,6 +729,10 @@ function fetchSubcategoryImagesFromDB(subcategories, uiCallback) {
         });
 }
 
+function getUIDFromFirebase() {
+    return firebase.auth().currentUser.uid;
+}
+
 export {
     codes,
     initializeDB,
@@ -764,4 +768,5 @@ export {
     obs,
     signOutUserFromFirebase,
     mUserUid,
+    getUIDFromFirebase,
 };

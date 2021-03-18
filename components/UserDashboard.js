@@ -5,8 +5,10 @@ import SellerSignUp from "./SellerSignUp";
 import SellerLogin from "./SellerLogin";
 import Home from "./Home";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { Feather, Octicons } from "@expo/vector-icons";
 import Cart from "./Cart";
 import UserTab from "./UserTab";
+import Browse from "./Browse";
 
 const Tabs = createBottomTabNavigator();
 export default function UserDashboard({ navigation }) {
@@ -66,6 +68,21 @@ export default function UserDashboard({ navigation }) {
                                 color={color}
                                 size={size}
                             />
+                        ),
+                    }}
+                />
+                <Tabs.Screen
+                    name="Browse"
+                    component={Browse}
+                    initialParams={{
+                        stackMoveCallback: stackMoveCallback,
+                        setFocusFunction: setFocusFunction,
+                        deRegisterFocus: deRegisterFocus,
+                    }}
+                    options={{
+                        tabBarLabel: "Browse",
+                        tabBarIcon: ({ color, size }) => (
+                            <Feather name="box" size={size} color={color} />
                         ),
                     }}
                 />
