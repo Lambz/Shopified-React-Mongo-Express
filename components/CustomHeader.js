@@ -20,6 +20,13 @@ export default function CustomHeader({ loginFunc, logoutFunc, searchFunc }) {
     };
     useFocusEffect(
         React.useCallback(() => {
+            if (obs.getValue() != null && obs.getValue() != undefined) {
+                setIcon("logout");
+                setLogin(false);
+            } else {
+                setIcon("login");
+                setLogin(true);
+            }
             obs.onChange(changed);
             return () => {
                 // route.params.deRegisterFocus();

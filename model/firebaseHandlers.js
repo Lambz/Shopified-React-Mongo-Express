@@ -65,6 +65,7 @@ function observable(v) {
     this.setValue = function (v) {
         if (this.value != v) {
             this.value = v;
+            mCurrentUser = v;
             this.raiseChangedEvent(v);
         }
     };
@@ -259,29 +260,22 @@ function getUserDetailsFromDB(uiCallback) {
         let userDocument = db
             .collection("users")
             .doc(firebase.auth().currentUser.uid);
-        userDocument
-            .get()
-            .then((doc) => {
-                if (doc.exists) {
-                    // uiCallback
-                    // console.log(doc.data());
-                    // mCurrentUser = User.convertToUser(doc.data());
-                    obs.setValue(User.convertToUser(doc.data()));
-                    // console.log("updated user: ", mCurrentUser);
-                    // console.log("uiCallback: ", uiCallback);
-                    uiCallback(mCurrentUser);
-                    // return doc.data();
-                } else {
-                    uiCallback(codes.NOT_FOUND);
-                    // return codes.NOT_FOUND;
-                }
-            })
-            .catch((error) => {
-                console.log(
-                    `Details fetching error! Error code: ${error.errorCode}\nError Messsage: ${error.errorMessage}`
-                );
-                // return codes.FETCH_FAILURE;
-            });
+        userDocument.get().then((doc) => {
+            if (doc.exists) {
+                let user = User.convertToUser(doc.data());
+                obs.setValue(user);
+                uiCallback(mCurrentUser);
+                // return doc.data();
+            } else {
+                uiCallback(codes.NOT_FOUND);
+                // return codes.NOT_FOUND;
+            }
+        });
+        // .catch((error) => {
+        //     console.log(
+        //         `Details fetching error! Error code: ${error.errorCode}\nError Messsage: ${error.errorMessage}`
+        //     );
+        // });
     } else {
         // console.log("uiCallback: ", uiCallback);
         uiCallback(mCurrentUser);

@@ -18,6 +18,7 @@ import { useTheme } from "react-native-paper";
 import { codes } from "./model/firebaseHandlers";
 
 import * as Crypto from "expo-crypto";
+import { signIn } from "./model/interface";
 
 // import { AuthContext } from '../components/context';
 

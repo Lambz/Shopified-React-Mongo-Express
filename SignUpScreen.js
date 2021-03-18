@@ -146,7 +146,9 @@ const SignUpScreen = ({ navigation }) => {
                     data.address,
                     data.phoneNumber,
                     data.username,
-                    digest
+                    digest,
+                    [],
+                    []
                 );
                 signUp(user, true, (reply) => {
                     if (reply == codes.INSERTION_SUCCESS) {
