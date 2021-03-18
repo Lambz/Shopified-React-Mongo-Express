@@ -80,7 +80,7 @@ export default function UserTab({ navigation, route }) {
         signOut();
     };
     const searchFunc = (text) => {
-        route.params.stackMoveCallback("SignInScreen", { searchText: text });
+        route.params.stackMoveCallback("Products List", { searchText: text });
     };
     if (user) {
         return (
