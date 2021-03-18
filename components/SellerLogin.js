@@ -7,7 +7,11 @@ import {
     TouchableOpacity,
     TextInput,
     Button,
+    Alert,
 } from "react-native";
+import { codes } from "../model/firebaseHandlers";
+import { getUserDetails, signIn } from "../model/interface";
+import * as Crypto from "expo-crypto";
 
 export default function SellerLogin({ navigation }) {
     // console.log("SellerLogin:", navigator);
@@ -15,20 +19,60 @@ export default function SellerLogin({ navigation }) {
     const [password, setPassword] = useState("");
     const [emailBorder, setEmailBorder] = useState("#fff");
     const [passwordBorder, setPasswordBorder] = useState("#fff");
+    const [isLoading, setLoading] = useState(true);
+
+    if (isLoading) {
+        getUserDetails(false, (seller) => {
+            if (seller != codes.NOT_FOUND) {
+                navigation.navigate("SellerDashboard");
+            }
+        });
+        setLoading(false);
+    }
     const loginHandler = () => {
-        // let noProb = true;
-        // if (email == "") {
-        //     setEmailBorder("#f00");
-        //     noProb = false;
-        // }
-        // if (password == "" || password.length < 6) {
-        //     setPasswordBorder("#f00");
-        //     noProb = false;
-        // }
-        // if (noProb) {
-        //     //TODO: Login
-        // }
-        navigation.navigate("SellerDashboard");
+        let noProb = true;
+        if (email == "") {
+            setEmailBorder("#f00");
+            noProb = false;
+        }
+        if (password == "" || password.length < 6) {
+            setPasswordBorder("#f00");
+            noProb = false;
+        }
+        if (noProb) {
+            (async () => {
+                const digest = await Crypto.digestStringAsync(
+                    Crypto.CryptoDigestAlgorithm.SHA512,
+                    password
+                );
+                signIn(email, digest, false, (seller) => {
+                    if (seller != codes.NOT_FOUND) {
+                        Alert.alert(
+                            "Sign In Successful",
+                            "You have been successfully signed in",
+                            [
+                                {
+                                    text: "Okay",
+                                    onPress: () =>
+                                        navigation.navigate("SellerDashboard"),
+                                },
+                            ]
+                        );
+                    } else {
+                        Alert.alert(
+                            "Invalid Login!",
+                            "Email or password does not exist.",
+                            [
+                                {
+                                    text: "Okay",
+                                    onPress: () => console.log("OK Pressed"),
+                                },
+                            ]
+                        );
+                    }
+                });
+            })();
+        }
     };
     return (
         <View style={styles.container}>
@@ -45,6 +89,7 @@ export default function SellerLogin({ navigation }) {
                 onChangeText={(text) => {
                     setEmail(text);
                 }}
+                autoCapitalize="none"
                 value={email}
             />
             <Text style={[styles.margin, styles.text, styles.width]}>

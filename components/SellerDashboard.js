@@ -11,9 +11,25 @@ import UserTab from "./UserTab";
 import SellerHome from "./SellerHome";
 import SellerProducts from "./SellerProducts";
 import SellerOrders from "./SellerOrders";
+import { BackHandler } from "react-native";
 
 const Tabs = createBottomTabNavigator();
 export default function SellerDashboard({ navigation }) {
+    useFocusEffect(
+        React.useCallback(() => {
+            const onBackPress = () => {
+                return false;
+            };
+
+            BackHandler.addEventListener("hardwareBackPress", onBackPress);
+
+            return () =>
+                BackHandler.removeEventListener(
+                    "hardwareBackPress",
+                    onBackPress
+                );
+        }, [])
+    );
     const stackMoveCallback = (name, object) => {
         navigation.navigate(name, object);
     };
