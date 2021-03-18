@@ -13,6 +13,7 @@ export default function Cart({ navigation, route }) {
     const [cartItems, setCartItems] = useState([]);
     const [subTotal, setSubTotal] = useState(0);
     const userDetailsCallback = (user) => {
+        console.log("user", user);
         if (user != codes.NOT_FOUND) {
             setUser(user);
             setCartItems(user.cart);
@@ -84,7 +85,7 @@ export default function Cart({ navigation, route }) {
     };
 
     const searchFunc = (text) => {
-        console.log(text);
+        route.params.stackMoveCallback("SignInScreen", { searchText: text });
     };
 
     if (user) {

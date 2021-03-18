@@ -91,7 +91,7 @@ export default function Home({ navigation, route }) {
     };
 
     const searchFunc = (text) => {
-        console.log(text);
+        route.params.stackMoveCallback("SignInScreen", { searchText: text });
     };
 
     const renderRandomProduct = () => {
