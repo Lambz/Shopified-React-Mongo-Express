@@ -8,6 +8,7 @@ import {
     StyleSheet,
     StatusBar,
     Alert,
+    Button,
 } from "react-native";
 import * as Animatable from "react-native-animatable";
 // import LinearGradient from "react-native-linear-gradient";
@@ -98,24 +99,6 @@ const SignInScreen = ({ navigation }) => {
     };
 
     const loginHandle = (userName, password) => {
-        // const foundUser = Users.filter((item) => {
-        //     return userName == item.username && password == item.password;
-        // });
-        // if (data.username.length == 0 || data.password.length == 0) {
-        //     Alert.alert(
-        //         "Wrong Input!",
-        //         "Username or password field cannot be empty.",
-        //         [{ text: "Okay" }]
-        //     );
-        //     return;
-        // }
-        // if (foundUser.length == 0) {
-        //     Alert.alert("Invalid User!", "Username or password is incorrect.", [
-        //         { text: "Okay" },
-        //     ]);
-        //     return;
-        // }
-        // signIn(foundUser);
         (async () => {
             const digest = await Crypto.digestStringAsync(
                 Crypto.CryptoDigestAlgorithm.SHA512,
@@ -148,6 +131,10 @@ const SignInScreen = ({ navigation }) => {
                 }
             });
         })();
+    };
+
+    const sellerSignInHandler = () => {
+        navigation.navigate("SellerLogin");
     };
 
     return (
@@ -306,6 +293,21 @@ const SignInScreen = ({ navigation }) => {
                             Sign Up
                         </Text>
                     </TouchableOpacity>
+                </View>
+                <View
+                    style={{
+                        marginTop: 20,
+                        flexDirection: "row",
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}
+                >
+                    <Text style={{ fontSize: 20 }}>Are you seller?</Text>
+                    <Button
+                        onPress={sellerSignInHandler}
+                        style={{ fontSize: 20 }}
+                        title="Click Here"
+                    />
                 </View>
             </Animatable.View>
         </View>

@@ -40,7 +40,7 @@ export default function SellerOrders({ navigation, route }) {
         });
     };
     const orderClicked = (order) => {
-        console.log(order);
+        navigation.navigate("OrderDetails", order);
     };
     return (
         <View style={styles.container}>
