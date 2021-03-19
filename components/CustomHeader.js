@@ -71,7 +71,7 @@ export default function CustomHeader({ loginFunc, logoutFunc, searchFunc }) {
                 }}
             >
                 <Search
-                    placeholder="Search here"
+                    placeholder="Search Products"
                     value={searchText}
                     onChangeText={(text) => setSearchText(text)}
                     onSearch={(text) => searchFunc(text)}
