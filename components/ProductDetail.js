@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
         fontSize: 15
     },
     button: {
-        backgroundColor: 'darkslateblue',
+        backgroundColor: '#282828',
         padding: 15,
         justifyContent: "center",
         margin: 5,

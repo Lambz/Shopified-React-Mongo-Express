@@ -79,7 +79,7 @@ export default function Home({ navigation, route }) {
     };
 
     const itemClicked = (product) => {
-        // console.log(product.name);
+        route.params.stackMoveCallback("Product Detail", product);
     };
 
     const loginFunc = () => {
