@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import { getUserDetails, updateUser } from "../model/interface";
+import { getUserDetails, signOut, updateUser } from "../model/interface";
 import { useFocusEffect } from "@react-navigation/native";
 import CustomHeader from "./CustomHeader";
 import { FlatList } from "react-native-gesture-handler";
@@ -81,7 +81,9 @@ export default function Cart({ navigation, route }) {
     };
 
     const logoutFunc = () => {
-        signOut();
+        signOut(() => {
+            console.log("logged out");
+        });
     };
 
     const searchFunc = (text) => {

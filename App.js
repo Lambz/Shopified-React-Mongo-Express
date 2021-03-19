@@ -17,28 +17,39 @@ import ChangePassword from "./components/ChangePassword";
 import SignInScreen from "./LoginScreen";
 import SignUpScreen from "./SignUpScreen";
 import AddProuct from "./components/AddProduct";
-
+import SellerOrderDetails from "./components/SellerOrderDetails";
 
 const Stack = createStackNavigator();
 
 export default () => (
     <NavigationContainer>
         <Stack.Navigator>
-            {/* <Stack.Screen name="Students" component={Students} />
-            <Stack.Screen name="StudentDetails" component={StudentDetail} /> */}
-            {/* <Stack.Screen name="SellerLogin" component={SellerLogin} />
-            <Stack.Screen name="SellerSignUp" component={SellerSignUp} />
-            <Stack.Screen name="SellerDashboard" component={SellerDashboard} /> */}
-
             <Stack.Screen
                 name="UserDashboard"
                 component={UserDashboard}
                 options={{ title: "Dashboard", headerShown: false }}
             />
             <Stack.Screen
+                name="SellerLogin"
+                component={SellerLogin}
+                options={{ title: "Seller Login" }}
+            />
+            <Stack.Screen
                 name="SellerDashboard"
                 component={SellerDashboard}
                 options={{ title: "Seller Dashboard", headerShown: false }}
+            />
+            {/* <Stack.Screen name="Students" component={Students} />
+            <Stack.Screen name="StudentDetails" component={StudentDetail} /> */}
+            <Stack.Screen
+                name="SellerOrderDetails"
+                component={SellerOrderDetails}
+                options={{ title: "Order Details" }}
+            />
+            <Stack.Screen
+                name="SellerSignUp"
+                component={SellerSignUp}
+                options={{ title: "Seller Sign Up" }}
             />
             <Stack.Screen
                 name="AddProuct"

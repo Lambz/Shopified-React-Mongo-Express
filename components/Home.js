@@ -87,7 +87,9 @@ export default function Home({ navigation, route }) {
     };
 
     const logoutFunc = () => {
-        signOut();
+        signOut(() => {
+            console.log("logged out");
+        });
     };
 
     const searchFunc = (text) => {

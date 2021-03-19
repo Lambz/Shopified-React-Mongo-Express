@@ -7,7 +7,7 @@ import {
     TextInput,
     Keyboard,
 } from "react-native";
-import { getUserDetails, updateUser } from "../model/interface";
+import { getUserDetails, signOut, updateUser } from "../model/interface";
 import CustomHeader from "./CustomHeader";
 
 export default function UserTab({ navigation, route }) {
@@ -21,7 +21,8 @@ export default function UserTab({ navigation, route }) {
     const [addressColor, setAddressColor] = useState("#eeeeee");
     if (isLoading) {
         getUserDetails(true, (user) => {
-            if(user !== 404) {
+            console.log(user);
+            if (user !== 404) {
                 setUser(user);
                 setName(user.name);
                 setPhoneNo(Number(user.phoneNo));
@@ -79,7 +80,9 @@ export default function UserTab({ navigation, route }) {
     };
 
     const logoutFunc = () => {
-        signOut();
+        signOut(() => {
+            console.log("logged out");
+        });
     };
     const searchFunc = (text) => {
         route.params.stackMoveCallback("Products List", { searchText: text });
@@ -161,8 +164,6 @@ export default function UserTab({ navigation, route }) {
                     </TouchableOpacity>
                 </View>
             </View>
-            
-            
         );
     } else {
         return (

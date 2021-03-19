@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import { View, Text, FlatList, StyleSheet } from "react-native";
 import CategoryView from "./CategoryView";
-import { fetchAllCategoriesAndSubcategories } from "../model/interface";
+import {
+    fetchAllCategoriesAndSubcategories,
+    signOut,
+} from "../model/interface";
 import CustomHeader from "./CustomHeader";
 
 export default function Browse({ navigation, route }) {
@@ -17,7 +20,9 @@ export default function Browse({ navigation, route }) {
 
     const subcategoryClicked = (subcategory) => {
         console.log("subcategory fetched", subcategory);
-        route.params.stackMoveCallback("Products List", {browse: subcategory});
+        route.params.stackMoveCallback("Products List", {
+            browse: subcategory,
+        });
     };
 
     const loginFunc = () => {
@@ -25,12 +30,14 @@ export default function Browse({ navigation, route }) {
     };
 
     const logoutFunc = () => {
-        signOut();
+        signOut(() => {
+            console.log("logged out");
+        });
     };
 
     const searchFunc = (text) => {
         console.log(text);
-        route.params.stackMoveCallback("Products List", {searchText: text});
+        route.params.stackMoveCallback("Products List", { searchText: text });
     };
 
     return (
