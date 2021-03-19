@@ -15,6 +15,7 @@ import UserTab from "./UserTab";
 import SellerHome from "./SellerHome";
 import SellerProducts from "./SellerProducts";
 import SellerOrders from "./SellerOrders";
+import SellerSettings from "./SellerSettings";
 
 const Tabs = createBottomTabNavigator();
 export default function SellerDashboard({ navigation }) {
@@ -112,6 +113,21 @@ export default function SellerDashboard({ navigation }) {
                                 name="checklist"
                                 size={size}
                                 color={color}
+                            />
+                        ),
+                    }}
+                />
+                <Tabs.Screen
+                    name="SellerSettings"
+                    component={SellerSettings}
+                    initialParams={{ stackMoveCallback: stackMoveCallback }}
+                    options={{
+                        tabBarLabel: "Settings",
+                        tabBarIcon: ({ color, size }) => (
+                            <MaterialCommunityIcons
+                                name="account-circle-outline"
+                                color={color}
+                                size={size}
                             />
                         ),
                     }}
