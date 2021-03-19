@@ -21,10 +21,12 @@ export default function UserTab({ navigation, route }) {
     const [addressColor, setAddressColor] = useState("#eeeeee");
     if (isLoading) {
         getUserDetails(true, (user) => {
-            setUser(user);
-            setName(user.name);
-            setPhoneNo(Number(user.phoneNo));
-            setAddress(user.address);
+            if(user !== 404) {
+                setUser(user);
+                setName(user.name);
+                setPhoneNo(Number(user.phoneNo));
+                setAddress(user.address);
+            }
         });
         setLoading(false);
     }
@@ -90,6 +92,7 @@ export default function UserTab({ navigation, route }) {
                     logoutFunc={logoutFunc}
                     searchFunc={searchFunc}
                 />
+
                 <View style={{ padding: 10 }}>
                     <Text style={styles.head}>Name</Text>
                     <TextInput
@@ -158,6 +161,8 @@ export default function UserTab({ navigation, route }) {
                     </TouchableOpacity>
                 </View>
             </View>
+            
+            
         );
     } else {
         return (

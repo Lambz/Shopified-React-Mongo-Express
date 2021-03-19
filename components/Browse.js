@@ -17,8 +17,7 @@ export default function Browse({ navigation, route }) {
 
     const subcategoryClicked = (subcategory) => {
         console.log("subcategory fetched", subcategory);
-        route.params.stackMoveCallback("Products List", subcategory);
-        // navigation.navigate("Products List", subcategory);
+        route.params.stackMoveCallback("Products List", {browse: subcategory});
     };
 
     const loginFunc = () => {
@@ -31,6 +30,7 @@ export default function Browse({ navigation, route }) {
 
     const searchFunc = (text) => {
         console.log(text);
+        route.params.stackMoveCallback("Products List", {searchText: text});
     };
 
     return (
