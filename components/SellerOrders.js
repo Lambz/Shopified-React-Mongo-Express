@@ -40,7 +40,7 @@ export default function SellerOrders({ navigation, route }) {
     const signOutClicked = () => {
         signOut((code) => {
             if (code == codes.LOGOUT_SUCCESS) {
-                route.params.popToTop();
+                route.params.resetToTop();
             }
         });
     };

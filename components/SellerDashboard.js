@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationContainer, useFocusEffect } from "@react-navigation/native";
+import {
+    CommonActions,
+    NavigationContainer,
+    useFocusEffect,
+} from "@react-navigation/native";
 import SellerSignUp from "./SellerSignUp";
 import SellerLogin from "./SellerLogin";
 import Home from "./Home";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { Feather, Octicons } from "@expo/vector-icons";
+import { Feather, Octicons, Ionicons } from "@expo/vector-icons";
 import Cart from "./Cart";
 import UserTab from "./UserTab";
 import SellerHome from "./SellerHome";
@@ -23,9 +27,14 @@ export default function SellerDashboard({ navigation }) {
         navigation.pop();
     };
 
-    const popToTop = () => {
+    const resetAction = CommonActions.reset({
+        index: 0,
+        routes: [{ name: "SellerDashboard" }],
+    });
+
+    const resetToTop = () => {
         // console.log("called");
-        navigation.popToTop();
+        navigation.dispatch(resetAction);
     };
 
     let focusFunction = null;
@@ -50,26 +59,6 @@ export default function SellerDashboard({ navigation }) {
         // setFocusFunction1(null);
         focusFunction = null;
     };
-    // let focusFunction = null;
-    // useFocusEffect(
-    //     React.useCallback(() => {
-    //         // console.log("change", focusFunction);
-    //         if (focusFunction != null) {
-    //             focusFunction();
-    //         }
-    //         return () => null;
-    //     }, [])
-    // );
-
-    // const setFocusFunction = (func) => {
-    //     // console.log("setting", func);
-    //     focusFunction = func;
-    // };
-
-    // const deRegisterFocus = () => {
-    //     // console.log("de-register");
-    //     focusFunction = null;
-    // };
     return (
         <NavigationContainer independent={true}>
             <Tabs.Navigator>
@@ -80,15 +69,15 @@ export default function SellerDashboard({ navigation }) {
                     component={SellerHome}
                     initialParams={{
                         stackMoveCallback: stackMoveCallback,
-                        popToTop: popToTop,
+                        resetToTop: resetToTop,
                     }}
                     options={{
-                        tabBarLabel: "Home",
+                        tabBarLabel: "Analytics",
                         tabBarIcon: ({ color, size }) => (
-                            <MaterialCommunityIcons
-                                name="home"
-                                color={color}
+                            <Ionicons
+                                name="analytics"
                                 size={size}
+                                color={color}
                             />
                         ),
                     }}
@@ -98,7 +87,7 @@ export default function SellerDashboard({ navigation }) {
                     component={SellerProducts}
                     initialParams={{
                         stackMoveCallback: stackMoveCallback,
-                        popToTop: popToTop,
+                        resetToTop: resetToTop,
                     }}
                     options={{
                         tabBarLabel: "Products",
@@ -112,7 +101,7 @@ export default function SellerDashboard({ navigation }) {
                     component={SellerOrders}
                     initialParams={{
                         stackMoveCallback: stackMoveCallback,
-                        popToTop: popToTop,
+                        resetToTop: resetToTop,
                         setFocusFunction: setFocusFunction,
                         deRegisterFocus: deRegisterFocus,
                     }}
