@@ -231,14 +231,14 @@ function createSellerObjectInDB(user, uiCallback) {
             console.log("Seller Added!");
             uiCallback(codes.INSERTION_SUCCESS);
             return codes.INSERTION_SUCCESS;
-        })
-        .catch((error) => {
-            console.log(
-                `Seller insertion error! Error code: ${error.errorCode}\nError Messsage: ${error.errorMessage}`
-            );
-            uiCallback(ccodes.INSERTION_FAILIURE);
-            return codes.INSERTION_FAILIURE;
         });
+    // .catch((error) => {
+    //     console.log(
+    //         `Seller insertion error! Error code: ${error.errorCode}\nError Messsage: ${error.errorMessage}`
+    //     );
+    //     uiCallback(codes.INSERTION_FAILIURE);
+    //     return codes.INSERTION_FAILIURE;
+    // });
 }
 
 // User Query functions
@@ -284,6 +284,7 @@ function getUserDetailsFromDB(uiCallback) {
 
 function getSellerDetailsFromDB(uiCallback) {
     if (mCurrentUser == null) {
+        // console.log(firebase.auth().currentUser);
         if (!firebase.auth().currentUser) {
             throw new Error(
                 `Seller Email Null! Error code: ${codes.NULL_VALUE}`

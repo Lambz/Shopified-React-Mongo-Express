@@ -1,35 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationContainer, useFocusEffect } from "@react-navigation/native";
+import {
+    CommonActions,
+    NavigationContainer,
+    useFocusEffect,
+} from "@react-navigation/native";
 import SellerSignUp from "./SellerSignUp";
 import SellerLogin from "./SellerLogin";
 import Home from "./Home";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { Feather, Octicons } from "@expo/vector-icons";
+import { Feather, Octicons, Ionicons } from "@expo/vector-icons";
 import Cart from "./Cart";
 import UserTab from "./UserTab";
 import SellerHome from "./SellerHome";
 import SellerProducts from "./SellerProducts";
 import SellerOrders from "./SellerOrders";
-import { BackHandler } from "react-native";
+import SellerSettings from "./SellerSettings";
 
 const Tabs = createBottomTabNavigator();
 export default function SellerDashboard({ navigation }) {
-    useFocusEffect(
-        React.useCallback(() => {
-            const onBackPress = () => {
-                return false;
-            };
-
-            BackHandler.addEventListener("hardwareBackPress", onBackPress);
-
-            return () =>
-                BackHandler.removeEventListener(
-                    "hardwareBackPress",
-                    onBackPress
-                );
-        }, [])
-    );
+    // const [focusFunction, setFocusFunction1] = useState(null);
     const stackMoveCallback = (name, object) => {
         navigation.navigate(name, object);
     };
@@ -38,30 +28,38 @@ export default function SellerDashboard({ navigation }) {
         navigation.pop();
     };
 
-    const popToTop = () => {
+    const resetAction = CommonActions.reset({
+        index: 0,
+        routes: [{ name: "SellerDashboard" }],
+    });
+
+    const resetToTop = () => {
         // console.log("called");
-        navigation.popToTop();
+        navigation.dispatch(resetAction);
     };
-    // let focusFunction = null;
-    // useFocusEffect(
-    //     React.useCallback(() => {
-    //         // console.log("change", focusFunction);
-    //         if (focusFunction != null) {
-    //             focusFunction();
-    //         }
-    //         return () => null;
-    //     }, [])
-    // );
 
-    // const setFocusFunction = (func) => {
-    //     // console.log("setting", func);
-    //     focusFunction = func;
-    // };
+    let focusFunction = null;
+    useFocusEffect(
+        React.useCallback(() => {
+            // console.log("change", focusFunction);
+            if (focusFunction != null) {
+                focusFunction();
+            }
+            return () => null;
+        }, [])
+    );
 
-    // const deRegisterFocus = () => {
-    //     // console.log("de-register");
-    //     focusFunction = null;
-    // };
+    const setFocusFunction = (func) => {
+        // console.log("setting", func);
+        // setFocusFunction1(func);
+        focusFunction = func;
+    };
+
+    const deRegisterFocus = () => {
+        // console.log("de-register");
+        // setFocusFunction1(null);
+        focusFunction = null;
+    };
     return (
         <NavigationContainer independent={true}>
             <Tabs.Navigator>
@@ -72,15 +70,15 @@ export default function SellerDashboard({ navigation }) {
                     component={SellerHome}
                     initialParams={{
                         stackMoveCallback: stackMoveCallback,
-                        popToTop: popToTop,
+                        resetToTop: resetToTop,
                     }}
                     options={{
-                        tabBarLabel: "Home",
+                        tabBarLabel: "Analytics",
                         tabBarIcon: ({ color, size }) => (
-                            <MaterialCommunityIcons
-                                name="home"
-                                color={color}
+                            <Ionicons
+                                name="analytics"
                                 size={size}
+                                color={color}
                             />
                         ),
                     }}
@@ -90,7 +88,7 @@ export default function SellerDashboard({ navigation }) {
                     component={SellerProducts}
                     initialParams={{
                         stackMoveCallback: stackMoveCallback,
-                        popToTop: popToTop,
+                        resetToTop: resetToTop,
                     }}
                     options={{
                         tabBarLabel: "Products",
@@ -104,7 +102,9 @@ export default function SellerDashboard({ navigation }) {
                     component={SellerOrders}
                     initialParams={{
                         stackMoveCallback: stackMoveCallback,
-                        popToTop: popToTop,
+                        resetToTop: resetToTop,
+                        setFocusFunction: setFocusFunction,
+                        deRegisterFocus: deRegisterFocus,
                     }}
                     options={{
                         tabBarLabel: "Orders",
@@ -113,6 +113,21 @@ export default function SellerDashboard({ navigation }) {
                                 name="checklist"
                                 size={size}
                                 color={color}
+                            />
+                        ),
+                    }}
+                />
+                <Tabs.Screen
+                    name="SellerSettings"
+                    component={SellerSettings}
+                    initialParams={{ stackMoveCallback: stackMoveCallback }}
+                    options={{
+                        tabBarLabel: "Settings",
+                        tabBarIcon: ({ color, size }) => (
+                            <MaterialCommunityIcons
+                                name="account-circle-outline"
+                                color={color}
+                                size={size}
                             />
                         ),
                     }}
