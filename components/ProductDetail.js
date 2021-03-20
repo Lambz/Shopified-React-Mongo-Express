@@ -57,7 +57,7 @@ export default function ProductDetail({ navigation, route }) {
         let count = parseInt(quantity);
         product.quantity = count;
         getUserDetails(true, (user) => {
-            user.cart.push(product);
+            user.addProduct(product);
             updateUser(true, user, () => {
                 navigation.goBack();
             });
