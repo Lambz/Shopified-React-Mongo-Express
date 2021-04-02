@@ -1,93 +1,39 @@
 // Interface functions implemented for front-end scripts
 
+import {
+    codes,
+    initializeDB,
+    signupWithEmail,
+    signInWithEmail,
+    createUserObjectInDB,
+    createSellerObjectInDB,
+    getUserDetailsFromDB,
+    getSellerDetailsFromDB,
+    updateDBPassword,
+    insertProductInDB,
+    insertCategoryOrSubcategoryInDB,
+    fetchCategoriesAndSubcategoriesFromDB,
+    fetchProductsForSubCategoryFromDB,
+    insertOrderInDB,
+    updateUserInDB,
+    deleteProductFromDB,
+    deleteUserFromDB,
+    deleteSellerFromDB,
+    deleteAllCategoriesFromDB,
+    fetchProductByIdInDB,
+    fetchAllProductsInDB,
+    fetchProductsForCategoryInDB,
+    fetchCategoryDataFromDB,
+    fetchOrdersFromDB,
+    fetchAllProductsForSellerInDB,
+    fetchUserByNameFromDB,
+    insertImageInDB,
+    fetchSubcategoryImagesFromDB,
+    signOutUserFromFirebase,
+    getUIDFromFirebase,
+} from "./firebaseHandlers.js";
+
 import { Category } from "./models.js";
-
-// // Firebase App (the core Firebase SDK)
-import firebase from "firebase/app";
-
-// //Firebase services
-import "firebase/auth";
-import "firebase/firestore";
-import "firebase/storage";
-import { generateID } from "../Utils.js";
-
-
-// global variables
-
-var codes = Object.freeze({
-    NULL_VALUE: -5,
-    NULL_OBJECT: -10,
-    INSERTION_SUCCESS: 3,
-    INSERTION_FAILIURE: -3,
-    UPDATE_SUCCESS: 1,
-    UPDATE_FAILIURE: -1,
-    NOT_FOUND: 404,
-    FETCH_FAILURE: -300,
-    FETCH_SUCCESS: 300,
-    LOGIN_SUCCESS: 400,
-    LOGIN_FAILIURE: -400,
-    LOGOUT_SUCCESS: 102,
-    LOGOUT_FAILIURE: -102,
-    DELETION_FAILIURE: 100,
-});
-
-// config token for firebase access
-var firebaseConfig = {
-    apiKey: "AIzaSyBNBlPV5qBRTtnpz-5URhrHEMpjRxW1HnU",
-    authDomain: "shopified-11a20.firebaseapp.com",
-    databaseURL: "https://shopified-11a20-default-rtdb.firebaseio.com/",
-    projectId: "shopified-11a20",
-    storageBucket: "shopified-11a20.appspot.com",
-    messagingSenderId: "490634575459",
-    appId: "1:490634575459:web:0e4c2db29bdb6e075a4256",
-    measurementId: "G-80PJX71W15",
-};
-
-var app = null;
-var db = null;
-let mCurrentUser = null;
-let mUserUid = null;
-
-var obs = new observable(mCurrentUser);
-
-function observable(v) {
-    this.value = v;
-
-    this.valueChangedCallback = null;
-
-    this.setValue = function (v) {
-        if (this.value != v) {
-            this.value = v;
-            mCurrentUser = v;
-            this.raiseChangedEvent(v);
-        }
-    };
-
-    this.getValue = function () {
-        return this.value;
-    };
-
-    this.onChange = function (callback) {
-        this.valueChangedCallback = callback;
-    };
-
-    this.raiseChangedEvent = function (v) {
-        if (this.valueChangedCallback) {
-            this.valueChangedCallback(v);
-        }
-    };
-}
-
-// Global initialization for firebase
-function initializeDB() {
-    if (!firebase.apps.length) {
-        app = firebase.initializeApp(firebaseConfig);
-    } else {
-        app = firebase.app();
-    }
-    db = firebase.firestore(app);
-    console.log("DB initialized!");
-}
 
 initializeDB();
 
@@ -132,9 +78,6 @@ function signIn(email, password, isUser, uiCallback) {
     });
 }
 
-
-
-
 // Function to update user data
 // 1. args:
 // - isUser: boolean, checks weather user or seller
@@ -178,99 +121,6 @@ function updatePassword(isUser, user, newPassword, uiCallback) {
 function signOut(uiCallback) {
     return signOutUserFromFirebase(uiCallback);
 }
-
-
-
-// Firebase auth implementation functions
-// DB handled by express
-
-function signupWithEmail(user, callback, uiCallback) {
-    if (!user) {
-        throw new Error(`Signup Error! Error code: ${codes.NULL_OBJECT}`);
-        return;
-    }
-    // [START auth_signup_password]
-    firebase
-        .auth()
-        .createUserWithEmailAndPassword(user.email, user.password)
-        .then((userCredential) => {
-            // Signed in
-            mUserUid = userCredential.user.uid;
-            // sessionStorage.setItem("uid", loggedUser);
-            return callback(user, uiCallback);
-        })
-        .catch((error) => {
-            let errorCode = error.code;
-            let errorMessage = error.message;
-            throw new Error(
-                `Firebase Signup Error! Error code: ${errorCode}\n Error Message: ${errorMessage}`
-            );
-        });
-    // [END auth_signup_password]
-}
-
-// Sign-in Function
-
-function signInWithEmail(email, password, callback) {
-    if (!email || !password) {
-        throw new Error(`Signin Error! Error code: ${codes.NULL_VALUE}`);
-    }
-    // [START auth_signin_password]
-    firebase
-        .auth()
-        .signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-            // Signed in
-            mUserUid = userCredential.user.uid;
-            // sessionStorage.setItem("uid", loggedUser);
-            // return callback(uiCallback);
-            callback();
-        });
-    // .catch((error) => {
-    //     throw new Error(
-    //         `Firebase Signin Error! Error code: ${error.code}\nError Message: ${error.message}`
-    //     );
-    // });
-    // [END auth_signin_password]
-}
-
-// Sign out function
-
-function signOutUserFromFirebase(uiCallback) {
-    // sessionStorage.setItem("uid", null);
-    firebase
-        .auth()
-        .signOut()
-        .then(() => {
-            console.log("Logged out!");
-            obs.setValue(null);
-            mUserUid = null;
-            uiCallback(codes.LOGOUT_SUCCESS);
-            return codes.LOGOUT_SUCCESS;
-        })
-        .catch((error) => {
-            return codes.LOGOUT_FAILIURE;
-        });
-}
-
-// Password Reset Function
-
-function sendPasswordReset(email) {
-    firebase
-        .auth()
-        .sendPasswordResetEmail(email)
-        .then(() => {
-            showResetPasswordPromt();
-        })
-        .catch((error) => {
-            let errorCode = error.code;
-            let errorMessage = error.message;
-            throw new Error(
-                `Error sending reset password email! Error Code: ${errorCode}\nErrorMessage: ${errorMessage}`
-            );
-        });
-}
-
 
 //
 // MARK: CRUD operations for products and categories
@@ -547,5 +397,4 @@ export {
     updateCategories,
     fetchSubcategoriesImage,
     getUID,
-    codes
 };

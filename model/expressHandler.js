@@ -3,10 +3,9 @@ import firebase from "firebase/app";
 
 // //Firebase services
 import "firebase/auth";
-import "firebase/firestore";
-import "firebase/storage";
 import { generateID } from "../Utils.js";
-
+// Fetch
+import "isomorphic-fetch"
 // // imports
 import {
     User,
@@ -54,6 +53,7 @@ var app = null;
 var db = null;
 let mCurrentUser = null;
 let mUserUid = null;
+const API_URL = "http://localhost:3000/";
 
 var obs = new observable(mCurrentUser);
 
@@ -197,23 +197,18 @@ function createUserObjectInDB(user, uiCallback) {
             `User Insertion Error! Error code: ${codes.NULL_OBJECT}`
         );
     }
-    db.collection("users")
-        .doc(firebase.auth().currentUser.uid)
-        .withConverter(userConverter)
-        .set(user)
-        .then(() => {
-            // console.log("User Added!");
-            // mCurrentUser = user;
-            obs.setValue(user);
-            uiCallback(codes.INSERTION_SUCCESS);
-        });
-    // .catch((error) => {
-    //     console.log(
-    //         `User insertion error! Error code: ${error.errorCode}\nError Messsage: ${error.errorMessage}`
-    //     );
-    //     uiCallback(ccodes.INSERTION_FAILIURE);
-    //     // return codes.INSERTION_FAILIURE;
-    // });
+    let userData = User.convertToJSON(user);
+    // additional paramter required
+    userData[id] = getUIDFromFirebase(); 
+    postData(`${API_URL}user/add`, userData)
+    .then(data => {
+        console.log(data);
+        uiCallback(codes.INSERTION_SUCCESS);
+    })
+    .catch(err => {
+        console.log(`Error: ${err}`);
+        uiCallback(codes.INSERTION_FAILIURE);
+    })
 }
 
 function createSellerObjectInDB(user, uiCallback) {
@@ -222,96 +217,49 @@ function createSellerObjectInDB(user, uiCallback) {
             `Seller Insertion Error! Error code: ${codes.NULL_OBJECT}`
         );
     }
-    // console.log("here at function");
-    db.collection("sellers")
-        .doc(firebase.auth().currentUser.uid)
-        .withConverter(sellerConverter)
-        .set(user)
-        .then(() => {
-            console.log("Seller Added!");
-            uiCallback(codes.INSERTION_SUCCESS);
-            return codes.INSERTION_SUCCESS;
-        });
-    // .catch((error) => {
-    //     console.log(
-    //         `Seller insertion error! Error code: ${error.errorCode}\nError Messsage: ${error.errorMessage}`
-    //     );
-    //     uiCallback(codes.INSERTION_FAILIURE);
-    //     return codes.INSERTION_FAILIURE;
-    // });
+    let sellerData = Seller.convertToJSON(user);
+    sellerData[id] = getUIDFromFirebase();
+    postData(`${API_URL}seller/add`, sellerData)
+    .then(data => uiCallback(codes.INSERTION_SUCCESS))
+    .catch(err =>  uiCallback(codes.INSERTION_FAILIURE));
 }
 
 // User Query functions
 
 function getUserDetailsFromDB(uiCallback) {
-    // if (!sessionStorage.getItem("uid")) {
-    //     // throw new Error(`User Credentials Null! Error code: ${codes.NULL_VALUE}`);
-    //     uiCallback(codes.NOT_FOUND);
-    //     return;
-    // }
-    // console.log(firebase.auth().currentUser);
-    // console.log("mCurrentUser: ", mCurrentUser);
-    if (mCurrentUser == null) {
-        if (!firebase.auth().currentUser) {
-            uiCallback(codes.NOT_FOUND);
-            return;
-        }
-
-        let userDocument = db
-            .collection("users")
-            .doc(firebase.auth().currentUser.uid);
-        userDocument.get().then((doc) => {
-            if (doc.exists) {
-                let user = User.convertToUser(doc.data());
-                obs.setValue(user);
-                uiCallback(mCurrentUser);
-                // return doc.data();
-            } else {
-                uiCallback(codes.NOT_FOUND);
-                // return codes.NOT_FOUND;
-            }
-        });
-        // .catch((error) => {
-        //     console.log(
-        //         `Details fetching error! Error code: ${error.errorCode}\nError Messsage: ${error.errorMessage}`
-        //     );
-        // });
-    } else {
-        // console.log("uiCallback: ", uiCallback);
-        uiCallback(mCurrentUser);
+    let uid = getUIDFromFirebase();
+    if(uid) {
+        fetch(`${API_URL}user/${uid}`)
+        .then(data => {
+          return data.json()
+        })
+        .then(data => {
+          uiCallback(data);
+        })
+        .catch(err => uiCallback(codes.FETCH_FAILURE));
     }
+    else {
+        uiCallback(codes.NOT_FOUND);
+    }
+    
 }
 
 function getSellerDetailsFromDB(uiCallback) {
-    if (mCurrentUser == null) {
-        // console.log(firebase.auth().currentUser);
-        if (!firebase.auth().currentUser) {
-            throw new Error(
-                `Seller Email Null! Error code: ${codes.NULL_VALUE}`
-            );
-        }
-
-        let userDocument = db
-            .collection("sellers")
-            .doc(firebase.auth().currentUser.uid);
-        userDocument.get().then((doc) => {
-            if (doc.exists) {
-                obs.setValue(Seller.convertToSeller(doc.data()));
-                uiCallback(obs.getValue());
-                return doc.data();
-            } else {
-                uiCallback(codes.NOT_FOUND);
-                return codes.NOT_FOUND;
-            }
-        });
-    } else {
-        uiCallback(mCurrentUser);
+    let uid = getUIDFromFirebase();
+    if(uid) {
+        fetch(`${API_URL}seller/${uid}`)
+        .then(data => {
+          return data.json()
+        })
+        .then(data => {
+          uiCallback(data);
+        })
+        .catch(err => uiCallback(codes.FETCH_FAILURE));
     }
-
-    // .catch ((error) => {
-    //     console.log(`Details fetching error! Error code: ${error.errorCode}\nError Messsage: ${error.errorMessage}`);
-    //     return codes.FETCH_FAILURE;
-    // });
+    else {
+        uiCallback(codes.NOT_FOUND);
+    }
+    
 }
 
 //  User details Update Functions
@@ -727,6 +675,27 @@ function fetchSubcategoryImagesFromDB(subcategories, uiCallback) {
 function getUIDFromFirebase() {
     return firebase.auth().currentUser.uid;
 }
+
+async function postData(url = '', data = {}) {
+    // Default options are marked with *
+    const response = await fetch(url, {
+      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      mode: 'cors', // no-cors, *cors, same-origin
+      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: 'same-origin', // include, *same-origin, omit
+      headers: {
+        'Content-Type': 'application/json'
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      redirect: 'follow', // manual, *follow, error
+      referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+      body: JSON.stringify(data) // body data type must match "Content-Type" header
+    });
+    return response.json(); // parses JSON response into native JavaScript objects
+  }
+  
+
+
 
 export {
     codes,
