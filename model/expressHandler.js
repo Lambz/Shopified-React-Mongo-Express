@@ -700,6 +700,18 @@ function searchProductsInDB(json, uiCallback) {
         });
 }
 
+function fetchOrdersForSellerFromDB(sellerID, uiCallback) {
+    console.log(`${API_URL}orders/seller/${sellerID}`);
+    fetch(`${API_URL}orders/seller/${sellerID}`)
+        .then((data) => {
+            return data.json();
+        })
+        .then((data) => {
+            uiCallback(data);
+        })
+        .catch((err) => uiCallback(codes.FETCH_FAILURE));
+}
+
 async function postData(url = "", data = {}) {
     console.log(url, data);
     // Default options are marked with *
@@ -758,4 +770,5 @@ export {
     updateSellerInDB,
     addOrderToDB,
     searchProductsInDB,
+    fetchOrdersForSellerFromDB,
 };

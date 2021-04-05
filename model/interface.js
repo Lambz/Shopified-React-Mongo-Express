@@ -34,6 +34,7 @@ import {
     updateSellerInDB,
     addOrderToDB,
     searchProductsInDB,
+    fetchOrdersForSellerFromDB,
 } from "./expressHandler.js";
 
 import { Category } from "./models.js";
@@ -167,8 +168,6 @@ function fetchAllProductsForCategory(categoryID, uiCallback) {
 }
 
 async function fetchAllProducts(uiCallback) {
-    // console.log("fetchAllProducts:", uiCallback);
-    // fetchAllProductsInDB(uiCallback);
     try {
         let response = await fetch(`http://127.0.0.1:3000/products`);
         let jsonResponse = await response.json();
@@ -288,21 +287,22 @@ function updateOrderStatus(order, newStatus, uiCallback) {
 // - sellerID: sellerID of seller
 // - includeCancelled: boolean, specify weather to include cancelled orders
 
-function fetchOrdersForSeller(sellerID, includeCancelled, uiCallback) {
-    fetchOrdersFromDB(includeCancelled, (orders) => {
-        // console.log(orders);
-        let orderArray = [];
-        for (let i = 0; i < orders.length; i++) {
-            let val = orders[i].products;
-            for (let j = 0; j < val.length; j++) {
-                if (val[j].seller_id == sellerID) {
-                    orderArray.push(orders[i]);
-                    break;
-                }
-            }
-        }
-        uiCallback(orderArray);
-    });
+function fetchOrdersForSeller(sellerID, uiCallback) {
+    fetchOrdersForSellerFromDB(sellerID, uiCallback);
+    // fetchOrdersFromDB(includeCancelled, (orders) => {
+    //     // console.log(orders);
+    //     let orderArray = [];
+    //     for (let i = 0; i < orders.length; i++) {
+    //         let val = orders[i].products;
+    //         for (let j = 0; j < val.length; j++) {
+    //             if (val[j].seller_id == sellerID) {
+    //                 orderArray.push(orders[i]);
+    //                 break;
+    //             }
+    //         }
+    //     }
+    //     uiCallback(orderArray);
+    // });
 }
 
 // Function to delete user
@@ -329,30 +329,6 @@ async function fetchMostSoldProducts(uiCallback) {
     } catch (error) {
         console.log(error);
     }
-    // fetchOrdersFromDB(true, (orderArray) => {
-    //     // console.log("orderArray", orderArray);
-    //     let products = [];
-    //     let productsArray = orderArray.map((o) => o.products);
-    //     for (let i = 0; i < productsArray.length; i++) {
-    //         let val = productsArray[i];
-    //         val.forEach((product) => {
-    //             products.push(product);
-    //         });
-    //     }
-    //     const result = Array.from(
-    //         products.reduce(
-    //             (map, item) => (map.get(item.id).count++, map),
-    //             new Map(
-    //                 products.map((o) => [
-    //                     o.id,
-    //                     Object.assign({}, o, { count: 0 }),
-    //                 ])
-    //             )
-    //         ),
-    //         ([k, o]) => o
-    //     ).sort((a, b) => b.count - a.count);
-    //     uiCallback(result);
-    // });
 }
 
 function fetchAllProductsForSeller(sellerID, uiCallback) {

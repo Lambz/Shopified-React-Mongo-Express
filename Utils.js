@@ -105,7 +105,7 @@ export const analyzeSalesDataWeek = (orders) => {
         let x = map.set(date.toString(), 0);
     }
     orders.forEach((order) => {
-        let d = new Date(order.orderDate);
+        let d = new Date(order.createdAt);
         d.setHours(0, 0, 0, 0);
         if (map.has(d.toString())) {
             map.set(d.toString(), map.get(d.toString()) + 1);
@@ -146,7 +146,7 @@ export const analyzeSalesDataMonth = (orders) => {
         map.set(d.toString(), 0);
     }
     orders.forEach((order) => {
-        let date = new Date(order.orderDate);
+        let date = new Date(order.createdAt);
         date.setHours(0, 0, 0, 0);
         date.setDate(1);
         if (date <= currentMonth && date >= lastYearMonth) {
@@ -191,7 +191,7 @@ export const analyzeSalesDataYear = (orders) => {
         map.set(d.toString(), 0);
     }
     orders.forEach((order) => {
-        let date = new Date(order.orderDate);
+        let date = new Date(order.createdAt);
         date.setMonth(0);
         date.setHours(0, 0, 0, 0);
         date.setDate(1);
@@ -221,16 +221,16 @@ export const analyzeProductDataWeek = (orders) => {
     let lastWeek = new Date();
     lastWeek.setDate(lastWeek.getDate() - 7);
     orders.forEach((order) => {
-        let date = new Date(order.orderDate);
+        let date = new Date(order.createdAt);
         if (date >= lastWeek && date <= current) {
             order.products.forEach((product) => {
-                if (map.has(product.name)) {
+                if (map.has(product.product.name)) {
                     map.set(
-                        product.name,
-                        map.get(product.name) + Number(product.quantity)
+                        product.product.name,
+                        map.get(product.product.name) + Number(product.quantity)
                     );
                 } else {
-                    map.set(product.name, Number(product.quantity));
+                    map.set(product.product.name, Number(product.quantity));
                 }
             });
         }
@@ -258,16 +258,16 @@ export const analyzeProductDataMonth = (orders) => {
     let lastYear = new Date();
     lastYear.setYear(lastYear.getYear() + 1900 - 1);
     orders.forEach((order) => {
-        let date = new Date(order.orderDate);
+        let date = new Date(order.createdAt);
         if (date >= lastYear && date <= current) {
             order.products.forEach((product) => {
-                if (map.has(product.name)) {
+                if (map.has(product.product.name)) {
                     map.set(
-                        product.name,
-                        map.get(product.name) + Number(product.quantity)
+                        product.product.name,
+                        map.get(product.product.name) + Number(product.quantity)
                     );
                 } else {
-                    map.set(product.name, Number(product.quantity));
+                    map.set(product.product.name, Number(product.quantity));
                 }
             });
         }
@@ -291,16 +291,16 @@ export const analyzeProductDataYear = (orders) => {
     let lastYear = new Date();
     lastYear.setYear(lastYear.getYear() + 1900 - 10);
     orders.forEach((order) => {
-        let date = new Date(order.orderDate);
+        let date = new Date(order.createdAt);
         if (date >= lastYear && date <= current) {
             order.products.forEach((product) => {
-                if (map.has(product.name)) {
+                if (map.has(product.product.name)) {
                     map.set(
-                        product.name,
-                        map.get(product.name) + Number(product.quantity)
+                        product.product.name,
+                        map.get(product.product.name) + Number(product.quantity)
                     );
                 } else {
-                    map.set(product.name, Number(product.quantity));
+                    map.set(product.product.name, Number(product.quantity));
                 }
             });
         }
@@ -326,16 +326,20 @@ export const analyzeCategoryDataWeek = (orders) => {
     let lastWeek = new Date();
     lastWeek.setDate(lastWeek.getDate() - 7);
     orders.forEach((order) => {
-        let date = new Date(order.orderDate);
+        let date = new Date(order.createdAt);
         if (date >= lastWeek && date <= current) {
             order.products.forEach((product) => {
-                if (map.has(product.category)) {
+                if (map.has(product.product.category.label)) {
                     map.set(
-                        product.category,
-                        map.get(product.category) + Number(product.quantity)
+                        product.product.category.label,
+                        map.get(product.product.category.label) +
+                            Number(product.quantity)
                     );
                 } else {
-                    map.set(product.category, Number(product.quantity));
+                    map.set(
+                        product.product.category.label,
+                        Number(product.quantity)
+                    );
                 }
             });
         }
@@ -363,16 +367,20 @@ export const analyzeCategoryDataMonth = (orders) => {
     let lastYear = new Date();
     lastYear.setYear(lastYear.getYear() + 1900 - 1);
     orders.forEach((order) => {
-        let date = new Date(order.orderDate);
+        let date = new Date(order.createdAt);
         if (date >= lastYear && date <= current) {
             order.products.forEach((product) => {
-                if (map.has(product.category)) {
+                if (map.has(product.product.category.label)) {
                     map.set(
-                        product.category,
-                        map.get(product.category) + Number(product.quantity)
+                        product.product.category.label,
+                        map.get(product.product.category.label) +
+                            Number(product.quantity)
                     );
                 } else {
-                    map.set(product.category, Number(product.quantity));
+                    map.set(
+                        product.product.category.label,
+                        Number(product.quantity)
+                    );
                 }
             });
         }
@@ -396,16 +404,20 @@ export const analyzeCategoryDataYear = (orders) => {
     let lastYear = new Date();
     lastYear.setYear(lastYear.getYear() + 1900 - 10);
     orders.forEach((order) => {
-        let date = new Date(order.orderDate);
+        let date = new Date(order.createdAt);
         if (date >= lastYear && date <= current) {
             order.products.forEach((product) => {
-                if (map.has(product.category)) {
+                if (map.has(product.product.category.label)) {
                     map.set(
-                        product.category,
-                        map.get(product.category) + Number(product.quantity)
+                        product.product.category.label,
+                        map.get(product.product.category.label) +
+                            Number(product.quantity)
                     );
                 } else {
-                    map.set(product.category, Number(product.quantity));
+                    map.set(
+                        product.product.category.label,
+                        Number(product.quantity)
+                    );
                 }
             });
         }

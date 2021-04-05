@@ -76,6 +76,7 @@ export default function SellerHome({ navigation, route }) {
     });
 
     const orderDetailsHandler = (orders) => {
+        console.log(orders);
         setOrders(orders);
         if (salesTime == 0) {
             setData(analyzeSalesDataWeek(orders));
@@ -101,7 +102,7 @@ export default function SellerHome({ navigation, route }) {
     };
 
     if (isLoading) {
-        fetchOrdersForSeller(getUID(), true, orderDetailsHandler);
+        fetchOrdersForSeller(getUID(), orderDetailsHandler);
         setLoading(false);
     }
 
