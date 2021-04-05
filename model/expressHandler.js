@@ -222,8 +222,8 @@ function createSellerObjectInDB(user, uiCallback) {
             `Seller Insertion Error! Error code: ${codes.NULL_OBJECT}`
         );
     }
-    let sellerData = Seller.convertToJSON(user);
-    sellerData[id] = getUIDFromFirebase();
+    let sellerData = user;
+    sellerData["id"] = getUIDFromFirebase();
     postData(`${API_URL}seller/add`, sellerData)
         .then((data) => uiCallback(codes.INSERTION_SUCCESS))
         .catch((err) => uiCallback(codes.INSERTION_FAILIURE));

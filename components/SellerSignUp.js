@@ -7,6 +7,10 @@ import {
     TextInput,
     Button,
 } from "react-native";
+import { codes } from "../model/expressHandler";
+import { signUp } from "../model/interface";
+import * as Crypto from "expo-crypto";
+import { CommonActions } from "@react-navigation/routers";
 
 export default function SellerSignUp({ navigation }) {
     const [name, setName] = useState("");
@@ -19,6 +23,13 @@ export default function SellerSignUp({ navigation }) {
     const [nameBorder, setNameBorder] = useState("#fff");
     const [comapnyBorder, setCompanyBorder] = useState("#fff");
     const [rPasswordBorder, setRPasswordBorder] = useState("#fff");
+    const resetAction = CommonActions.reset({
+        index: 0,
+        routes: [{ name: "SellerDashboard" }],
+    });
+    const handleNavigation = () => {
+        navigation.dispatch(resetAction);
+    };
 
     const signUpHandler = () => {
         let noProb = true;
@@ -48,7 +59,24 @@ export default function SellerSignUp({ navigation }) {
             noProb = false;
         }
         if (noProb) {
-            //TODO: SignUP
+            (async () => {
+                const digest = await Crypto.digestStringAsync(
+                    Crypto.CryptoDigestAlgorithm.SHA512,
+                    password
+                );
+                let seller = {
+                    name: name,
+                    companyName: companyName,
+                    email: email,
+                    password: digest,
+                };
+                signUp(seller, false, (response) => {
+                    // console.log("singUp Response: ", response);
+                    if (response == codes.INSERTION_SUCCESS) {
+                        handleNavigation();
+                    }
+                });
+            })();
         }
     };
     return (
@@ -94,6 +122,7 @@ export default function SellerSignUp({ navigation }) {
                 onChangeText={(text) => {
                     setEmail(text);
                 }}
+                autoCapitalize="none"
                 value={email}
             />
             <Text style={[styles.margin, styles.text, styles.width]}>

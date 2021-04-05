@@ -12,45 +12,6 @@ export default function ProductsList({ navigation, route }) {
     const [isLoading, setIsLoading] = useState(true);
     const [display, setDisplay] = useState("none");
     const [dispayText, setDisplayText] = useState("");
-    // values passed as props
-
-    // if (route.params.browse) {
-    //     if (isLoading) {
-    //         fetchAllProductsForSubcategory(route.params.browse, (data) => {
-    //             setIsLoading(false);
-    //             setDisplayText(route.params.browse);
-    //             setProducts(data);
-    //             if (data.length == 0) {
-    //                 setDisplay("flex");
-    //             }
-    //             console.log(products);
-    //         });
-    //     }
-    // } else {
-    //     if (isLoading) {
-    //         searchProducts(route.params.searchText, (products) => {
-    //             // console.log(products);
-    //             setProducts(products);
-    //         });
-    //         // if (route.params.searchText) {
-    //         //     let regex = new RegExp(route.params.searchText, "i");
-    //         //     let productArray = [];
-    //         //     fetchAllProducts((data) => {
-    //         //         setIsLoading(false);
-    //         //         setDisplayText(route.params.searchText);
-    //         //         if (data.length == 0) {
-    //         //             setDisplay("flex");
-    //         //         }
-    //         //         data.forEach((item) => {
-    //         //             if (item.name.search(regex) !== -1) {
-    //         //                 productArray.push(item);
-    //         //             }
-    //         //         });
-    //         //         setProducts(productArray);
-    //         //     });
-    //         // }
-    //     }
-    // }
 
     if (isLoading) {
         if (route.params.browse) {
