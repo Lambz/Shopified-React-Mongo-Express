@@ -55,7 +55,9 @@ var app = null;
 var db = null;
 let mCurrentUser = null;
 let mUserUid = null;
-const API_URL = "https://shopified.herokuapp.com/";
+// const API_URL = "https://shopified.herokuapp.com/";
+
+const API_URL = "http://localhost:3000/";
 
 var obs = new observable(mCurrentUser);
 
@@ -200,8 +202,9 @@ function createUserObjectInDB(user, uiCallback) {
         );
     }
     let userData = User.convertToJSON(user);
+    console.log(userData);
     // additional paramter required
-    userData[id] = getUIDFromFirebase();
+    userData._id = getUIDFromFirebase();
     postData(`${API_URL}user/add`, userData)
         .then((data) => {
             console.log(data);
@@ -228,7 +231,7 @@ function createSellerObjectInDB(user, uiCallback) {
 
 // User Query functions
 
-function getUserDetailsFromDB(uiCallback) {
+async function getUserDetailsFromDB(uiCallback) {
     let uid = getUIDFromFirebase();
     if (uid) {
         fetch(`${API_URL}user/${uid}`)
@@ -644,6 +647,7 @@ function getUIDFromFirebase() {
 }
 
 async function postData(url = "", data = {}) {
+    console.log(url, data);
     // Default options are marked with *
     const response = await fetch(url, {
         method: "POST", // *GET, POST, PUT, DELETE, etc.

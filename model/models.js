@@ -30,6 +30,7 @@ class User {
         this.phoneNo = phoneNo;
         this.cart = cart;
         this.orders = orders;
+        this._id = "";
     }
 
     addOrder(order) {
