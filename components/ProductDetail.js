@@ -71,7 +71,10 @@ export default function ProductDetail({ navigation, route }) {
     };
 
     const xpressCheckoutClicked = () => {
-        navigation.navigate("ContactForBuy", [product]);
+        let count = parseInt(quantity);
+        navigation.navigate("ContactForBuy", [
+            { product: product._id, quantity: count },
+        ]);
     };
 
     const printError = () => {

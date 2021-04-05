@@ -8,8 +8,14 @@ import {
     TouchableOpacity,
     Alert,
 } from "react-native";
+import { add } from "react-native-reanimated";
 import { codes } from "../model/expressHandler";
-import { getUserDetails, placeOrder, updateUser } from "../model/interface";
+import {
+    addOrder,
+    getUserDetails,
+    placeOrder,
+    updateUser,
+} from "../model/interface";
 import { Order, Product } from "../model/models";
 import { images } from "../Utils";
 import CustomHeader from "./CustomHeader";
@@ -59,33 +65,73 @@ export default function ContactForBuy({ navigation, route }) {
             ]);
         }
         if (noProb) {
-            // console.log(noProb);
-            let order = new Order([], name, phoneNo, address);
-            route.params.forEach((product) => {
-                order.addProduct(product);
-            });
-            let u = user;
-            u.cart = [];
-            u.addOrder(order);
-            updateUser(true, u, (reply) => {
-                if (reply == codes.INSERTION_SUCCESS) {
-                    placeOrder(order, () => {
-                        Alert.alert(
-                            "Order Placed!",
-                            "Your Order was successfully placed.",
-                            [
-                                {
-                                    text: "Okay",
-                                    onPress: () => {
-                                        setUser(u);
-                                        navigation.pop();
-                                    },
+            let json = {
+                name: name,
+                phoneNo: phoneNo,
+                address: address,
+            };
+            if (route.params == null || route.params == undefined) {
+            } else {
+                json["products"] = route.params;
+            }
+            addOrder(user._id, json, (code) => {
+                if (code == codes.INSERTION_SUCCESS) {
+                    Alert.alert(
+                        "Order Placed!",
+                        "Your Order was successfully placed.",
+                        [
+                            {
+                                text: "Okay",
+                                onPress: () => {
+                                    navigation.pop();
                                 },
-                            ]
-                        );
-                    });
+                            },
+                        ]
+                    );
+                } else {
+                    Alert.alert(
+                        "Error",
+                        "There was a problem in placing your order!",
+                        [
+                            {
+                                text: "Okay",
+                                onPress: () => {
+                                    navigation.pop();
+                                },
+                            },
+                        ]
+                    );
                 }
             });
+            // console.log(route.params);
+            // if(route.params)
+            // console.log(noProb);
+            // let order = new Order([], name, phoneNo, address);
+            // route.params.forEach((product) => {
+            //     order.addProduct(product);
+            // });
+            // let u = user;
+            // u.cart = [];
+            // u.addOrder(order);
+            // updateUser(true, u, (reply) => {
+            //     if (reply == codes.INSERTION_SUCCESS) {
+            //         placeOrder(order, () => {
+            //             Alert.alert(
+            //                 "Order Placed!",
+            //                 "Your Order was successfully placed.",
+            //                 [
+            //                     {
+            //                         text: "Okay",
+            //                         onPress: () => {
+            //                             setUser(u);
+            //                             navigation.pop();
+            //                         },
+            //                     },
+            //                 ]
+            //             );
+            //         });
+            //     }
+            // });
             // placeOrder(order, () => {
             //     window.location.replace("orders.html");
             // });

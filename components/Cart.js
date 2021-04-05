@@ -73,7 +73,7 @@ export default function Cart({ navigation, route }) {
     };
 
     const placeOrderHandler = () => {
-        route.params.stackMoveCallback("ContactForBuy", cartItems);
+        route.params.stackMoveCallback("ContactForBuy");
     };
 
     const loginFunc = () => {

@@ -31,11 +31,13 @@ export default function OrderDetails({ navigation, route }) {
         let total = 0;
         item.products.forEach((product) => {
             // setTotal(total + Number(product.price));
-            total += Number(product.price) * Number(product.quantity);
-            max = Math.max(max, product.estimatedTime);
+            total +=
+                Number(product.product.price) *
+                Number(product.product.quantity);
+            max = Math.max(max, product.product.estimatedTime);
         });
         setTotal(total);
-        let date = new Date(item.orderDate);
+        let date = new Date(item.createdAt);
         date.setDate(date.getDate() + max);
         setDeliveryDate(date);
         setProducts(item.products);
@@ -52,17 +54,8 @@ export default function OrderDetails({ navigation, route }) {
             order.status == OrderStatus.PROCESSING
         ) {
             updateOrderStatus(order, OrderStatus.CANCELLED, () => {
-                // console.log("added");
-                let u = user;
-                u.orders.forEach((o) => {
-                    if (o.id == order.id) {
-                        o.status = OrderStatus.CANCELLED;
-                    }
-                });
-                updateUser(true, u, () => {
-                    setUser(u);
-                    setLoading(true);
-                });
+                order.status = OrderStatus.CANCELLED;
+                navigation.pop();
             });
         }
     };
@@ -78,7 +71,7 @@ export default function OrderDetails({ navigation, route }) {
                     }}
                 >
                     <Text>Total: {(total * 1.13).toFixed(2)}</Text>
-                    <Text>Ordered Date: {formatDate(order.orderDate)}</Text>
+                    <Text>Ordered Date: {formatDate(order.createdAt)}</Text>
                     <Text>Estimated Delivery: {formatDate(deliveryDate)}</Text>
                     <Text>Status: {getOrderStatus(order.status)}</Text>
                     <Text>No. of Products: {order.products.length}</Text>

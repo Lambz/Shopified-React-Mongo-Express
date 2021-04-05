@@ -13,6 +13,8 @@ export default function OldOrders({ navigation, route }) {
 
     const loadData = () => {
         getUserDetails(true, (user) => {
+            // console.log(orders);
+            console.log(user.orders);
             setOrders(user.orders);
         });
     };

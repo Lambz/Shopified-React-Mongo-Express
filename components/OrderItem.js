@@ -11,18 +11,18 @@ export default function OrderItem({ item, orderClicked }) {
         let im = null;
         let max = 0;
         item.products.forEach((product) => {
-            setTotal(total + product.price);
-            if (product.images.length > 0) {
-                im = product.images[0];
+            setTotal(total + product.product.price);
+            if (product.product.images.length > 0) {
+                im = product.product.images[0];
             }
-            max = Math.max(max, product.estimatedTime);
+            max = Math.max(max, product.product.estimatedTime);
         });
         if (im == null) {
             setImage(images.productPlaceholder);
         } else {
             setImage({ uri: im });
         }
-        let date = new Date(item.orderDate);
+        let date = new Date(item.createdAt);
         date.setDate(date.getDate() + max);
         setDeliveryDate(date);
         setLoading(false);
@@ -41,7 +41,7 @@ export default function OrderItem({ item, orderClicked }) {
             onPress={() => orderClicked(item)}
         >
             <View style={{ width: "60%" }}>
-                <Text>Ordered Date: {formatDate(item.orderDate)}</Text>
+                <Text>Ordered Date: {formatDate(item.createdAt)}</Text>
                 <Text>Estimated Delivery: {formatDate(deliveryDate)}</Text>
                 <Text>Status: {getOrderStatus(item.status)}</Text>
                 <Text>Total: {(total * 1.13).toFixed(2)}</Text>

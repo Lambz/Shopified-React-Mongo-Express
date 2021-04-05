@@ -32,6 +32,8 @@ import {
     signOutUserFromFirebase,
     getUIDFromFirebase,
     updateSellerInDB,
+    addOrderToDB,
+    searchProductsInDB,
 } from "./expressHandler.js";
 
 import { Category } from "./models.js";
@@ -275,9 +277,10 @@ function placeOrder(order, uiCallback) {
 //
 function updateOrderStatus(order, newStatus, uiCallback) {
     // console.log(1);
-    order.status = newStatus;
+    // order.status = newStatus;
     // console.log("updated order", order);
-    insertOrderInDB(order, uiCallback);
+    let s = { status: newStatus };
+    insertOrderInDB(order, s, uiCallback);
 }
 
 // Function to return all orders for a seller
@@ -433,8 +436,17 @@ function fetchSubcategoriesImage(subcategoryArray, uiCallback) {
     });
 }
 
+function addOrder(id, json, uiCallback) {
+    addOrderToDB(id, json, uiCallback);
+}
+
 function getUID() {
     return getUIDFromFirebase();
+}
+
+function searchProducts(text, uiCallback) {
+    let json = { search: text };
+    searchProductsInDB(json, uiCallback);
 }
 
 export {
@@ -464,4 +476,6 @@ export {
     updateCategories,
     fetchSubcategoriesImage,
     getUID,
+    addOrder,
+    searchProducts,
 };

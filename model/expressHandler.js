@@ -326,14 +326,12 @@ function insertCategoryOrSubcategoryInDB(category) {
     categoryData.subcategories.forEach((subcategory) => {});
 }
 
-function insertOrderInDB(order, uiCallback) {
-    let reference = db.collection("orders").doc(order.id);
-    reference.set(Object.assign({}, order)).then(() => {
-        uiCallback();
-    });
-    // .catch((error) => {
-    //     console.log(`Order insertion error! Error code: ${error.code}\nError Message: ${error.message}`);
-    // });
+function insertOrderInDB(order, newStatus, uiCallback) {
+    postData(`${API_URL}orders/updateStatus/${order._id}`, newStatus)
+        .then((response) => {
+            uiCallback(codes.INSERTION_SUCCESS);
+        })
+        .catch((err) => uiCallback(codes.INSERTION_FAILIURE));
 }
 
 // Update functions
@@ -670,6 +668,30 @@ function updateSellerInDB(seller, uiCallback) {
         });
 }
 
+function addOrderToDB(id, json, uiCallback) {
+    postData(`${API_URL}user/addOrder/${id}`, json)
+        .then((data) => {
+            console.log(data);
+            uiCallback(codes.INSERTION_SUCCESS);
+        })
+        .catch((err) => {
+            console.log(`Error: ${err}`);
+            uiCallback(codes.INSERTION_FAILIURE);
+        });
+}
+
+function searchProductsInDB(json, uiCallback) {
+    postData(`${API_URL}products/search`, json)
+        .then((data) => {
+            // console.log(data);
+            uiCallback(data);
+        })
+        .catch((err) => {
+            console.log(`Error: ${err}`);
+            uiCallback(codes.INSERTION_FAILIURE);
+        });
+}
+
 async function postData(url = "", data = {}) {
     console.log(url, data);
     // Default options are marked with *
@@ -726,4 +748,6 @@ export {
     mUserUid,
     getUIDFromFirebase,
     updateSellerInDB,
+    addOrderToDB,
+    searchProductsInDB,
 };
