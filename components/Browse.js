@@ -20,9 +20,9 @@ export default function Browse({ navigation, route }) {
 
     const subcategoryClicked = (subcategory) => {
         console.log("subcategory fetched", subcategory);
-        route.params.stackMoveCallback("Products List", {
-            browse: subcategory,
-        });
+        // route.params.stackMoveCallback("Products List", {
+        //     browse: subcategory,
+        // });
     };
 
     const loginFunc = () => {

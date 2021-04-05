@@ -18,15 +18,17 @@ let carouselArray = {};
 function getImagesForCarousel(subcategoryArray, categoryName, callback) {
     carouselArray[categoryName] = [];
     fetchSubcategoriesImage(subcategoryArray, (images) => {
+        // console.log("images: ", images);
         subcategoryArray.forEach((subcategory, index) => {
+            // console.log(subcategory);
             if (images && images[index]) {
                 carouselArray[categoryName].push({
-                    title: subcategory,
+                    title: subcategory.label,
                     illustration: images[index],
                 });
             } else {
                 carouselArray[categoryName].push({
-                    title: subcategory,
+                    title: subcategory.label,
                     illustration: defaultIllustrationUrl,
                 });
             }
@@ -38,16 +40,17 @@ function getImagesForCarousel(subcategoryArray, categoryName, callback) {
 export default function CategoryView({ item, clickCallback }) {
     const [entries, setEntries] = useState([]);
     const carouselRef = {};
-    let categoryName = item.item.name;
+    let categoryName = item.item.label;
     carouselRef[categoryName] = useRef(null);
     const [isLoading, setIsLoading] = useState(true);
     const goForward = () => {
         carouselRef[categoryName].current.snapToNext();
     };
     if (isLoading) {
+        // console.log("item: ", item);
         getImagesForCarousel(
-            item.item.subcategories,
-            item.item.name,
+            item.item.subCategories,
+            item.item.label,
             isFetched
         );
     }
@@ -58,7 +61,7 @@ export default function CategoryView({ item, clickCallback }) {
 
     const imageClicked = (subcategoryIndex) => {
         console.log("Click", subcategoryIndex);
-        clickCallback(item.item.subcategories[subcategoryIndex.index]);
+        clickCallback(item.item.subCategories[subcategoryIndex.index]);
     };
 
     const renderItem = ({ item, index }, parallaxProps) => {

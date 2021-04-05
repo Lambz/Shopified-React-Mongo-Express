@@ -136,8 +136,16 @@ function signOut(uiCallback) {
 // Note: uiCallback is provided with an array if query is successfully executed
 // FETCH_FAILURE if error
 
-function fetchAllCategoriesAndSubcategories(uiCallback) {
-    fetchCategoriesAndSubcategoriesFromDB(uiCallback);
+async function fetchAllCategoriesAndSubcategories(uiCallback) {
+    // fetchCategoriesAndSubcategoriesFromDB(uiCallback);
+    try {
+        let response = await fetch(`http://127.0.0.1:3000/categories`);
+        let jsonResponse = await response.json();
+        // console.log(jsonResponse);
+        uiCallback(jsonResponse);
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 // Function to fetch the product by product id
@@ -386,7 +394,42 @@ function updateCategories(categories, uiCallback) {
 }
 
 function fetchSubcategoriesImage(subcategoryArray, uiCallback) {
-    fetchSubcategoryImagesFromDB(subcategoryArray, uiCallback);
+    // fetchSubcategoryImagesFromDB(subcategoryArray, uiCallback);
+    let requests = [];
+    let requests1 = [];
+    let images = [];
+    subcategoryArray.forEach((subCategory) => {
+        // console.log(
+        //     `http://127.0.0.1:3000/products/subCategory/${subCategory._id}`
+        // );
+        requests.push(
+            fetch(
+                `http://127.0.0.1:3000/products/subCategory/${subCategory._id}`
+            )
+        );
+    });
+    console.log("requests.length: ", requests.length);
+    Promise.all(requests).then((responses) => {
+        responses.forEach((response) => {
+            // console.log("first: ", response);
+            requests1.push(response.json());
+        });
+
+        console.log("requests1.length: ", requests1.length);
+
+        // console.log(requests1);
+        Promise.all(requests1).then((responses) => {
+            responses.forEach((response) => {
+                // console.log("second: ", response);
+                images.push(response.img);
+            });
+
+            console.log("responses.length: ", responses.length);
+
+            console.log(images);
+            uiCallback(images);
+        });
+    });
 }
 
 function getUID() {
