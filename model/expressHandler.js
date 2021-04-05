@@ -15,7 +15,10 @@ import {
     userConverter,
     categoryConverter,
     sellerConverter,
+    Product,
+    Category,
 } from "./models.js";
+import { response } from "express";
 // import Order from "./models";
 
 // global variables
@@ -53,7 +56,7 @@ var app = null;
 var db = null;
 let mCurrentUser = null;
 let mUserUid = null;
-const API_URL = "http://localhost:3000/";
+const API_URL = "https://shopified.herokuapp.com/";
 
 var obs = new observable(mCurrentUser);
 
@@ -304,43 +307,28 @@ function insertProductInDB(product, seller, uiCallback) {
             `Product insertion error! Error code: ${codes.NULL_OBJECT}`
         );
     }
-    // console.log(product);
-    db.collection(`products`)
-        .doc(product.id)
-        .withConverter(productConverter)
-        .set(product)
-        .then(() => {
-            console.log("Product Added!");
-            seller.addProduct(product);
-            createSellerObjectInDB(seller, uiCallback);
-            return codes.INSERTION_SUCCESS;
-        });
-    // .catch((error) => {
-    //     console.log(`Product insertion error! Error code: ${error.errorCode}\nError Messsage: ${error.errorMessage}`);
-    //     return codes.INSERTION_FAILIURE;
-    // });
+    let productData = Product.convertToJSON(product);
+    postData(`${API_URL}products/add`, productData)
+    .then(response => {
+        uiCallback(codes.INSERTION_SUCCESS);
+        
+    })
+    .catch(err => uiCallback(codes.INSERTION_FAILIURE));
 }
 
+// ADD FROM HERE
+// FUNTIONS TO BE ADDED FROM HERE
+// LOOK FOR POST DATA METHOD AT THE END FOR POST OPN
 function insertCategoryOrSubcategoryInDB(category) {
     if (!category) {
         throw new Error(
             `Category Insertion Error! Error code: ${codes.NULL_OBJECT}`
         );
     }
-    db.collection("categories")
-        .doc(category.name)
-        .withConverter(categoryConverter)
-        .set(category)
-        .then(() => {
-            console.log("Category Added!");
-            return codes.INSERTION_SUCCESS;
-        })
-        .catch((error) => {
-            console.log(
-                `Category insertion error! Error code: ${error.errorCode}\nError Messsage: ${error.errorMessage}`
-            );
-            return codes.INSERTION_FAILIURE;
-        });
+    const categoryData = Category.convertToJSON(category);
+    categoryData.subcategories.forEach(subcategory => {
+        
+    })
 }
 
 function insertOrderInDB(order, uiCallback) {
@@ -401,18 +389,7 @@ function deleteProductFromDB(productID, seller, uiCallback) {
 }
 
 function deleteUserFromDB(uiCallback) {
-    db.collection("users")
-        .doc(sessionStorage.getItem("uid"))
-        .delete()
-        .then(() => {
-            signOutUserFromFirebase(uiCallback);
-        })
-        .catch((error) => {
-            console.log(
-                `Error while deleting account!Error code: ${error.code}\nError Message: ${error.message}`
-            );
-            uiCallback(codes.DELETION_FAILIURE);
-        });
+    
 }
 
 function deleteSellerFromDB() {

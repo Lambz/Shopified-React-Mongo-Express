@@ -208,6 +208,22 @@ class Product {
         this.description = description;
     }
 
+    static convertToJSON(product) {
+        return {
+            name: product.name,
+            id: product.id,
+            category: product.category,
+            subcategory: product.subcategory,
+            price: product.price,
+            seller: product.seller,
+            seller_id: product.seller_id,
+            estimatedTime: product.estimatedTime,
+            images: product.images,
+            quantity: product.quantity,
+            description: product.description,
+        };
+    }
+
     static convertToProduct(json) {
         return new Product(
             json.name,
@@ -225,59 +241,19 @@ class Product {
     }
 }
 
-var productConverter = {
-    toFirestore: function (product) {
-        return {
-            name: product.name,
-            id: product.id,
-            category: product.category,
-            subcategory: product.subcategory,
-            price: product.price,
-            seller: product.seller,
-            seller_id: product.seller_id,
-            estimatedTime: product.estimatedTime,
-            images: product.images,
-            quantity: product.quantity,
-            description: product.description,
-        };
-    },
-    fromFirestore: function (snapshot, options) {
-        const data = snapshot.data(options);
-        return new Product(
-            data.name,
-            data.id,
-            data.category,
-            data.subcategory,
-            data.price,
-            data.seller,
-            data.seller_id,
-            data.estimatedTime,
-            data.images,
-            data.quantity,
-            data.description
-        );
-    },
-};
-
 class Category {
     constructor(name, subcategories) {
         this.name = name;
         this.subcategories = subcategories;
     }
-}
 
-var categoryConverter = {
-    toFirestore: function (category) {
+    static convertToJSON(catgeory) {
         return {
             name: category.name,
             subcategories: category.subcategories,
         };
-    },
-    fromFirestore: function (snapshot, options) {
-        const data = snapshot.data(options);
-        return new Category(data.name, data.subcategories);
-    },
-};
+    }
+}
 
 class Order {
     constructor(

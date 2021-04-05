@@ -31,7 +31,7 @@ import {
     fetchSubcategoryImagesFromDB,
     signOutUserFromFirebase,
     getUIDFromFirebase,
-} from "./firebaseHandlers.js";
+} from "./expressHandler.js";
 
 import { Category } from "./models.js";
 
