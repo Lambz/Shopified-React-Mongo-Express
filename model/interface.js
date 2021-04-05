@@ -31,6 +31,7 @@ import {
     fetchSubcategoryImagesFromDB,
     signOutUserFromFirebase,
     getUIDFromFirebase,
+    updateSellerInDB,
 } from "./expressHandler.js";
 
 import { Category } from "./models.js";
@@ -89,9 +90,9 @@ function signIn(email, password, isUser, uiCallback) {
 
 function updateUser(isUser, user, uiCallback) {
     if (isUser) {
-        createUserObjectInDB(user, uiCallback);
+        updateUserInDB(user, uiCallback);
     } else {
-        createSellerObjectInDB(user, uiCallback);
+        updateSellerInDB(user, uiCallback);
     }
 }
 

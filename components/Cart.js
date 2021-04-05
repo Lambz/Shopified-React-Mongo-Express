@@ -13,7 +13,7 @@ export default function Cart({ navigation, route }) {
     const [cartItems, setCartItems] = useState([]);
     const [subTotal, setSubTotal] = useState(0);
     const userDetailsCallback = (user) => {
-        console.log("user", user);
+        // console.log("user", user);
         if (user != codes.NOT_FOUND) {
             setUser(user);
             setCartItems(user.cart);
@@ -23,7 +23,7 @@ export default function Cart({ navigation, route }) {
     const calculateSubTotal = (products) => {
         let total = 0;
         products.forEach((item) => {
-            total += item.price * item.quantity;
+            total += item.product.price * item.quantity;
         });
         setSubTotal(total);
     };
@@ -47,7 +47,7 @@ export default function Cart({ navigation, route }) {
     const updateQuantiy = (id, quantity) => {
         setUser((ogUser) => {
             ogUser.cart.forEach((product) => {
-                if (product.id == id) {
+                if (product._id == id) {
                     product.quantity = Number(quantity);
                 }
             });
@@ -62,10 +62,10 @@ export default function Cart({ navigation, route }) {
 
     const removeProduct = (id) => {
         setUser((ogUser) => {
-            ogUser.cart = ogUser.cart.filter((item) => item.id != id);
+            ogUser.cart = ogUser.cart.filter((item) => item._id != id);
             updateUser(true, ogUser, (reply) => {});
             setCartItems((items) => {
-                return items.filter((item) => item.id != id);
+                return items.filter((item) => item._id != id);
             });
             calculateSubTotal(ogUser.cart);
             return ogUser;

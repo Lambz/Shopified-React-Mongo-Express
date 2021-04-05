@@ -338,29 +338,29 @@ function insertOrderInDB(order, uiCallback) {
 
 // Update functions
 
-function updateUserInDB(user, uiCallback) {
-    if (!user) {
-        throw new Error(
-            `User Updation Error! Error code: ${codes.NULL_OBJECT}`
-        );
-    }
-    db.collection("users")
-        .doc(user.id)
-        .withConverter(userConverter)
-        .set(user)
-        .then(() => {
-            console.log("User Added!");
-            uiCallback();
-            return codes.INSERTION_SUCCESS;
-        })
-        .catch((error) => {
-            console.log(
-                `User insertion error! Error code: ${error.errorCode}\nError Messsage: ${error.errorMessage}`
-            );
-            uiCallback();
-            return codes.INSERTION_FAILIURE;
-        });
-}
+// function updateUserInDB(user, uiCallback) {
+//     if (!user) {
+//         throw new Error(
+//             `User Updation Error! Error code: ${codes.NULL_OBJECT}`
+//         );
+//     }
+//     db.collection("users")
+//         .doc(user.id)
+//         .withConverter(userConverter)
+//         .set(user)
+//         .then(() => {
+//             console.log("User Added!");
+//             uiCallback();
+//             return codes.INSERTION_SUCCESS;
+//         })
+//         .catch((error) => {
+//             console.log(
+//                 `User insertion error! Error code: ${error.errorCode}\nError Messsage: ${error.errorMessage}`
+//             );
+//             uiCallback();
+//             return codes.INSERTION_FAILIURE;
+//         });
+// }
 
 // Deletion functions
 
@@ -646,6 +646,30 @@ function getUIDFromFirebase() {
     return firebase.auth().currentUser.uid;
 }
 
+function updateUserInDB(user, uiCallback) {
+    postData(`${API_URL}user/update/${user._id}`, user)
+        .then((data) => {
+            console.log(data);
+            uiCallback(codes.INSERTION_SUCCESS);
+        })
+        .catch((err) => {
+            console.log(`Error: ${err}`);
+            uiCallback(codes.INSERTION_FAILIURE);
+        });
+}
+
+function updateSellerInDB(seller, uiCallback) {
+    postData(`${API_URL}seller/update/${seller._id}`, seller)
+        .then((data) => {
+            console.log(data);
+            uiCallback(codes.INSERTION_SUCCESS);
+        })
+        .catch((err) => {
+            console.log(`Error: ${err}`);
+            uiCallback(codes.INSERTION_FAILIURE);
+        });
+}
+
 async function postData(url = "", data = {}) {
     console.log(url, data);
     // Default options are marked with *
@@ -701,4 +725,5 @@ export {
     signOutUserFromFirebase,
     mUserUid,
     getUIDFromFirebase,
+    updateSellerInDB,
 };

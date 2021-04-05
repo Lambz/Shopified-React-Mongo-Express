@@ -13,8 +13,8 @@ import { images } from "../Utils";
 export default function CartItem({ item, updateQuantiy, removeProduct }) {
     const [quantity, setQuanity] = useState(String(item.quantity));
     let image = "";
-    if (item.images.length > 0) {
-        image = { uri: item.images[0] };
+    if (item.product.images.length > 0) {
+        image = { uri: item.product.images[0] };
     } else {
         image = images.productPlaceholder;
     }
@@ -24,11 +24,11 @@ export default function CartItem({ item, updateQuantiy, removeProduct }) {
                 { text: "Okay", onPress: () => console.log("OK Pressed") },
             ]);
         } else {
-            updateQuantiy(item.id, quantity);
+            updateQuantiy(item._id, quantity);
         }
     };
     const deleteQuantityHandler = () => {
-        removeProduct(item.id);
+        removeProduct(item._id);
     };
     return (
         <View style={styles.container}>
@@ -38,8 +38,8 @@ export default function CartItem({ item, updateQuantiy, removeProduct }) {
                     source={image}
                 />
                 <View style={{ width: "60%" }}>
-                    <Text>{item.name}</Text>
-                    <Text>{item.price}</Text>
+                    <Text>{item.product.name}</Text>
+                    <Text>${item.product.price}</Text>
                 </View>
             </View>
             <View style={[styles.rows, { marginTop: 10 }]}>

@@ -16,14 +16,19 @@ import { codes } from "../model/expressHandler";
 const { width: screenWidth } = Dimensions.get("window");
 
 export default function ProductDetail({ navigation, route }) {
+    // console.log(route);
     const [product, setProduct] = useState(route.params);
     const [quantity, setQuantity] = useState("1");
     const [isLoading, setLoading] = useState(true);
     const [isDisabled, setDisabled] = useState(true);
+    const [user, setUser] = useState(null);
     if (isLoading) {
+        // console.log("route.params: ", route.params);
         navigation.setOptions({ title: route.params.name });
         getUserDetails(true, (user) => {
+            // console.log("user: ", user);
             if (user != null && user != undefined && user != codes.NOT_FOUND) {
+                setUser(user);
                 setDisabled(false);
             }
         });
@@ -31,7 +36,7 @@ export default function ProductDetail({ navigation, route }) {
     }
 
     const renderItem = ({ item, index }, parallaxProps) => {
-        console.log("image", item);
+        // console.log("image", item);
         return (
             <View style={styles.item}>
                 <ParallaxImage
@@ -56,12 +61,13 @@ export default function ProductDetail({ navigation, route }) {
     const addToCartClicked = () => {
         let count = parseInt(quantity);
         product.quantity = count;
-        getUserDetails(true, (user) => {
-            user.addProduct(product);
-            updateUser(true, user, () => {
-                navigation.goBack();
-            });
+        // getUserDetails(true, (user) => {
+        // user.addProduct(product);
+        user.cart = [...user.cart, { product: product._id, quantity: count }];
+        updateUser(true, user, () => {
+            navigation.goBack();
         });
+        // });
     };
 
     const xpressCheckoutClicked = () => {
@@ -83,7 +89,7 @@ export default function ProductDetail({ navigation, route }) {
                 <Text style={styles.headerText}>{product.name}</Text>
                 <Text style={styles.category}>
                     <Text style={styles.bold}>Featured in:</Text>{" "}
-                    {product.category}, {product.subcategory}
+                    {product.category.label}, {product.subcategory.label}
                 </Text>
                 {/* carousel */}
                 <View style={styles.carouselContainer}>
@@ -120,7 +126,7 @@ export default function ProductDetail({ navigation, route }) {
                         }}
                         dropDownStyle={{ backgroundColor: "#fafafa" }}
                         onChangeItem={(item) => {
-                            console.log("new item", item);
+                            // console.log("new item", item);
                             setQuantity(item.value);
                         }}
                     />
@@ -147,7 +153,7 @@ export default function ProductDetail({ navigation, route }) {
                     <Text style={styles.seller}>{product.description}</Text>
                     <Text style={styles.seller}>
                         <Text style={styles.bold}>Sold By:</Text>{" "}
-                        {product.seller}
+                        {product.seller.company}
                     </Text>
                 </View>
             </ScrollView>
