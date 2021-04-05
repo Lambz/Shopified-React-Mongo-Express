@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { Header } from "react-native-elements";
-import { codes } from "../model/firebaseHandlers";
+import { codes } from "../model/expressHandler";
 import * as Crypto from "expo-crypto";
 import {
     fetchOrdersForSeller,

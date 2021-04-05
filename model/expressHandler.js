@@ -5,7 +5,7 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import { generateID } from "../Utils.js";
 // Fetch
-import "isomorphic-fetch"
+import "isomorphic-fetch";
 // // imports
 import {
     User,
@@ -18,7 +18,6 @@ import {
     Product,
     Category,
 } from "./models.js";
-import { response } from "express";
 // import Order from "./models";
 
 // global variables
@@ -95,7 +94,7 @@ function initializeDB() {
     } else {
         app = firebase.app();
     }
-    db = firebase.firestore(app);
+    // db = firebase.firestore(app);
     console.log("DB initialized!");
 }
 
@@ -202,16 +201,16 @@ function createUserObjectInDB(user, uiCallback) {
     }
     let userData = User.convertToJSON(user);
     // additional paramter required
-    userData[id] = getUIDFromFirebase(); 
+    userData[id] = getUIDFromFirebase();
     postData(`${API_URL}user/add`, userData)
-    .then(data => {
-        console.log(data);
-        uiCallback(codes.INSERTION_SUCCESS);
-    })
-    .catch(err => {
-        console.log(`Error: ${err}`);
-        uiCallback(codes.INSERTION_FAILIURE);
-    })
+        .then((data) => {
+            console.log(data);
+            uiCallback(codes.INSERTION_SUCCESS);
+        })
+        .catch((err) => {
+            console.log(`Error: ${err}`);
+            uiCallback(codes.INSERTION_FAILIURE);
+        });
 }
 
 function createSellerObjectInDB(user, uiCallback) {
@@ -223,46 +222,42 @@ function createSellerObjectInDB(user, uiCallback) {
     let sellerData = Seller.convertToJSON(user);
     sellerData[id] = getUIDFromFirebase();
     postData(`${API_URL}seller/add`, sellerData)
-    .then(data => uiCallback(codes.INSERTION_SUCCESS))
-    .catch(err =>  uiCallback(codes.INSERTION_FAILIURE));
+        .then((data) => uiCallback(codes.INSERTION_SUCCESS))
+        .catch((err) => uiCallback(codes.INSERTION_FAILIURE));
 }
 
 // User Query functions
 
 function getUserDetailsFromDB(uiCallback) {
     let uid = getUIDFromFirebase();
-    if(uid) {
+    if (uid) {
         fetch(`${API_URL}user/${uid}`)
-        .then(data => {
-          return data.json()
-        })
-        .then(data => {
-          uiCallback(data);
-        })
-        .catch(err => uiCallback(codes.FETCH_FAILURE));
-    }
-    else {
+            .then((data) => {
+                return data.json();
+            })
+            .then((data) => {
+                uiCallback(data);
+            })
+            .catch((err) => uiCallback(codes.FETCH_FAILURE));
+    } else {
         uiCallback(codes.NOT_FOUND);
     }
-    
 }
 
 function getSellerDetailsFromDB(uiCallback) {
     let uid = getUIDFromFirebase();
-    if(uid) {
+    if (uid) {
         fetch(`${API_URL}seller/${uid}`)
-        .then(data => {
-          return data.json()
-        })
-        .then(data => {
-          uiCallback(data);
-        })
-        .catch(err => uiCallback(codes.FETCH_FAILURE));
-    }
-    else {
+            .then((data) => {
+                return data.json();
+            })
+            .then((data) => {
+                uiCallback(data);
+            })
+            .catch((err) => uiCallback(codes.FETCH_FAILURE));
+    } else {
         uiCallback(codes.NOT_FOUND);
     }
-    
 }
 
 //  User details Update Functions
@@ -309,11 +304,10 @@ function insertProductInDB(product, seller, uiCallback) {
     }
     let productData = Product.convertToJSON(product);
     postData(`${API_URL}products/add`, productData)
-    .then(response => {
-        uiCallback(codes.INSERTION_SUCCESS);
-        
-    })
-    .catch(err => uiCallback(codes.INSERTION_FAILIURE));
+        .then((response) => {
+            uiCallback(codes.INSERTION_SUCCESS);
+        })
+        .catch((err) => uiCallback(codes.INSERTION_FAILIURE));
 }
 
 // ADD FROM HERE
@@ -326,9 +320,7 @@ function insertCategoryOrSubcategoryInDB(category) {
         );
     }
     const categoryData = Category.convertToJSON(category);
-    categoryData.subcategories.forEach(subcategory => {
-        
-    })
+    categoryData.subcategories.forEach((subcategory) => {});
 }
 
 function insertOrderInDB(order, uiCallback) {
@@ -388,9 +380,7 @@ function deleteProductFromDB(productID, seller, uiCallback) {
     // });
 }
 
-function deleteUserFromDB(uiCallback) {
-    
-}
+function deleteUserFromDB(uiCallback) {}
 
 function deleteSellerFromDB() {
     db.collection("sellers")
@@ -653,26 +643,23 @@ function getUIDFromFirebase() {
     return firebase.auth().currentUser.uid;
 }
 
-async function postData(url = '', data = {}) {
+async function postData(url = "", data = {}) {
     // Default options are marked with *
     const response = await fetch(url, {
-      method: 'POST', // *GET, POST, PUT, DELETE, etc.
-      mode: 'cors', // no-cors, *cors, same-origin
-      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: 'same-origin', // include, *same-origin, omit
-      headers: {
-        'Content-Type': 'application/json'
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      redirect: 'follow', // manual, *follow, error
-      referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      body: JSON.stringify(data) // body data type must match "Content-Type" header
+        method: "POST", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, *cors, same-origin
+        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: "same-origin", // include, *same-origin, omit
+        headers: {
+            "Content-Type": "application/json",
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        redirect: "follow", // manual, *follow, error
+        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        body: JSON.stringify(data), // body data type must match "Content-Type" header
     });
     return response.json(); // parses JSON response into native JavaScript objects
-  }
-  
-
-
+}
 
 export {
     codes,

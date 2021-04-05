@@ -5,7 +5,7 @@ import CustomHeader from "./CustomHeader";
 import { FlatList, TextInput } from "react-native-gesture-handler";
 import CartItem from "./CartItem";
 import * as Crypto from "expo-crypto";
-import { codes } from "../model/firebaseHandlers";
+import { codes } from "../model/expressHandler";
 
 export default function ChangePassword({ navigation }) {
     const [oldPassword, setOldPassword] = useState("");

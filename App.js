@@ -14,8 +14,8 @@ import OldOrders from "./components/OldOrders";
 import OrderDetails from "./components/OrderDetails";
 import ChangePassword from "./components/ChangePassword";
 
-import SignInScreen from "./LoginScreen";
-import SignUpScreen from "./SignUpScreen";
+import SignInScreen from "./components/LoginScreen";
+import SignUpScreen from "./components/SignUpScreen";
 import AddProuct from "./components/AddProduct";
 import SellerOrderDetails from "./components/SellerOrderDetails";
 

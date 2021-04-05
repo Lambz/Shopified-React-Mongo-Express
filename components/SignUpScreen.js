@@ -18,9 +18,9 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
 import { FontAwesome5 } from "@expo/vector-icons";
 import * as Crypto from "expo-crypto";
-import { signUp } from "./model/interface";
-import { User } from "./model/models";
-import { codes } from "./model/firebaseHandlers";
+import { signUp } from "../model/interface";
+import { User } from "../model/models";
+import { codes } from "../model/expressHandler";
 
 const SignUpScreen = ({ navigation }) => {
     const [data, setData] = React.useState({

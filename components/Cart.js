@@ -6,7 +6,7 @@ import CustomHeader from "./CustomHeader";
 import { FlatList } from "react-native-gesture-handler";
 import CartItem from "./CartItem";
 import { RefreshControl } from "react-native";
-import { codes } from "../model/firebaseHandlers";
+import { codes } from "../model/expressHandler";
 
 export default function Cart({ navigation, route }) {
     const [user, setUser] = useState(null);

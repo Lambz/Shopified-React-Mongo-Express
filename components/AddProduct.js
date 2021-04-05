@@ -9,7 +9,7 @@ import {
     FlatList,
     Alert,
 } from "react-native";
-import { codes, mUserUid } from "../model/firebaseHandlers";
+import { codes, mUserUid } from "../model/expressHandler";
 import {
     deleteProduct,
     fetchAllCategoriesAndSubcategories,

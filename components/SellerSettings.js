@@ -8,7 +8,7 @@ import {
     Keyboard,
     Alert,
 } from "react-native";
-import { codes } from "../model/firebaseHandlers";
+import { codes } from "../model/expressHandler";
 import { getUserDetails, updateUser } from "../model/interface";
 import { Header } from "react-native-elements";
 

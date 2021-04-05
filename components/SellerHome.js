@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { StyleSheet, View, Dimensions, Text } from "react-native";
 import { ButtonGroup, Header } from "react-native-elements";
-import { codes } from "../model/firebaseHandlers";
+import { codes } from "../model/expressHandler";
 import { fetchOrdersForSeller, getUID, signOut } from "../model/interface";
 import {
     LineChart,

@@ -9,11 +9,11 @@ import {
     Button,
     Alert,
 } from "react-native";
-import { codes } from "../model/firebaseHandlers";
 import { getUserDetails, signIn } from "../model/interface";
 import * as Crypto from "expo-crypto";
 import { StackActions } from "@react-navigation/native";
 import { CommonActions } from "@react-navigation/native";
+import { codes } from "../model/expressHandler";
 
 export default function SellerLogin({ navigation }) {
     // console.log("SellerLogin:", navigator);

@@ -8,7 +8,7 @@ import {
     TouchableOpacity,
     Alert,
 } from "react-native";
-import { codes } from "../model/firebaseHandlers";
+import { codes } from "../model/expressHandler";
 import { getUserDetails, placeOrder, updateUser } from "../model/interface";
 import { Order, Product } from "../model/models";
 import { images } from "../Utils";

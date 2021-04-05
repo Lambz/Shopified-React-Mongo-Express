@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { Header } from "react-native-elements";
 import { FlatList } from "react-native-gesture-handler";
-import { codes } from "../model/firebaseHandlers";
+import { codes } from "../model/expressHandler";
 import { getUserDetails } from "../model/interface";
 import { Product } from "../model/models";
 import ProductItem from "./PoductItem";

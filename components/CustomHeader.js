@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Header } from "react-native-elements";
 import Search from "react-native-search-box";
-import { mCurrentUser, setCurrentUser, obs } from "../model/firebaseHandlers";
+import { mCurrentUser, setCurrentUser, obs } from "../model/expressHandler";
 
 export default function CustomHeader({ loginFunc, logoutFunc, searchFunc }) {
     const [searchText, setSearchText] = useState("");

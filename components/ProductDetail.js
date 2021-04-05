@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { getUserDetails, updateUser } from "../model/interface";
-import { codes } from "../model/firebaseHandlers";
+import { codes } from "../model/expressHandler";
 
 const { width: screenWidth } = Dimensions.get("window");
 

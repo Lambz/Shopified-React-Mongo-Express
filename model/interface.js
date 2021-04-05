@@ -155,9 +155,17 @@ function fetchAllProductsForCategory(categoryID, uiCallback) {
     fetchProductsForCategoryInDB(categoryID, uiCallback);
 }
 
-function fetchAllProducts(uiCallback) {
+async function fetchAllProducts(uiCallback) {
     // console.log("fetchAllProducts:", uiCallback);
-    fetchAllProductsInDB(uiCallback);
+    // fetchAllProductsInDB(uiCallback);
+    try {
+        let response = await fetch(`http://127.0.0.1:3000/products`);
+        let jsonResponse = await response.json();
+        // console.log(jsonResponse);
+        uiCallback(jsonResponse);
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 // Insertion Functions
@@ -300,44 +308,59 @@ function deleteUser(isUser, uiCallback) {
 }
 
 // Function returns the products array in descending order of most sold products
-function fetchMostSoldProducts(uiCallback) {
-    fetchOrdersFromDB(true, (orderArray) => {
-        // console.log("orderArray", orderArray);
-        let products = [];
-        let productsArray = orderArray.map((o) => o.products);
-
-        for (let i = 0; i < productsArray.length; i++) {
-            let val = productsArray[i];
-            val.forEach((product) => {
-                products.push(product);
-            });
-        }
-
-        const result = Array.from(
-            products.reduce(
-                (map, item) => (map.get(item.id).count++, map),
-                new Map(
-                    products.map((o) => [
-                        o.id,
-                        Object.assign({}, o, { count: 0 }),
-                    ])
-                )
-            ),
-            ([k, o]) => o
-        ).sort((a, b) => b.count - a.count);
-
-        uiCallback(result);
-    });
+async function fetchMostSoldProducts(uiCallback) {
+    try {
+        let response = await fetch(`http://127.0.0.1:3000/products/mostSold`);
+        let jsonResponse = await response.json();
+        // console.log(jsonResponse);
+        uiCallback(jsonResponse);
+    } catch (error) {
+        console.log(error);
+    }
+    // fetchOrdersFromDB(true, (orderArray) => {
+    //     // console.log("orderArray", orderArray);
+    //     let products = [];
+    //     let productsArray = orderArray.map((o) => o.products);
+    //     for (let i = 0; i < productsArray.length; i++) {
+    //         let val = productsArray[i];
+    //         val.forEach((product) => {
+    //             products.push(product);
+    //         });
+    //     }
+    //     const result = Array.from(
+    //         products.reduce(
+    //             (map, item) => (map.get(item.id).count++, map),
+    //             new Map(
+    //                 products.map((o) => [
+    //                     o.id,
+    //                     Object.assign({}, o, { count: 0 }),
+    //                 ])
+    //             )
+    //         ),
+    //         ([k, o]) => o
+    //     ).sort((a, b) => b.count - a.count);
+    //     uiCallback(result);
+    // });
 }
 
 function fetchAllProductsForSeller(sellerID, uiCallback) {
     fetchAllProductsForSellerInDB(sellerID, uiCallback);
 }
 
-function getRandomProductFromDB(uiCallback) {
-    fetchAllProductsInDB((orders) => {
-        uiCallback(orders[Math.floor(Math.random() * orders.length)]);
-    });
+async function getRandomProductFromDB(uiCallback) {
+    // fetchAllProductsInDB((orders) => {
+    //     uiCallback(orders[Math.floor(Math.random() * orders.length)]);
+    // });
+    try {
+        let response = await fetch(
+            `http://127.0.0.1:3000/products/randomProduct`
+        );
+        let jsonResponse = await response.json();
+        // console.log(jsonResponse);
+        uiCallback(jsonResponse);
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 function fetchUserByName(orderID, orderStatus, userName, uiCallback) {

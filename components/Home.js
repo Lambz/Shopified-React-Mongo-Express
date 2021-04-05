@@ -42,7 +42,7 @@ export default function Home({ navigation, route }) {
         getRandomProductFromDB((product) => {
             setRandomProduct(product);
         });
-        getUserDetails(true, () => {});
+        // getUserDetails(true, () => {});
         setLoading(false);
     }
 

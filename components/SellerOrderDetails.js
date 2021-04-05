@@ -8,7 +8,6 @@ import {
     FlatList,
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
-import { codes } from "../model/firebaseHandlers";
 import {
     getUserDetails,
     updateOrderStatus,

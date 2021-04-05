@@ -1,8 +1,6 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer, useFocusEffect } from "@react-navigation/native";
-import SellerSignUp from "./SellerSignUp";
-import SellerLogin from "./SellerLogin";
 import Home from "./Home";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { Feather, Octicons } from "@expo/vector-icons";
@@ -15,18 +13,7 @@ export default function UserDashboard({ navigation }) {
     const stackMoveCallback = (name, object) => {
         navigation.navigate(name, object);
     };
-    // useFocusEffect(
-    //     React.useCallback(() => {
-    //         alert("Screen focused");
-    //         // Do something when the screen is focused
-    //         return () => {
-    //             alert("Screen was unfocused");
-    //             // Do something when the screen is unfocused
-    //             // Useful for cleanup functions
-    //             console.log("unfocus");
-    //         };
-    //     }, [])
-    // );
+
     let focusFunction = null;
     useFocusEffect(
         React.useCallback(() => {
@@ -50,8 +37,6 @@ export default function UserDashboard({ navigation }) {
     return (
         <NavigationContainer independent={true}>
             <Tabs.Navigator>
-                {/* <Tabs.Screen name="1" component={SellerLogin} />
-                <Tabs.Screen name="2" component={SellerSignUp} /> */}
                 <Tabs.Screen
                     name="Home"
                     component={Home}

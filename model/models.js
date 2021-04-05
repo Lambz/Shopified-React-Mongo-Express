@@ -311,15 +311,4 @@ class Order {
     }
 }
 
-export {
-    User,
-    Seller,
-    Product,
-    Category,
-    OrderStatus,
-    Order,
-    productConverter,
-    userConverter,
-    categoryConverter,
-    sellerConverter,
-};
+export { User, Seller, Product, Category, OrderStatus, Order };
