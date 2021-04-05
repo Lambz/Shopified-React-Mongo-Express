@@ -55,12 +55,13 @@ export default function ProductsList({ navigation, route }) {
     if (isLoading) {
         if (route.params.browse) {
             fetchAllProductsForSubcategory(route.params.browse, (data) => {
-                setDisplayText(route.params.browse);
+                console.log(data);
+                setDisplayText(route.params.browse.label);
                 setProducts(data);
                 if (data.length == 0) {
                     setDisplay("flex");
                 }
-                console.log(products);
+                // console.log(products);
             });
         } else {
             searchProducts(route.params.searchText, (products) => {
@@ -79,7 +80,7 @@ export default function ProductsList({ navigation, route }) {
         <View style={styles.container}>
             <Text style={styles.headerText}>Products for {dispayText}</Text>
             <Text style={[{ display }]}>
-                No items avaiable under this subcategory
+                No items available under this subcategory
             </Text>
             <FlatList
                 data={products}

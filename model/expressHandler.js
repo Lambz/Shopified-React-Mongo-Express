@@ -499,24 +499,32 @@ function fetchProductsForCategoryInDB(category, uiCallback) {
 
 // fetches all product for a subcategory
 function fetchProductsForSubCategoryFromDB(subcategory, uiCallback) {
-    let reference = db.collection("products");
-    let query = reference.where("subcategory", "==", subcategory);
-    let productsArray = [];
-    query
-        .withConverter(productConverter)
-        .get()
-        .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                productsArray.push(doc.data());
-            });
-            uiCallback(productsArray);
+    fetch(`${API_URL}products/subCategoryProducts/${subcategory._id}`)
+        .then((data) => {
+            return data.json();
         })
-        .catch((error) => {
-            console.log(
-                `Product fetch error! Error code: ${error.errorCode}\nError Messsage: ${error.errorMessage}`
-            );
-            return codes.FETCH_FAILURE;
-        });
+        .then((data) => {
+            uiCallback(data);
+        })
+        .catch((err) => uiCallback(codes.FETCH_FAILURE));
+    // let reference = db.collection("products");
+    // let query = reference.where("subcategory", "==", subcategory);
+    // let productsArray = [];
+    // query
+    //     .withConverter(productConverter)
+    //     .get()
+    //     .then((querySnapshot) => {
+    //         querySnapshot.forEach((doc) => {
+    //             productsArray.push(doc.data());
+    //         });
+    //         uiCallback(productsArray);
+    //     })
+    //     .catch((error) => {
+    //         console.log(
+    //             `Product fetch error! Error code: ${error.errorCode}\nError Messsage: ${error.errorMessage}`
+    //         );
+    //         return codes.FETCH_FAILURE;
+    //     });
 }
 // fetches category object for category name
 function fetchCategoryDataFromDB(category, callback) {
