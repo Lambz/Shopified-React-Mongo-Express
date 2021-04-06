@@ -34,6 +34,7 @@ export default () => (
                 component={UserDashboard}
                 options={{ title: "Dashboard", headerShown: false }}
             />
+
             <Stack.Screen
                 name="SellerDashboard"
                 component={SellerDashboard}

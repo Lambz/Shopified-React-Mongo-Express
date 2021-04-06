@@ -4,9 +4,15 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { images } from "../Utils";
 
 export default function ProductItem({ item, productClicked }) {
+    let i;
+    if (item.product != null && item.product != undefined) {
+        i = item.product;
+    } else {
+        i = item;
+    }
     let image = "";
-    if (item.product.images.length > 0) {
-        image = { uri: item.product.images[0] };
+    if (i.images.length > 0) {
+        image = { uri: i.images[0] };
     } else {
         image = images.productPlaceholder;
     }
@@ -22,10 +28,10 @@ export default function ProductItem({ item, productClicked }) {
                     source={image}
                 />
                 <View style={{ width: "60%" }}>
-                    <Text style={{ fontSize: 20 }}>{item.product.name}</Text>
-                    <Text>$ {item.product.price}</Text>
+                    <Text style={{ fontSize: 20 }}>{i.name}</Text>
+                    <Text>$ {i.price}</Text>
                     <Text numberOfLines={2} ellipsizeMode="tail">
-                        {item.product.description}
+                        {i.description}
                     </Text>
                     {/* <Text>Seller: {item.product.seller.company}</Text> */}
                 </View>

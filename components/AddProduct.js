@@ -86,6 +86,7 @@ export default function AddProuct({ navigation, route }) {
         });
         if (route.params.product != null && route.params.product != undefined) {
             let product = route.params.product;
+            console.log(product);
             navigation.setOptions({ title: "Edit Product" });
             setPosButton("Save");
             setNewProduct(false);
@@ -96,28 +97,19 @@ export default function AddProuct({ navigation, route }) {
             setEst(Number(product.estimatedTime));
             setImages(product.images);
             setProduct(product);
-            setTimeout(() => {
-                setDefaultCategory(product.category);
-                setSelectedCategory(product.category);
-                // console.log(c);
-                for (let i = 0; i < c.length; i++) {
-                    // console.log(c[i].name, product.category);
-                    if (c[i].name == product.category) {
-                        let data = [];
-                        c[i].subcategories.forEach((s) => {
-                            data.push({ label: s, value: s });
-                        });
-                        setSubCategories(data);
-                        break;
-                    }
-                }
-                setDefaultSubCategory(product.subcategory);
-                setSelectedSubCategory(product.subcategory);
-                // setTimeout(() => {
-                //     setDefaultSubCategory(product.subcategory);
-                //     setSelectedSubCategory(product.subcategory);
-                // }, 1500);
-            }, 1500);
+            //TODO: default category
+            // setTimeout(() => {
+            //     setDefaultCategory(product.category.value);
+            //     setSelectedCategory(product.category._id);
+            //     for (let i = 0; i < categories.length; i++) {
+            //         if (categories[i].value == product.category.value) {
+            //             setSubCategories(categories[i].subCategories);
+            //             break;
+            //         }
+            //     }
+            //     setDefaultSubCategory(product.subcategory.value);
+            //     setSelectedSubCategory(product.subcategory._id);
+            // }, 1500);
         }
         setLoading(false);
     }

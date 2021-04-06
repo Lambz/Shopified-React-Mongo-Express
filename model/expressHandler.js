@@ -258,7 +258,10 @@ function getSellerDetailsFromDB(uiCallback) {
             .then((data) => {
                 uiCallback(data);
             })
-            .catch((err) => uiCallback(codes.FETCH_FAILURE));
+            .catch((err) => {
+                console.log(err);
+                uiCallback(codes.FETCH_FAILURE);
+            });
     } else {
         uiCallback(codes.NOT_FOUND);
     }

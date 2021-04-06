@@ -10,7 +10,6 @@ import { Header } from "react-native-elements";
 import { FlatList } from "react-native-gesture-handler";
 import { codes } from "../model/expressHandler";
 import { getUserDetails } from "../model/interface";
-import { Product } from "../model/models";
 import ProductItem from "./PoductItem";
 
 export default function SellerProducts({ navigation, route }) {
@@ -21,6 +20,7 @@ export default function SellerProducts({ navigation, route }) {
         getUserDetails(false, (seller) => {
             // console.log("Seller: ", seller);
             if (seller != null && seller != codes.NOT_FOUND) {
+                // console.log(seller);
                 setSeller(seller);
                 setProducts(seller.products);
             }
@@ -80,7 +80,7 @@ export default function SellerProducts({ navigation, route }) {
                 renderItem={({ item }) => (
                     <ProductItem item={item} productClicked={productClicked} />
                 )}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) => item._id}
                 extraData={products.length}
                 refreshControl={
                     <RefreshControl
