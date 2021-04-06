@@ -3,6 +3,7 @@ import firebase from "firebase/app";
 
 // //Firebase services
 import "firebase/auth";
+import "firebase/storage";
 import { generateID } from "../Utils.js";
 // Fetch
 import "isomorphic-fetch";
@@ -595,6 +596,7 @@ function fetchUserByNameFromDB(name, callback) {
 
 function insertImageInDB(productID, index, fileData, callback) {
     // console.log("insertImageInDB");
+    console.log(firebase);
     let storageRef = firebase
         .storage()
         .ref()

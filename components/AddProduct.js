@@ -54,7 +54,7 @@ export default function AddProuct({ navigation, route }) {
     const [categories, setCategories] = useState([]);
     const [subCategories, setSubCategories] = useState([]);
     const [newProduct, setNewProduct] = useState(true);
-    const [categoryData, setCategoryData] = useState(null);
+    // const [categoryData, setCategoryData] = useState(null);
     const [seller, setSeller] = useState(null);
     const [defaultCategory, setDefaultCategory] = useState();
     const [defaultSubCategory, setDefaultSubCategory] = useState();
@@ -75,56 +75,14 @@ export default function AddProuct({ navigation, route }) {
         })();
     }, []);
 
-    const s = () => {
-        (async () => {
-            const digest = await Crypto.digestStringAsync(
-                Crypto.CryptoDigestAlgorithm.SHA512,
-                "test123"
-            );
-            signIn("c@gmail.com", digest, false, (user) => {
-                if (user != codes.NOT_FOUND) {
-                    setSeller(user);
-                } else {
-                    Alert.alert(
-                        "Invalid Login!",
-                        "Email or password does not exist.",
-                        [
-                            {
-                                text: "Okay",
-                                onPress: () => console.log("OK Pressed"),
-                            },
-                        ]
-                    );
-                }
-            });
-        })();
-    };
-
     if (isLoading) {
-        console.log("loading");
-        // getUserDetails(false, (seller) => {
-        //     console.log("Seller: ", seller);
-        //     if (seller != null && seller != codes.NOT_FOUND) {
-        //         setProducts(seller.products);
-        //     }
-        // });
-        // s();
+        console.log(route.params.seller);
         setSeller(route.params.seller);
         let c;
         fetchAllCategoriesAndSubcategories((categories) => {
-            setCategoryData(categories);
-            c = categories;
-            let cate = [];
-            categories.forEach((category) => {
-                cate.push({ label: category.name, value: category.name });
-            });
-            setCategories(cate);
-            let sc = categories[0].subcategories;
-            let data = [];
-            sc.forEach((s) => {
-                data.push({ label: s, value: s });
-            });
-            setSubCategories(data);
+            setCategories(categories);
+            let sc = categories[0].subCategories;
+            setSubCategories(sc);
         });
         if (route.params.product != null && route.params.product != undefined) {
             let product = route.params.product;
@@ -271,19 +229,30 @@ export default function AddProuct({ navigation, route }) {
             let uid = mUserUid;
             let p;
             if (newProduct) {
-                p = new Product(
-                    name,
-                    generateID(30),
-                    selectedCatgeory,
-                    selectedSubCatgeory,
-                    price,
-                    seller.company,
-                    uid,
-                    est,
-                    [],
-                    quantity,
-                    description
-                );
+                // p = new Product(
+                //     name,
+                //     generateID(30),
+                //     selectedCatgeory,
+                //     selectedSubCatgeory,
+                //     price,
+                //     seller.company,
+                //     uid,
+                //     est,
+                //     [],
+                //     quantity,
+                //     description
+                // );
+                p = {
+                    name: name,
+                    category: selectedCatgeory,
+                    subcategory: selectedSubCatgeory,
+                    price: price,
+                    seller: seller._id,
+                    estimatedTime: est,
+                    images: [],
+                    quantity: quantity,
+                    description: description,
+                };
             } else {
                 p = product;
                 console.log(product);
@@ -302,12 +271,19 @@ export default function AddProuct({ navigation, route }) {
                 let newImages = [];
                 let oldImages = [];
                 images.forEach((image) => {
-                    if (typeof image == "object") {
-                        newImages.push(image);
-                    } else {
+                    // if (typeof image == "object") {
+                    //     newImages.push(image);
+                    // } else {
+                    //     oldImages.push(image);
+                    // }
+                    if (image.includes("firebasestorage")) {
                         oldImages.push(image);
+                    } else {
+                        newImages.push(image);
                     }
                 });
+                // console.log("newImages: ", newImages);
+                // console.log("oldImages: ", oldImages);
                 if (newImages.length > 0) {
                     let blobs = [];
                     let num = newImages.length;
@@ -347,18 +323,8 @@ export default function AddProuct({ navigation, route }) {
     };
 
     const updateSelectedCategory = (category) => {
-        let sc = [];
-        categoryData.forEach((c) => {
-            if (c.name == category.value) {
-                sc = c.subcategories;
-            }
-        });
-        setSelectedCategory(category.value);
-        let data = [];
-        sc.forEach((s) => {
-            data.push({ label: s, value: s });
-        });
-        setSubCategories(data);
+        setSelectedCategory(category._id);
+        setSubCategories(category.subCategories);
     };
 
     const deleteHandler = () => {
@@ -474,7 +440,7 @@ export default function AddProuct({ navigation, route }) {
                         zIndex: 1,
                     }}
                     dropDownStyle={{ backgroundColor: "#fafafa", zIndex: 1 }}
-                    onChangeItem={(item) => setSelectedSubCategory(item.value)}
+                    onChangeItem={(item) => setSelectedSubCategory(item._id)}
                     defaultValue={defaultSubCategory}
                 />
                 <Text style={{ marginTop: 20 }}>Price</Text>
