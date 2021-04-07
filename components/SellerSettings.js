@@ -51,6 +51,11 @@ export default function SellerSettings({ navigation, route }) {
             setSeller((val) => {
                 val.name = name;
                 val.company = cName;
+                let products = [];
+                val.products.forEach((product) => {
+                    products.push(product._id);
+                });
+                val.products = products;
                 updateUser(false, val, (reply) => {
                     if (reply == codes.INSERTION_SUCCESS) {
                         Alert.alert(
