@@ -9,13 +9,14 @@ import SellerSignUp from "./SellerSignUp";
 import SellerLogin from "./SellerLogin";
 import Home from "./Home";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { Feather, Octicons, Ionicons } from "@expo/vector-icons";
+import { Feather, Octicons, Ionicons, Foundation } from "@expo/vector-icons";
 import Cart from "./Cart";
 import UserTab from "./UserTab";
 import SellerHome from "./SellerHome";
 import SellerProducts from "./SellerProducts";
 import SellerOrders from "./SellerOrders";
 import SellerSettings from "./SellerSettings";
+import Categories from "./Categories";
 
 const Tabs = createBottomTabNavigator();
 export default function SellerDashboard({ navigation }) {
@@ -111,6 +112,27 @@ export default function SellerDashboard({ navigation }) {
                         tabBarIcon: ({ color, size }) => (
                             <Octicons
                                 name="checklist"
+                                size={size}
+                                color={color}
+                            />
+                        ),
+                    }}
+                />
+
+                <Tabs.Screen
+                    name="Categories"
+                    component={Categories}
+                    initialParams={{
+                        stackMoveCallback: stackMoveCallback,
+                        resetToTop: resetToTop,
+                        setFocusFunction: setFocusFunction,
+                        deRegisterFocus: deRegisterFocus,
+                    }}
+                    options={{
+                        tabBarLabel: "Categories",
+                        tabBarIcon: ({ color, size }) => (
+                            <Foundation
+                                name="list-bullet"
                                 size={size}
                                 color={color}
                             />

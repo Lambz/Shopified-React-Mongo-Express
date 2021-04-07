@@ -36,6 +36,10 @@ import {
     searchProductsInDB,
     fetchOrdersForSellerFromDB,
     updateProductInDB,
+    updateCategoryInDB,
+    deleteCategoryFromDB,
+    updateSubCategoryInDB,
+    deleteSubCategoryFromDB,
 } from "./expressHandler.js";
 
 import { Category } from "./models.js";
@@ -363,15 +367,20 @@ function fetchUserByName(orderID, orderStatus, userName, uiCallback) {
     });
 }
 
-function updateCategories(categories, uiCallback) {
-    deleteAllCategoriesFromDB(() => {
-        console.log("categories deleted");
-        let promises = [];
-        categories.forEach((category) => {
-            promises.push(insertCategoryOrSubcategoryInDB(category));
-        });
-        Promise.all(promises).then(uiCallback);
-    });
+function updateCategory(category, newName, uiCallback) {
+    updateCategoryInDB(category, newName, uiCallback);
+}
+
+function updateSubCategory(subCategory, newName, uiCallback) {
+    updateSubCategoryInDB(subCategory, newName, uiCallback);
+}
+
+function deleteSubCategory(category, uiCallback) {
+    deleteSubCategoryFromDB(category, uiCallback);
+}
+
+function deleteCategory(category, uiCallback) {
+    deleteCategoryFromDB(category, uiCallback);
 }
 
 function fetchSubcategoriesImage(subcategoryArray, uiCallback) {
@@ -454,10 +463,13 @@ export {
     fetchAllProductsForSeller,
     getRandomProductFromDB,
     fetchUserByName,
-    updateCategories,
+    updateCategory,
     fetchSubcategoriesImage,
     getUID,
     addOrder,
     searchProducts,
     updateProduct,
+    updateSubCategory,
+    deleteCategory,
+    deleteSubCategory,
 };

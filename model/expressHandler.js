@@ -738,6 +738,53 @@ function updateProductInDB(product, uiCallback) {
         });
 }
 
+function updateCategoryInDB(category, newName, uiCallback) {
+    postData(`${API_URL}categories/update/${category._id}`, { name: newName })
+        .then((data) => {
+            // console.log(data);
+            uiCallback(data);
+        })
+        .catch((err) => {
+            console.log(`Error: ${err}`);
+            uiCallback(codes.INSERTION_FAILIURE);
+        });
+}
+
+function deleteCategoryFromDB(category, uiCallback) {
+    deleteRequest(`${API_URL}categories/delete/${category._id}`)
+        .then((data) => {
+            uiCallback(data);
+        })
+        .catch((err) => {
+            console.log(`Error: ${err}`);
+            uiCallback(codes.INSERTION_FAILIURE);
+        });
+}
+
+function updateSubCategoryInDB(subCategory, newName, uiCallback) {
+    postData(`${API_URL}subcategories/update/${subCategory._id}`, {
+        subCategory: newName,
+    })
+        .then((data) => {
+            uiCallback(data);
+        })
+        .catch((err) => {
+            console.log(`Error: ${err}`);
+            uiCallback(codes.INSERTION_FAILIURE);
+        });
+}
+
+function deleteSubCategoryFromDB(subCategory, uiCallback) {
+    deleteRequest(`${API_URL}subcategories/delete/${subCategory._id}`)
+        .then((data) => {
+            uiCallback(data);
+        })
+        .catch((err) => {
+            console.log(`Error: ${err}`);
+            uiCallback(codes.INSERTION_FAILIURE);
+        });
+}
+
 async function postData(url = "", data = {}) {
     console.log(url, data);
     // Default options are marked with *
@@ -816,4 +863,8 @@ export {
     searchProductsInDB,
     fetchOrdersForSellerFromDB,
     updateProductInDB,
+    updateCategoryInDB,
+    deleteCategoryFromDB,
+    updateSubCategoryInDB,
+    deleteSubCategoryFromDB,
 };
