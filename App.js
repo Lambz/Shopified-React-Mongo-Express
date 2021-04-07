@@ -25,14 +25,14 @@ export default () => (
     <NavigationContainer>
         <Stack.Navigator>
             <Stack.Screen
-                name="SellerLogin"
-                component={SellerLogin}
-                options={{ title: "Seller Login" }}
-            />
-            <Stack.Screen
                 name="UserDashboard"
                 component={UserDashboard}
                 options={{ title: "Dashboard", headerShown: false }}
+            />
+            <Stack.Screen
+                name="SellerLogin"
+                component={SellerLogin}
+                options={{ title: "Seller Login" }}
             />
 
             <Stack.Screen
