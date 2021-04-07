@@ -366,19 +366,28 @@ function insertOrderInDB(order, newStatus, uiCallback) {
 
 // Deletion functions
 
-function deleteProductFromDB(productID, seller, uiCallback) {
-    if (!productID) {
-        throw new Error(
-            `Product deletion error! Error code: ${codes.NULL_OBJECT}`
-        );
-    }
-    db.collection("products")
-        .doc(productID)
-        .delete()
-        .then(() => {
-            seller.removeProduct(productID);
-            createSellerObjectInDB(seller, uiCallback);
+function deleteProductFromDB(productID, uiCallback) {
+    deleteRequest(`${API_URL}products/delete/${productID}`)
+        .then((data) => {
+            uiCallback(data);
+        })
+        .catch((err) => {
+            console.log(`Error: ${err}`);
+            uiCallback(codes.INSERTION_FAILIURE);
         });
+
+    // if (!productID) {
+    //     throw new Error(
+    //         `Product deletion error! Error code: ${codes.NULL_OBJECT}`
+    //     );
+    // }
+    // db.collection("products")
+    //     .doc(productID)
+    //     .delete()
+    //     .then(() => {
+    //         seller.removeProduct(productID);
+    //         createSellerObjectInDB(seller, uiCallback);
+    //     });
     // .catch((error) => {
     //     console.log(`Product deletion error! Error code: ${error.errorCode}\nError Messsage: ${error.errorMessage}`);
     //     return codes.INSERTION_FAILIURE;
@@ -717,6 +726,18 @@ function fetchOrdersForSellerFromDB(sellerID, uiCallback) {
         .catch((err) => uiCallback(codes.FETCH_FAILURE));
 }
 
+function updateProductInDB(product, uiCallback) {
+    postData(`${API_URL}products/update/${product._id}`, product)
+        .then((data) => {
+            // console.log(data);
+            uiCallback(data);
+        })
+        .catch((err) => {
+            console.log(`Error: ${err}`);
+            uiCallback(codes.INSERTION_FAILIURE);
+        });
+}
+
 async function postData(url = "", data = {}) {
     console.log(url, data);
     // Default options are marked with *
@@ -732,6 +753,24 @@ async function postData(url = "", data = {}) {
         redirect: "follow", // manual, *follow, error
         referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
         body: JSON.stringify(data), // body data type must match "Content-Type" header
+    });
+    return response.json(); // parses JSON response into native JavaScript objects
+}
+
+async function deleteRequest(url = "") {
+    console.log(url);
+    // Default options are marked with *
+    const response = await fetch(url, {
+        method: "DELETE", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, *cors, same-origin
+        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: "same-origin", // include, *same-origin, omit
+        headers: {
+            "Content-Type": "application/json",
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        redirect: "follow", // manual, *follow, error
+        referrerPolicy: "no-referrer", // body data type must match "Content-Type" header
     });
     return response.json(); // parses JSON response into native JavaScript objects
 }
@@ -776,4 +815,5 @@ export {
     addOrderToDB,
     searchProductsInDB,
     fetchOrdersForSellerFromDB,
+    updateProductInDB,
 };

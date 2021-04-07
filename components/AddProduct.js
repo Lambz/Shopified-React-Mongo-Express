@@ -17,6 +17,7 @@ import {
     insertImage,
     insertProduct,
     signIn,
+    updateProduct,
 } from "../model/interface";
 import { Product } from "../model/models";
 import Carousel, { ParallaxImage } from "react-native-snap-carousel";
@@ -173,7 +174,7 @@ export default function AddProuct({ navigation, route }) {
     };
 
     const productResult = (reply) => {
-        if (reply == codes.INSERTION_SUCCESS) {
+        if (reply == codes.INSERTION_SUCCESS || reply.Error == undefined) {
             Alert.alert(
                 "Product Added!",
                 "Your Product has been successfully added.",
@@ -184,6 +185,88 @@ export default function AddProuct({ navigation, route }) {
                     },
                 ]
             );
+        }
+    };
+
+    const addNewProduct = (p) => {
+        if (images.length > 0) {
+            let newImages = [];
+            let oldImages = [];
+            images.forEach((image) => {
+                if (image.includes("firebasestorage")) {
+                    oldImages.push(image);
+                } else {
+                    newImages.push(image);
+                }
+            });
+            if (newImages.length > 0) {
+                let blobs = [];
+                let num = newImages.length;
+                let count = 1;
+                const handleRequest = (response) => {
+                    blobs.push(response);
+                    if (count == num) {
+                        insertImage(p.id, blobs, (urls) => {
+                            p.images = oldImages.concat(urls);
+                            insertProduct(p, seller, false, productResult);
+                        });
+                    }
+                    num++;
+                };
+                for (let i = 0; i < num; i++) {
+                    uriToBlob(newImages[i])
+                        .then(handleRequest)
+                        .catch((reply) => {
+                            console.log(reply);
+                        });
+                }
+            } else {
+                p.images = oldImages;
+                insertProduct(p, seller, false, productResult);
+            }
+        } else {
+            insertProduct(p, seller, false, productResult);
+        }
+    };
+
+    const updateP = (p) => {
+        if (images.length > 0) {
+            let newImages = [];
+            let oldImages = [];
+            images.forEach((image) => {
+                if (image.includes("firebasestorage")) {
+                    oldImages.push(image);
+                } else {
+                    newImages.push(image);
+                }
+            });
+            if (newImages.length > 0) {
+                let blobs = [];
+                let num = newImages.length;
+                let count = 1;
+                const handleRequest = (response) => {
+                    blobs.push(response);
+                    if (count == num) {
+                        insertImage(p.id, blobs, (urls) => {
+                            p.images = oldImages.concat(urls);
+                            updateProduct(p, productResult);
+                        });
+                    }
+                    num++;
+                };
+                for (let i = 0; i < num; i++) {
+                    uriToBlob(newImages[i])
+                        .then(handleRequest)
+                        .catch((reply) => {
+                            console.log(reply);
+                        });
+                }
+            } else {
+                p.images = oldImages;
+                updateProduct(p, productResult);
+            }
+        } else {
+            updateProduct(p, productResult);
         }
     };
 
@@ -245,6 +328,7 @@ export default function AddProuct({ navigation, route }) {
                     quantity: quantity,
                     description: description,
                 };
+                addNewProduct(p);
             } else {
                 p = product;
                 console.log(product);
@@ -258,51 +342,7 @@ export default function AddProuct({ navigation, route }) {
                 p.images = [];
                 p.quantity = quantity;
                 p.description = description;
-            }
-            if (images.length > 0) {
-                let newImages = [];
-                let oldImages = [];
-                images.forEach((image) => {
-                    // if (typeof image == "object") {
-                    //     newImages.push(image);
-                    // } else {
-                    //     oldImages.push(image);
-                    // }
-                    if (image.includes("firebasestorage")) {
-                        oldImages.push(image);
-                    } else {
-                        newImages.push(image);
-                    }
-                });
-                // console.log("newImages: ", newImages);
-                // console.log("oldImages: ", oldImages);
-                if (newImages.length > 0) {
-                    let blobs = [];
-                    let num = newImages.length;
-                    let count = 1;
-                    const handleRequest = (response) => {
-                        blobs.push(response);
-                        if (count == num) {
-                            insertImage(p.id, blobs, (urls) => {
-                                p.images = oldImages.concat(urls);
-                                insertProduct(p, seller, false, productResult);
-                            });
-                        }
-                        num++;
-                    };
-                    for (let i = 0; i < num; i++) {
-                        uriToBlob(newImages[i])
-                            .then(handleRequest)
-                            .catch((reply) => {
-                                console.log(reply);
-                            });
-                    }
-                } else {
-                    p.images = oldImages;
-                    insertProduct(p, seller, false, productResult);
-                }
-            } else {
-                insertProduct(p, seller, false, productResult);
+                updateP(p);
             }
         } else {
             Alert.alert("Inavlid Input!", "One or more inputs are invalid", [
@@ -331,10 +371,13 @@ export default function AddProuct({ navigation, route }) {
                 {
                     text: "Delete",
                     onPress: () => {
-                        deleteProduct(product.id, seller, (reply) => {
-                            if (reply == codes.INSERTION_SUCCESS) {
+                        deleteProduct(product._id, (reply) => {
+                            if (reply.Error == undefined) {
                                 navigation.pop();
                             }
+                            // if (reply == codes.INSERTION_SUCCESS) {
+                            //     navigation.pop();
+                            // }
                         });
                     },
                     style: "destructive",

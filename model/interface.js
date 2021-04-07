@@ -35,6 +35,7 @@ import {
     addOrderToDB,
     searchProductsInDB,
     fetchOrdersForSellerFromDB,
+    updateProductInDB,
 } from "./expressHandler.js";
 
 import { Category } from "./models.js";
@@ -261,8 +262,8 @@ function getCategoryObjectAndUpdateCategory(categoryName, subcategoryName) {
 
 // Function to delete a product
 
-function deleteProduct(productID, seller, uiCallback) {
-    deleteProductFromDB(productID, seller, uiCallback);
+function deleteProduct(productID, uiCallback) {
+    deleteProductFromDB(productID, uiCallback);
 }
 
 //
@@ -425,6 +426,10 @@ function searchProducts(text, uiCallback) {
     searchProductsInDB(json, uiCallback);
 }
 
+function updateProduct(product, uiCallback) {
+    updateProductInDB(product, uiCallback);
+}
+
 export {
     signUp,
     signIn,
@@ -454,4 +459,5 @@ export {
     getUID,
     addOrder,
     searchProducts,
+    updateProduct,
 };

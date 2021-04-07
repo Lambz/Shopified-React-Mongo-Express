@@ -36,16 +36,17 @@ export default function SellerOrderDetails({ navigation, route }) {
     ];
     if (isLoading) {
         let item = route.params;
+        console.log("item: ", item);
         let max = 0;
         let total = 0;
         setDefaultStatus(item.status);
         item.products.forEach((product) => {
             // setTotal(total + Number(product.price));
-            total += Number(product.price) * Number(product.quantity);
-            max = Math.max(max, product.estimatedTime);
+            total += Number(product.product.price) * Number(product.quantity);
+            max = Math.max(max, product.product.estimatedTime);
         });
         setTotal(total);
-        let date = new Date(item.orderDate);
+        let date = new Date(item.createdAt);
         date.setDate(date.getDate() + max);
         setDeliveryDate(date);
         setProducts(item.products);
@@ -103,7 +104,7 @@ export default function SellerOrderDetails({ navigation, route }) {
                     <Text style={{ marginTop: 10 }}>
                         Total: {(total * 1.13).toFixed(2)}
                     </Text>
-                    <Text>Ordered Date: {formatDate(order.orderDate)}</Text>
+                    <Text>Ordered Date: {formatDate(order.createdAt)}</Text>
                     <Text>Estimated Delivery: {formatDate(deliveryDate)}</Text>
                     <Text>Status: {getOrderStatus(order.status)}</Text>
                     <TouchableOpacity
@@ -131,7 +132,7 @@ export default function SellerOrderDetails({ navigation, route }) {
                 renderItem={({ item }) => (
                     <ProductItem item={item} productClicked={productClicked} />
                 )}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) => item._id}
                 extraData={products.length}
             />
 

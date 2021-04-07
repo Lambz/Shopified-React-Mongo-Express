@@ -19,8 +19,10 @@ export default function SellerOrders({ navigation, route }) {
 
     const loadData = () => {
         getUserDetails(false, (seller) => {
+            // console.log("SellerOrders seller: ", seller);
             if (seller != null && seller != codes.NOT_FOUND) {
-                fetchOrdersForSeller(getUID(), true, (orders) => {
+                fetchOrdersForSeller(getUID(), (orders) => {
+                    // console.log("SellerOrders orders: ", orders);
                     setOrders(orders);
                 });
             }
