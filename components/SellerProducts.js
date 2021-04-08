@@ -9,7 +9,7 @@ import {
 import { Header } from "react-native-elements";
 import { FlatList } from "react-native-gesture-handler";
 import { codes } from "../model/expressHandler";
-import { getUserDetails } from "../model/interface";
+import { getUserDetails, signOut } from "../model/interface";
 import ProductItem from "./PoductItem";
 
 export default function SellerProducts({ navigation, route }) {

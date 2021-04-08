@@ -31,11 +31,11 @@ export default function SellerDashboard({ navigation }) {
 
     const resetAction = CommonActions.reset({
         index: 0,
-        routes: [{ name: "SellerDashboard" }],
+        routes: [{ name: "UserDashboard" }],
     });
 
     const resetToTop = () => {
-        // console.log("called");
+        console.log("resetToTop called");
         navigation.dispatch(resetAction);
     };
 

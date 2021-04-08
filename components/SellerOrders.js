@@ -8,6 +8,7 @@ import {
     getUID,
     getUserDetails,
     signIn,
+    signOut,
 } from "../model/interface";
 import { FlatList } from "react-native-gesture-handler";
 import { Order } from "../model/models";

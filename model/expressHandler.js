@@ -161,19 +161,24 @@ function signInWithEmail(email, password, callback) {
 
 function signOutUserFromFirebase(uiCallback) {
     // sessionStorage.setItem("uid", null);
-    firebase
-        .auth()
-        .signOut()
-        .then(() => {
-            console.log("Logged out!");
-            obs.setValue(null);
-            mUserUid = null;
-            uiCallback(codes.LOGOUT_SUCCESS);
-            return codes.LOGOUT_SUCCESS;
-        })
-        .catch((error) => {
-            return codes.LOGOUT_FAILIURE;
-        });
+    try {
+        // console.log(firebase.auth().currentUser);
+        firebase
+            .auth()
+            .signOut()
+            .then(() => {
+                console.log("Logged out!");
+                obs.setValue(null);
+                mUserUid = null;
+                uiCallback(codes.LOGOUT_SUCCESS);
+                return codes.LOGOUT_SUCCESS;
+            })
+            .catch((error) => {
+                return codes.LOGOUT_FAILIURE;
+            });
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 // Password Reset Function

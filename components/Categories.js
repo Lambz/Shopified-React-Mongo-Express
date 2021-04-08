@@ -13,6 +13,7 @@ import {
     deleteCategory,
     deleteSubCategory,
     fetchAllCategoriesAndSubcategories,
+    signOut,
     updateCategory,
     updateSubCategory,
 } from "../model/interface";
@@ -162,6 +163,13 @@ export default function Categories({ navigation }) {
             { text: "Cancel", style: "cancel" },
         ]);
     };
+    const signOutClicked = () => {
+        signOut((code) => {
+            if (code == codes.LOGOUT_SUCCESS) {
+                route.params.resetToTop();
+            }
+        });
+    };
 
     const renderSubCategory = (item) => {
         return (
@@ -215,7 +223,7 @@ export default function Categories({ navigation }) {
                 rightComponent={{
                     icon: "logout",
                     color: "#fff",
-                    // onPress: signOutClicked,
+                    onPress: signOutClicked,
                 }}
             />
             <View style={{ flex: 1, padding: 10 }}>
