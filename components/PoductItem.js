@@ -28,7 +28,13 @@ export default function ProductItem({ item, productClicked }) {
                     source={image}
                 />
                 <View style={{ width: "60%" }}>
-                    <Text style={{ fontSize: 20 }}>{i.name}</Text>
+                    <Text
+                        style={{ fontSize: 20 }}
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                    >
+                        {i.name}
+                    </Text>
                     <Text>$ {i.price}</Text>
                     <Text numberOfLines={2} ellipsizeMode="tail">
                         {i.description}
